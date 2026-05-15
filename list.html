@@ -55,7 +55,7 @@
 
 <div class="container">
     <div class="header">
-        /*<div class="title">在租房源</div>*/
+        
         <div class="tabs" id="tabGroup">
             <button class="tab-btn active" onclick="filterData('all', this)">全部在租</button>
             <button class="tab-btn" onclick="filterData('high', this)">高区楼层</button>
@@ -79,15 +79,16 @@
 </div>
 
 <script>
-    // 房源数据，你可以根据需要随时在这里增减
+    // 1. 数据配置
     const houseData = [
         { area: '285', floor: '12层', type: 'mid', standard: '标准装修', status: 'ready', statusText: '随时入驻', link: '#' },
         { area: '420', floor: '18层', type: 'high', standard: '毛坯现房', status: 'ready', statusText: '随时入驻', link: '#' },
         { area: '1,100', floor: '25层', type: 'high', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' },
-        { area: '1,200', floor: '43层', type: 'scenery', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '1,200', floor: '43层', type: 'scenery', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' }, // 你的江景房
         { area: '150', floor: '6层', type: 'low', standard: '精致装修', status: 'booked', statusText: '预订中', link: '#' }
     ];
 
+    // 2. 渲染函数
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
@@ -108,22 +109,24 @@
         });
     }
 
+    // 3. 过滤逻辑（已优化为通用版本）
     function filterData(category, btn) {
-        // 更新按钮激活样式
+        // 更新按钮样式
         const btns = document.querySelectorAll('.tab-btn');
         btns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        // 数据过滤
+        // 执行过滤
         if (category === 'all') {
-            renderTable(houseData);
-        } else if (category === 'high') {
-            const filtered = houseData.filter(h => h.type === 'high');
+            renderTable(houseData); // 如果是全部，显示所有
+        } else {
+            // 自动匹配 houseData 里的 type 属性
+            const filtered = houseData.filter(h => h.type === category);
             renderTable(filtered);
         }
     }
 
-    // 默认加载全部
+    // 初始加载全部
     renderTable(houseData);
 </script>
 
