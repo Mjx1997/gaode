@@ -4,129 +4,232 @@
     <meta charset="utf-8">
     <title>恒大世纪广场写字楼-周边配套</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    
     <script type="text/javascript">
         window._AMapSecurityConfig = {
             securityJsCode: '1a299e101b30418737d94d5a74113bd3', 
         }
     </script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=04bee4addf98a8b9eb0d095d331297ab"></script>
+    
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: "Microsoft YaHei", sans-serif; background-color: #f4f7f9; }
-        #container { display: flex; height: 100vh; overflow: hidden; }
+        /* 基础重置：确保地图充满整个嵌入窗口 */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
         
-        /* 侧边栏：固定宽度 */
-        #panel { width: 320px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; box-shadow: 2px 0 8px rgba(0,0,0,0.05); z-index: 10; }
-        .header { padding: 25px 20px; background: #1a73e8; color: #fff; }
-        .header h2 { margin: 0; font-size: 20px; letter-spacing: 1px; }
-        
-        /* 列表区域：自适应剩余高度并可滚动 */
-        .poi-list { flex: 1; overflow-y: auto; }
-        .poi-item { padding: 18px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; }
-        .poi-item:hover { background: #f6faff; }
-        .poi-item h4 { margin: 0 0 6px 0; color: #333; font-size: 16px; }
-        .poi-item p { margin: 0; font-size: 13px; color: #777; line-height: 1.5; }
-        
-        #map-area { flex: 1; }
+        #map-area { width: 100%; height: 100%; position: absolute; z-index: 1; }
 
-        /* 信息窗样式 */
-        .custom-info { padding: 5px; line-height: 1.5; font-size: 13px; }
-        .custom-info b { color: #1a73e8; display: block; margin-bottom: 4px; }
+        /* 悬浮控制台：玻璃拟物风 */
+        .glass-panel {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            max-width: calc(100% - 30px);
+        }
+
+        /* 悬浮分类按钮 */
+        .filter-btn {
+            padding: 6px 14px;
+            border: none;
+            background: #f0f2f5;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover { background: #e4e6e9; }
+        .filter-btn.active { background: #1a73e8; color: #fff; box-shadow: 0 2px 6px rgba(26,115,232,0.3); }
+
+        /* 现代版信息气泡窗 */
+        .custom-info {
+            padding: 10px 14px;
+            background: #fff;
+            border-radius: 8px;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #1a73e8;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 6px;
+        }
+        .info-desc { font-size: 13px; color: #666; line-height: 1.5; margin: 0; }
+
+        /* 自定义主体标记点（带呼吸动画） */
+        .marker-center {
+            width: 20px; height: 20px;
+            background: #ff4d4f;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        /* 呼吸光环特效 */
+        .marker-center::after {
+            content: ''; position: absolute; top: -6px; left: -6px; right: -6px; bottom: -6px;
+            border: 2px solid #ff4d4f; border-radius: 50%;
+            animation: pulse 1.5s infinite ease-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* 自定义普通标记点 */
+        .marker-normal {
+            padding: 4px 10px;
+            background: #fff;
+            border: 2px solid #1a73e8;
+            border-radius: 20px;
+            color: #333;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            white-space: nowrap;
+            transition: transform 0.2s;
+        }
+        .marker-normal:hover { transform: translateY(-3px) scale(1.05); z-index: 999; }
+        
+        /* 不同类型的边框颜色 */
+        .marker-traffic { border-color: #34a853; color: #34a853; }
+        .marker-scenery { border-color: #00afc7; color: #00afc7; }
+        .marker-business { border-color: #fbbc05; color: #d99a00; }
     </style>
 </head>
 <body>
-<div id="container">
-    <div id="panel">
-        <div class="header"><h2>周边配套设施</h2></div>
-        <div class="poi-list" id="poi-list"></div>
-    </div>
-    <div id="map-area"></div>
+
+<div class="glass-panel" id="filter-group">
+    <button class="filter-btn active" onclick="filterMarkers('all', this)">全部</button>
+    <button class="filter-btn" onclick="filterMarkers('traffic', this)">交通</button>
+    <button class="filter-btn" onclick="filterMarkers('scenery', this)">休闲</button>
+    <button class="filter-btn" onclick="filterMarkers('business', this)">商业</button>
 </div>
+
+<div id="map-area"></div>
 
 <script>
     // 1. 数据配置
     const pois = [
-        { name: "恒大世纪广场", type: "center", pos: [114.319443, 30.573807], desc: "【本项目】核心写字楼所在地" },
-        { name: "轨道交通5号线-(三层楼站)", type: "交通", pos: [114.3153, 30.56992], desc: "邻近积玉桥双线枢纽(2/5号线)，无缝衔接武昌与汉口核心" },
-        { name: "和平大道三角路站 (公交站)", type: "交通", pos: [114.31891, 30.573965], desc: "下楼即达；多路公交直通武汉核心区。" },
-        { name: "武昌江滩 (临江大道)", type: "临近江滩", pos: [114.317478, 30.579929], desc: "长江生态走廊，一线江景配套" },
-        { name: "漫时区(商业街)", type: "漫时区", pos: [114.323572, 30.574851], desc: "集餐饮、咖啡、健身于一体，商务洽谈首选。" }
+        { name: "恒大世纪广场", type: "center", pos: [114.319443, 30.573807], desc: "【本项目】您的核心商务坐标。" },
+        { name: "地铁5号线-三层楼站", type: "traffic", pos: [114.3153, 30.56992], desc: "邻近积玉桥双线枢纽，员工通勤无忧。" },
+        { name: "三角路公交站", type: "traffic", pos: [114.31891, 30.573965], desc: "下楼即达，多路公交直通武汉三镇。" },
+        { name: "武昌江滩", type: "scenery", pos: [114.317478, 30.579929], desc: "绝佳长江生态走廊，下班休闲好去处。" },
+        { name: "漫时区商业街", type: "business", pos: [114.323572, 30.574851], desc: "集高雅餐饮与咖啡于一体，商务洽谈首选。" }
     ];
 
-    // 初始化地图
+    // 初始化地图，使用较浅的底图风格显得更干净
     const map = new AMap.Map('map-area', {
         zoom: 15,
-        center: [114.319443, 30.573807], // 初始以本项目为中心
-        viewMode: '3D'
+        center: [114.319443, 30.573807],
+        viewMode: '2D', // 对于小窗口嵌入，2D效果比3D更清晰干净
+        mapStyle: 'amap://styles/light' // 使用极简浅色底图
     });
 
-    const markers = [];
-    const infoWindow = new AMap.InfoWindow({ 
-        offset: new AMap.Pixel(0, -30),
-        autoMove: true // 气泡弹出时自动移动地图使其可见
+    const markerObjects = [];
+    const infoWindow = new AMap.InfoWindow({
+        isCustom: true, // 使用自定义信息窗体，去除高德默认的丑白框
+        offset: new AMap.Pixel(0, -35),
+        autoMove: true
     });
 
-    // 2. 核心交互函数：居中并显示信息
-    function focusPoint(item) {
-        // 使用 panTo 平滑移动到中心，或者 setCenter 直接设为中心
-        map.setZoomAndCenter(17, item.pos); 
-        
-        // 显示气泡窗口
-        infoWindow.setContent(`<div class="custom-info"><b>${item.name}</b>${item.desc}</div>`);
-        infoWindow.open(map, item.pos);
+    // 创建自定义信息窗的DOM结构
+    function createInfoWindow(title, desc) {
+        return `
+            <div class="custom-info">
+                <div class="info-title">${title}</div>
+                <p class="info-desc">${desc}</p>
+            </div>
+        `;
     }
 
-    // 3. 渲染列表和标记
-    function render() {
-        const listContainer = document.getElementById('poi-list');
-        listContainer.innerHTML = '';
-
+    // 渲染地图标记
+    function initMarkers() {
         pois.forEach(item => {
-            // A. 生成列表项
-            const div = document.createElement('div');
-            div.className = 'poi-item';
-            div.innerHTML = `<h4>${item.name}</h4><p>${item.desc}</p>`;
-            div.onclick = () => focusPoint(item); // 点击列表居中
-            listContainer.appendChild(div);
+            // 根据类型决定HTML样式
+            let markerContent = '';
+            let offset = new AMap.Pixel(0, 0);
 
-            // B. 颜色配置
-            let bgColor = '#1a73e8'; 
             if (item.type === 'center') {
-                bgColor = '#ff4d4f'; 
-            } else if (item.type === '临近江滩') {
-                bgColor = '#00afc7'; 
-            } else if (item.type === '漫时区') {
-                bgColor = '#ff9c6e'; 
+                markerContent = `<div class="marker-center"></div>`;
+                offset = new AMap.Pixel(-10, -10); // 居中偏移
+            } else {
+                let colorClass = '';
+                if (item.type === 'traffic') colorClass = 'marker-traffic';
+                if (item.type === 'scenery') colorClass = 'marker-scenery';
+                if (item.type === 'business') colorClass = 'marker-business';
+                
+                markerContent = `<div class="marker-normal ${colorClass}">${item.name}</div>`;
+                offset = new AMap.Pixel(-30, -15);
             }
 
-            // C. 创建地图标记
-            const marker = new AMap.LabelMarker({
-                name: item.name,
+            // 使用 AMap.Marker 支持自定义 HTML
+            const marker = new AMap.Marker({
                 position: item.pos,
-                text: {
-                    content: item.name,
-                    direction: 'top',
-                    style: {
-                        fontSize: 12,
-                        fillColor: '#fff',
-                        backgroundColor: bgColor,
-                        padding: [4, 8],
-                        borderRadius: 4
-                    }
-                },
-                icon: { size: [0, 0] }
+                content: markerContent,
+                offset: offset,
+                extData: { type: item.type } // 保存类型用于过滤
             });
 
-            marker.on('click', () => focusPoint(item)); // 点击标记居中
-            markers.push(marker);
+            // 点击事件：居中并弹窗
+            marker.on('click', () => {
+                map.panTo(item.pos); // 平滑移动到该点
+                infoWindow.setContent(createInfoWindow(item.name, item.desc));
+                infoWindow.open(map, marker.getPosition());
+            });
+
+            markerObjects.push(marker);
         });
-        
-        const layer = new AMap.LabelsLayer({ zIndex: 1000 });
-        map.add(layer);
-        layer.add(markers);
+
+        // 将所有标记加到地图上
+        map.add(markerObjects);
+
+        // 【智能功能】：加载完毕后，自动调整地图缩放级别，让所有点恰好都在屏幕内显示！
+        setTimeout(() => {
+            map.setFitView(markerObjects, false, [50, 50, 50, 50]); // 留出50px的边距
+        }, 500);
     }
 
-    // 初始执行渲染
-    render();
+    // 过滤功能
+    function filterMarkers(type, btnBtn) {
+        // 更新按钮激活状态
+        const btns = document.querySelectorAll('.filter-btn');
+        btns.forEach(b => b.classList.remove('active'));
+        btnBtn.classList.add('active');
+
+        infoWindow.close(); // 切换时关闭当前弹窗
+
+        let visibleMarkers = [];
+        markerObjects.forEach(marker => {
+            const mType = marker.getExtData().type;
+            // 核心点（center）永远显示，或者类型匹配时显示
+            if (type === 'all' || mType === 'center' || mType === type) {
+                marker.show();
+                visibleMarkers.push(marker);
+            } else {
+                marker.hide();
+            }
+        });
+
+        // 切换分类后，再次智能调整视野
+        map.setFitView(visibleMarkers, false, [50, 50, 50, 50]);
+    }
+
+    // 启动
+    initMarkers();
 </script>
 </body>
 </html>
