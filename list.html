@@ -3,143 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在租房源列表-卡片版</title>
+    <title>恒大世纪广场-在租房源列表</title>
     <style>
-        /* 1. 关键修改：网页最外层设为透明 */
+        /* 全局样式设定 */
         body, html { 
             margin: 0; 
             padding: 0; 
-            background-color: transparent; 
-        }
-        
-        /* 2. 保留白色容器背景，并添加轻微圆角和阴影，使其更有质感 */
-        .container { 
-            max-width: 900px; 
-            margin: 10px auto; 
-            background: #ffffff; /* 保留白色背景 */
-            padding: 25px; 
-            border-radius: 12px; /* 圆角 */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* 淡淡的阴影，让卡片浮起来 */
-        }
-        
-        /* 头部样式修改 */
-        .header {
-            display: flex;
-            justify-content: flex-end; /* 关键修改：将子元素推向右侧对齐 */
-            align-items: center;
-            margin-bottom: 25px;
+            background-color: transparent; /* 背景透明，方便嵌入其他页面 */
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: #333;
         }
 
-        /* 当屏幕宽度小于 600px 时，按钮组居中显示 */
+        .container {
+            max-width: 1000px;
+            margin: 15px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        /* 顶部筛选区域 */
+        .header-bar {
+            display: flex;
+            justify-content: flex-end; /* 修改这里：由 space-between 改为 flex-end，右对齐 */
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        .list-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+        }
+        .tab-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid #eee;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 13px;
+            color: #666;
+            transition: 0.2s;
+        }
+        .tab-btn:hover { background: #eef2f7; }
+        .tab-btn.active {
+            background: #1a73e8;
+            color: #fff;
+            border-color: #1a73e8;
+            font-weight: bold;
+        }
+
+        /* 列表表头：对齐下面的内容列 */
+        .list-header {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.5fr 1fr 0.8fr; /* 灵活分配列宽 */
+            padding: 12px 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        /* 列表项样式 */
+        .house-list { display: flex; flex-direction: column; gap: 8px; }
+        .house-item {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.5fr 1fr 0.8fr; /* 与表头保持一致 */
+            align-items: center;
+            padding: 18px 20px;
+            border-radius: 10px;
+            border: 1px solid #f2f4f7;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .house-item:hover {
+            background: #f6faff;
+            border-color: #1a73e8;
+            transform: scale(1.005);
+            box-shadow: 0 4px 12px rgba(26,115,232,0.08);
+        }
+
+        /* 各个列的具体修饰 */
+        .col-area { font-size: 18px; font-weight: bold; color: #1a73e8; }
+        .col-area span { font-size: 12px; margin-left: 2px; }
+        
+        .col-floor { font-size: 14px; color: #444; }
+        
+        .col-standard { font-size: 14px; color: #555; }
+        
+        /* 状态标签样式 */
+        .col-status { display: flex; align-items: center; }
+        .status-badge {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .ready { background: #e6f7ff; color: #1a73e8; }
+        .booked { background: #fff7e6; color: #fa8c16; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
+        /* 操作按钮 */
+        .col-action { text-align: right; }
+        .detail-link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            background: #f0f7ff;
+            transition: 0.2s;
+        }
+        .detail-link:hover { background: #1a73e8; color: #fff; }
+
+        /* 移动端适配：如果屏幕太窄，自动隐藏不重要的列 */
         @media (max-width: 600px) {
-            .header {
+            /* 添加下面这个样式，让导航栏在窄屏下居中 */
+            .header-bar {
                 justify-content: center;
             }
-        }
-
-        
-        /* 切换按钮 */
-        .tabs { display: flex; gap: 8px; }
-        .tab-btn { padding: 7px 18px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px; background: #f0f2f5; color: #666; transition: 0.3s; }
-        .tab-btn.active { background: #56eadd; color: #333; font-weight: bold; }
-
-        /* 表格样式 */
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f9fafc; color: #888; font-weight: normal; padding: 12px; text-align: left; font-size: 13px; border-bottom: 2px solid #f0f2f5; }
-        td { padding: 16px 12px; border-bottom: 1px solid #f0f2f5; font-size: 14px; color: #444; }
-        
-        /* 状态标记 */
-        .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
-        .status-ready { background: #27ae60; }
-        .status-booked { background: #e67e22; }
-
-        .detail-link { color: #1a73e8; text-decoration: none; font-weight: 500; }
-        .detail-link:hover { text-decoration: underline; }
-
-        /* 移动端适配：隐藏不太重要的“交付标准”列 */
-        @media (max-width: 600px) {
-            th:nth-child(3), td:nth-child(3) { display: none; }
-            .container { padding: 15px; margin: 5px; }
+            .list-header { display: none; }
+            .house-item { 
+                grid-template-columns: 1fr 1fr; 
+                gap: 10px;
+                padding: 15px;
+            }
+            .col-standard, .col-floor { font-size: 12px; }
+            .col-action { grid-column: span 2; border-top: 1px solid #eee; padding-top: 10px; text-align: center; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <div class="tabs" id="tabGroup">
-            <button class="tab-btn active" onclick="filterData('all', this)">全部在租</button>
-            <button class="tab-btn" onclick="filterData('high', this)">高区楼层</button>
-            <button class="tab-btn" onclick="filterData('scenery', this)">江景户型</button>
+    <div class="header-bar">
+
+        <div class="filter-tabs">
+            <button class="tab-btn active" onclick="filterHouse('all', this)">全部</button>
+            <button class="tab-btn" onclick="filterHouse('high', this)">高区</button>
+            <button class="tab-btn" onclick="filterHouse('scenery', this)">江景</button>
         </div>
     </div>
 
-    <table id="houseTable">
-        <thead>
-            <tr>
-                <th>面积 (㎡)</th>
-                <th>楼层</th>
-                <th>交付标准</th>
-                <th>状态</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            </tbody>
-    </table>
+    <div class="list-header">
+        <div>面积</div>
+        <div>楼层</div>
+        <div>交付标准</div>
+        <div>状态</div>
+        <div style="text-align: right;">操作</div>
+    </div>
+
+    <div class="house-list" id="houseList">
+        </div>
 </div>
 
 <script>
-    // 1. 数据配置
+    /**
+     * 【数据修改指南】
+     * 如果你想增加或修改房源，只需在下面的 houseData 数组中增删对象即可。
+     * 字段说明：
+     * area: 面积数字
+     * floor: 所在楼层
+     * standard: 交付标准（如：精装修、毛坯、带家具）
+     * status: 逻辑状态（ready 代表在租，booked 代表已租/预订）
+     * statusText: 显示出来的文字
+     * type: 对应顶部的分类按钮
+     */
     const houseData = [
-        { area: '285', floor: '12层', type: 'mid', standard: '标准装修', status: 'ready', statusText: '随时入驻', link: '#' },
-        { area: '420', floor: '18层', type: 'high', standard: '毛坯现房', status: 'ready', statusText: '随时入驻', link: '#' },
-        { area: '1,100', floor: '25层', type: 'high', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' },
-        { area: '1,200', floor: '43层', type: 'scenery', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' }, // 你的江景房
-        { area: '150', floor: '6层', type: 'low', standard: '精致装修', status: 'booked', statusText: '预订中', link: '#' }
+        { area: '285', floor: '12层', type: 'mid', standard: '精装修 · 带全套家具', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '420', floor: '18层', type: 'high', standard: '标准装修 · 吊顶白墙', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '1,100', floor: '25层', type: 'high', standard: '毛坯现房 · 空间自由', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '1,200', floor: '43层', type: 'scenery', standard: '顶级装修 · 环幕江景', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '150', floor: '6层', type: 'low', standard: '简约装修 · 采光极佳', status: 'booked', statusText: '已预订', link: '#' }
     ];
 
-    // 2. 渲染函数
-    function renderTable(data) {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
+    /**
+     * 渲染函数
+     */
+    function renderList(data) {
+        const listContainer = document.getElementById('houseList');
+        listContainer.innerHTML = '';
+        
         data.forEach(item => {
-            const row = `
-                <tr>
-                    <td style="color:#1a73e8; font-weight:bold;">${item.area}</td>
-                    <td>${item.floor}</td>
-                    <td>${item.standard}</td>
-                    <td>
-                        <span class="status-dot ${item.status === 'ready' ? 'status-ready' : 'status-booked'}"></span>
-                        ${item.statusText}
-                    </td>
-                    <td><a href="${item.link}" class="detail-link" target="_parent">详情</a></td>
-                </tr>
+            const statusClass = item.status === 'ready' ? 'ready' : 'booked';
+            const dotColor = item.status === 'ready' ? '#1a73e8' : '#fa8c16';
+            
+            const itemHtml = `
+                <div class="house-item" onclick="window.open('${item.link}', '_parent')">
+                    <div class="col-area">${item.area}<span>㎡</span></div>
+                    <div class="col-floor">${item.floor}</div>
+                    <div class="col-standard">${item.standard}</div>
+                    <div class="col-status">
+                        <span class="status-badge ${statusClass}">
+                            <span class="dot" style="background:${dotColor}"></span>
+                            ${item.statusText}
+                        </span>
+                    </div>
+                    <div class="col-action">
+                        <a href="${item.link}" class="detail-link">详情</a>
+                    </div>
+                </div>
             `;
-            tbody.innerHTML += row;
+            listContainer.innerHTML += itemHtml;
         });
     }
 
-    // 3. 过滤逻辑（已优化为通用版本）
-    function filterData(category, btn) {
-        // 更新按钮样式
-        const btns = document.querySelectorAll('.tab-btn');
-        btns.forEach(b => b.classList.remove('active'));
+    /**
+     * 过滤函数
+     */
+    function filterHouse(category, btn) {
+        // 切换按钮高亮
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
-        // 执行过滤
-        if (category === 'all') {
-            renderTable(houseData); // 如果是全部，显示所有
-        } else {
-            // 自动匹配 houseData 里的 type 属性
-            const filtered = houseData.filter(h => h.type === category);
-            renderTable(filtered);
-        }
+        
+        // 执行过滤逻辑
+        const filtered = category === 'all' ? houseData : houseData.filter(h => h.type === category);
+        renderList(filtered);
     }
 
-    // 初始加载全部
-    renderTable(houseData);
+    // 初始渲染
+    renderList(houseData);
 </script>
-
 </body>
 </html>
