@@ -14,12 +14,12 @@
         body, html { margin: 0; padding: 0; height: 100%; font-family: "Microsoft YaHei", sans-serif; background-color: #f4f7f9; }
         #container { display: flex; height: 100vh; overflow: hidden; }
         
-        /* 侧边栏优化 */
+        /* 侧边栏：固定宽度 */
         #panel { width: 320px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; box-shadow: 2px 0 8px rgba(0,0,0,0.05); z-index: 10; }
         .header { padding: 25px 20px; background: #1a73e8; color: #fff; }
         .header h2 { margin: 0; font-size: 20px; letter-spacing: 1px; }
         
-        /* 列表区域 */
+        /* 列表区域：自适应剩余高度并可滚动 */
         .poi-list { flex: 1; overflow-y: auto; }
         .poi-item { padding: 18px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; }
         .poi-item:hover { background: #f6faff; }
@@ -28,9 +28,9 @@
         
         #map-area { flex: 1; }
 
-        /* 自定义信息窗样式 */
-        .custom-info { padding: 10px; line-height: 1.6; }
-        .custom-info b { color: #1a73e8; font-size: 14px; }
+        /* 信息窗样式 */
+        .custom-info { padding: 5px; line-height: 1.5; font-size: 13px; }
+        .custom-info b { color: #1a73e8; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -49,20 +49,33 @@
         { name: "轨道交通5号线-(三层楼站)", type: "交通", pos: [114.3153, 30.56992], desc: "邻近积玉桥双线枢纽(2/5号线)，无缝衔接武昌与汉口核心" },
         { name: "和平大道三角路站 (公交站)", type: "交通", pos: [114.31891, 30.573965], desc: "下楼即达；多路公交直通武汉核心区。" },
         { name: "武昌江滩 (临江大道)", type: "临近江滩", pos: [114.317478, 30.579929], desc: "长江生态走廊，一线江景配套" },
-        { name: "漫时区(商业街)", type: "漫时区", pos: [114.323572, 30.574851], desc: "集餐饮、咖啡、健身于一体，高端商务洽谈首选。" }
+        { name: "漫时区(商业街)", type: "漫时区", pos: [114.323572, 30.574851], desc: "集餐饮、咖啡、健身于一体，商务洽谈首选。" }
     ];
 
-    // 初始化地图，中心点设为恒大世纪广场
+    // 初始化地图
     const map = new AMap.Map('map-area', {
         zoom: 15,
-        center: [114.319443, 30.573807],
+        center: [114.319443, 30.573807], // 初始以本项目为中心
         viewMode: '3D'
     });
 
     const markers = [];
-    const infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
+    const infoWindow = new AMap.InfoWindow({ 
+        offset: new AMap.Pixel(0, -30),
+        autoMove: true // 气泡弹出时自动移动地图使其可见
+    });
 
-    // 2. 渲染函数
+    // 2. 核心交互函数：居中并显示信息
+    function focusPoint(item) {
+        // 使用 panTo 平滑移动到中心，或者 setCenter 直接设为中心
+        map.setZoomAndCenter(17, item.pos); 
+        
+        // 显示气泡窗口
+        infoWindow.setContent(`<div class="custom-info"><b>${item.name}</b>${item.desc}</div>`);
+        infoWindow.open(map, item.pos);
+    }
+
+    // 3. 渲染列表和标记
     function render() {
         const listContainer = document.getElementById('poi-list');
         listContainer.innerHTML = '';
@@ -72,23 +85,20 @@
             const div = document.createElement('div');
             div.className = 'poi-item';
             div.innerHTML = `<h4>${item.name}</h4><p>${item.desc}</p>`;
-            div.onclick = () => {
-                map.setZoomAndCenter(17, item.pos);
-                showInfo(item);
-            };
+            div.onclick = () => focusPoint(item); // 点击列表居中
             listContainer.appendChild(div);
 
             // B. 颜色配置
-            let bgColor = '#1a73e8'; // 交通默认蓝色
+            let bgColor = '#1a73e8'; 
             if (item.type === 'center') {
-                bgColor = '#ff4d4f'; // 本项目红色
+                bgColor = '#ff4d4f'; 
             } else if (item.type === '临近江滩') {
-                bgColor = '#00afc7'; // 江滩青蓝色
+                bgColor = '#00afc7'; 
             } else if (item.type === '漫时区') {
-                bgColor = '#ff9c6e'; // 漫时区橙色
+                bgColor = '#ff9c6e'; 
             }
 
-            // C. 地图标记
+            // C. 创建地图标记
             const marker = new AMap.LabelMarker({
                 name: item.name,
                 position: item.pos,
@@ -106,7 +116,7 @@
                 icon: { size: [0, 0] }
             });
 
-            marker.on('click', () => showInfo(item));
+            marker.on('click', () => focusPoint(item)); // 点击标记居中
             markers.push(marker);
         });
         
@@ -115,12 +125,7 @@
         layer.add(markers);
     }
 
-    function showInfo(item) {
-        infoWindow.setContent(`<div class="custom-info"><b>${item.name}</b><br>${item.desc}</div>`);
-        infoWindow.open(map, item.pos);
-    }
-
-    // 初始执行
+    // 初始执行渲染
     render();
 </script>
 </body>
