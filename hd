@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>恒大世纪广场-周边配套</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode: '1a299e101b30418737d94d5a74113bd3', 
+        }
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=04bee4addf98a8b9eb0d095d331297ab"></script>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: "Microsoft YaHei", sans-serif; }
+        #container { display: flex; height: 100vh; overflow: hidden; }
+        /* 侧边栏列表 */
+        #panel { width: 300px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
+        .header { padding: 20px; background: #1a73e8; color: #fff; }
+        .header h2 { margin: 0; font-size: 18px; }
+        .poi-list { flex: 1; overflow-y: auto; }
+        .poi-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; }
+        .poi-item:hover { background: #f0f7ff; }
+        .poi-img { width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 1px solid #eee; }
+        .poi-info h4 { margin: 0; font-size: 14px; color: #333; }
+        /* 右侧地图 */
+        #map-area { flex: 1; }
+    </style>
+</head>
+<body>
+<div id="container">
+    <div id="panel">
+        <div class="header"><h2>周边配套设施</h2></div>
+        <div class="poi-list" id="poi-list"></div>
+    </div>
+    <div id="map-area"></div>
+</div>
+<script>
+    // 配置坐标点（恒大世纪广场及周边）
+    const pois = [
+        { name: "恒大世纪广场(本项目)", pos: [114.341, 30.551], img: "https://pic.imgdb.cn/item/664303350ea37410818274d8.png", desc: "写字楼中心位置" },
+        { name: "街道口地铁站", pos: [114.353, 30.526], img: "https://pic.imgdb.cn/item/664303350ea37410818274d9.png", desc: "2/8号线换乘，出行便利" },
+        { name: "群光广场", pos: [114.351, 30.527], img: "https://pic.imgdb.cn/item/664303350ea37410818274da.png", desc: "高端购物中心，商务配套完善" }
+    ];
+
+    const map = new AMap.Map('map-area', { zoom: 14, center: [114.341, 30.551], viewMode: '3D' });
+    const infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
+
+    pois.forEach(item => {
+        // 创建列表按钮
+        const div = document.createElement('div');
+        div.className = 'poi-item';
+        div.innerHTML = `<img src="${item.img}" class="poi-img"><div class="poi-info"><h4>${item.name}</h4></div>`;
+        div.onclick = () => {
+            map.setZoomAndCenter(16, item.pos);
+            infoWindow.setContent(`<div style="padding:10px;"><b>${item.name}</b><br>${item.desc}</div>`);
+            infoWindow.open(map, item.pos);
+        };
+        document.getElementById('poi-list').appendChild(div);
+
+        // 创建地图标记
+        const marker = new AMap.Marker({ position: item.pos, map: map });
+        marker.on('click', () => {
+            map.setZoomAndCenter(16, item.pos);
+            infoWindow.setContent(`<div style="padding:10px;"><b>${item.name}</b><br>${item.desc}</div>`);
+            infoWindow.open(map, item.pos);
+        });
+    });
+</script>
+</body>
+</html>
