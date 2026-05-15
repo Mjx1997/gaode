@@ -16,11 +16,12 @@
 
         .container {
             max-width: 1000px;
-            margin: 15px auto;
+            margin: 0 auto 30px auto; /* 底部留白，防止卡片贴底 */
             background: #ffffff;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-radius: 16px; /* 圆角稍微调大一点点，更现代 */
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05); /* 调深一点点阴影，增强立体感 */
+            border: 1px solid #f2f4f7; /* 淡淡的边框线 */
         }
 
         /* 顶部筛选区域 */
@@ -28,9 +29,9 @@
             display: flex;
             justify-content: flex-end; /* 修改这里：由 space-between 改为 flex-end，右对齐 */
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f2f2f2;
+            background: transparent; /* 强制背景透明 */
+            border: none; /* 确保无边框 */
+            padding: 0 5px; /* 避免标签贴边 */
         }
         .list-title {
             font-size: 18px;
@@ -131,7 +132,9 @@
         @media (max-width: 600px) {
             /* 添加下面这个样式，让导航栏在窄屏下居中 */
             .header-bar {
-                justify-content: center;
+                justify-content: center; /* 移动端居中 */
+                margin-top: 15px;
+                margin-bottom: 10px;
             }
             .list-header { display: none; }
             .house-item { 
@@ -146,16 +149,15 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="header-bar">
-
-        <div class="filter-tabs">
+<div class="header-bar" style="max-width: 1000px; margin: 20px auto 5px auto;">
+    <div class="filter-tabs">
             <button class="tab-btn active" onclick="filterHouse('all', this)">全部</button>
             <button class="tab-btn" onclick="filterHouse('high', this)">高区</button>
             <button class="tab-btn" onclick="filterHouse('scenery', this)">江景</button>
         </div>
     </div>
 
+    <div class="container">
     <div class="list-header">
         <div>面积</div>
         <div>楼层</div>
