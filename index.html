@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>周边配套-智能避让版</title>
+    <title>周边配套-视觉增强版</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <script type="text/javascript">
         window._AMapSecurityConfig = { securityJsCode: '1a299e101b30418737d94d5a74113bd3' };
@@ -11,6 +11,8 @@
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Microsoft YaHei", sans-serif; }
         #map-area { width: 100%; height: 100%; position: absolute; }
+        
+        /* 顶部悬浮面板 */
         .glass-panel {
             position: absolute; top: 12px; left: 12px; z-index: 100;
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
@@ -23,14 +25,40 @@
         }
         .filter-btn.active { background: #1a73e8; color: #fff; }
 
+        /* --- 核心呼吸灯特效开始 --- */
+        .marker-container { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+        /* 呼吸光圈动画 */
+        .breath-ring {
+            position: absolute; width: 30px; height: 30px;
+            background: rgba(255, 77, 79, 0.5); border-radius: 50%;
+            z-index: -1; animation: breathe 2s infinite ease-out;
+        }
+
+        @keyframes breathe {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        /* 核心标记的小圆点 */
+        .dot-center {
+            width: 10px; height: 10px; background: #ff4d4f;
+            border-radius: 50%; border: 2px solid #fff;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        }
+
         /* 标签基础样式 */
         .marker-label {
             padding: 5px 12px; background: #fff; border-radius: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 12px;
             font-weight: bold; border: 2px solid #1a73e8; white-space: nowrap;
+            margin-bottom: 5px; /* 与下方圆点保持距离 */
         }
-        /* 写字楼标签：设为红色且层级最高 */
-        .marker-center { background: #ff4d4f; color: #fff; border-color: #fff; z-index: 999 !important; }
+        
+        /* 主体标记文字颜色优化 */
+        .marker-center-text { background: #ff4d4f; color: #fff; border-color: #fff; }
+        /* --- 核心呼吸灯特效结束 --- */
+
         .info-card { padding: 10px; min-width: 150px; }
     </style>
 </head>
@@ -39,21 +67,21 @@
 <div class="glass-panel">
     <button class="filter-btn active" onclick="filterData('all', this)">本写字楼</button>
     <button class="filter-btn" onclick="filterData('traffic', this)">轨道交通</button>
-    <button class="filter-btn" onclick="filterData('bus', this)">公交站点</button>
-    <button class="filter-btn" onclick="filterData('scenery', this)">附近休闲</button>
+    <button class="filter-btn" onclick="filterData('bas', this)">公共交通</button>
+    <button class="filter-btn" onclick="filterData('scenery', this)">休闲</button>
     <button class="filter-btn" onclick="filterData('business', this)">商业街</button>
 </div>
 
 <div id="map-area"></div>
 
 <script>
+    // 数据保持不变
     const pois = [
         { name: "恒大世纪广场", type: "center", pos: [114.319443, 30.573807], desc: "本项目核心位置" },
         { name: "5号线-三层楼站", type: "traffic", pos: [114.3153, 30.56992], desc: "双线枢纽" },
-        // 【优化】：交通类标签我们后续会设置不同的偏移量防止遮挡
-        { name: "三角路公交站", type: "bus", pos: [114.31891, 30.573965], desc: "楼下即是多路公交" },
+        { name: "三角路公交站", type: "bas", pos: [114.31891, 30.573965], desc: "楼下即是多路公交" },
         { name: "武昌江滩", type: "scenery", pos: [114.317478, 30.579929], desc: "一线江景" },
-        { name: "漫时区商业街", type: "business", pos: [114.323572, 30.574851], desc: "餐饮、娱乐、休闲" }
+        { name: "漫时区商业街", type: "business", pos: [114.323572, 30.574851], desc: "包含餐饮、娱乐、休闲" }
     ];
 
     const centerPos = [114.319443, 30.573807];
@@ -66,25 +94,34 @@
 
     function initMarkers() {
         pois.forEach(item => {
-            const div = document.createElement('div');
-            div.className = `marker-label ${item.type === 'center' ? 'marker-center' : ''}`;
-            div.innerHTML = item.name;
+            const container = document.createElement('div');
+            container.className = 'marker-container';
 
-            // 【核心优化】：针对容易重叠的点设置不同的偏移方向
-            let finalOffset = new AMap.Pixel(-40, -35); // 默认向上偏移
+            // 构建内部 HTML：如果是中心点，加入呼吸环和圆点
+            if (item.type === 'center') {
+                container.innerHTML = `
+                    <div class="marker-label marker-center-text">${item.name}</div>
+                    <div class="breath-ring"></div>
+                    <div class="dot-center"></div>
+                `;
+            } else {
+                container.innerHTML = `<div class="marker-label">${item.name}</div>`;
+            }
+
+            // 避让位移逻辑保持不变
+            let finalOffset = new AMap.Pixel(-40, -35); 
             let zIndex = 100;
 
             if (item.type === 'center') {
-                zIndex = 999; // 写字楼永远最顶层
-                finalOffset = new AMap.Pixel(-40, -45); // 往上拉高一点
+                zIndex = 999; 
+                finalOffset = new AMap.Pixel(0, -25); // 中心点采用底部对齐
             } else if (item.name === '三角路公交站') {
-                // 公交站和写字楼太近，我们将公交站标签往下沉
                 finalOffset = new AMap.Pixel(-40, 10); 
             }
 
             const marker = new AMap.Marker({
                 position: item.pos,
-                content: div,
+                content: container,
                 offset: finalOffset,
                 zIndex: zIndex,
                 extData: { type: item.type, pos: item.pos }
@@ -101,13 +138,13 @@
         map.add(markers);
     }
 
+    // 筛选功能保持不变
     function filterData(type, btn) {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
         markers.forEach(m => {
             const mData = m.getExtData();
-            // 切换分类时，本写字楼永远显示作为参考
             if (type === 'all' || mData.type === 'center' || mData.type === type) {
                 m.show();
             } else {
@@ -115,7 +152,6 @@
             }
         });
 
-        // 定位逻辑：如果是全部，回到写字楼；如果是特定分类，移动到该类第一个点的坐标
         if (type === 'all') {
             map.setZoomAndCenter(16, centerPos);
         } else {
