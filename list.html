@@ -22,9 +22,21 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* 淡淡的阴影，让卡片浮起来 */
         }
         
-        /* 头部样式 */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .title { font-size: 20px; font-weight: bold; color: #333; }
+        /* 头部样式修改 */
+        .header {
+            display: flex;
+            justify-content: flex-end; /* 关键修改：将子元素推向右侧对齐 */
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        /* 当屏幕宽度小于 600px 时，按钮组居中显示 */
+        @media (max-width: 600px) {
+            .header {
+                justify-content: center;
+            }
+        }
+
         
         /* 切换按钮 */
         .tabs { display: flex; gap: 8px; }
@@ -55,7 +67,6 @@
 
 <div class="container">
     <div class="header">
-        
         <div class="tabs" id="tabGroup">
             <button class="tab-btn active" onclick="filterData('all', this)">全部在租</button>
             <button class="tab-btn" onclick="filterData('high', this)">高区楼层</button>
