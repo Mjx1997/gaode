@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>/*在租房源列表-卡片版*/</title>
+    <title>在租房源列表-卡片版</title>
     <style>
         /* 1. 关键修改：网页最外层设为透明 */
         body, html { 
@@ -55,10 +55,11 @@
 
 <div class="container">
     <div class="header">
-        <div class="title">/*在租房源*/</div>
+        /*<div class="title">在租房源</div>*/
         <div class="tabs" id="tabGroup">
             <button class="tab-btn active" onclick="filterData('all', this)">全部在租</button>
             <button class="tab-btn" onclick="filterData('high', this)">高区楼层</button>
+            <button class="tab-btn" onclick="filterData('scenery', this)">江景户型</button>
         </div>
     </div>
 
@@ -83,6 +84,7 @@
         { area: '285', floor: '12层', type: 'mid', standard: '标准装修', status: 'ready', statusText: '随时入驻', link: '#' },
         { area: '420', floor: '18层', type: 'high', standard: '毛坯现房', status: 'ready', statusText: '随时入驻', link: '#' },
         { area: '1,100', floor: '25层', type: 'high', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '1,200', floor: '43层', type: 'scenery', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' },
         { area: '150', floor: '6层', type: 'low', standard: '精致装修', status: 'booked', statusText: '预订中', link: '#' }
     ];
 
