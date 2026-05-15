@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; margin: 0; padding: 20px; background-color: #f8f9fb; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        /* 头部样式 */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .title { font-size: 22px; font-weight: bold; color: #333; }
+        
+        /* 切换按钮样式 */
+        .tabs { display: flex; gap: 10px; }
+        .tab-btn { padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; background: #eef1f6; color: #666; transition: 0.3s; }
+        .tab-btn.active { background: #56eadd; color: #333; font-weight: bold; }
+
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #f4f7fc; color: #666; font-weight: normal; padding: 12px; text-align: left; font-size: 14px; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f0f2f5; font-size: 15px; color: #333; }
+        
+        /* 状态圆点 */
+        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+        .status-ready { background: #27ae60; } /* 随时入驻-绿 */
+        .status-booked { background: #e67e22; } /* 预订中-橙 */
+
+        /* 链接样式 */
+        .detail-link { color: #1a73e8; text-decoration: none; font-size: 14px; }
+        .detail-link:hover { text-decoration: underline; }
+
+        /* 移动端优化 */
+        @media (max-width: 600px) {
+            th:nth-child(3), td:nth-child(3) { display: none; } /* 手机端隐藏交付标准 */
+            .title { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="title">在租房源</div>
+        <div class="tabs" id="tabGroup">
+            <button class="tab-btn active" onclick="filterData('all')">全部在租</button>
+            <button class="tab-btn" onclick="filterData('high')">高区楼层</button>
+        </div>
+    </div>
+
+    <table id="houseTable">
+        <thead>
+            <tr>
+                <th>面积 (㎡)</th>
+                <th>楼层</th>
+                <th>交付标准</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    // 1. 这里配置你的房源数据
+    const houseData = [
+        { area: '285', floor: '12层', type: 'mid', standard: '标准装修', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '420', floor: '18层', type: 'high', standard: '毛坯现房', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '1,100', floor: '25层', type: 'high', standard: '整层交付', status: 'ready', statusText: '随时入驻', link: '#' },
+        { area: '150', floor: '6层', type: 'low', standard: '精致装修', status: 'booked', statusText: '预订中', link: '#' }
+    ];
+
+    // 2. 渲染函数
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = ''; // 清空当前表格
+
+        data.forEach(item => {
+            const row = `
+                <tr>
+                    <td style="color:#1a73e8; font-weight:bold;">${item.area}</td>
+                    <td>${item.floor}</td>
+                    <td>${item.standard}</td>
+                    <td>
+                        <span class="status-dot ${item.status === 'ready' ? 'status-ready' : 'status-booked'}"></span>
+                        ${item.statusText}
+                    </td>
+                    <td><a href="${item.link}" class="detail-link">详情</a></td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // 3. 过滤逻辑
+    function filterData(category) {
+        // 更新按钮状态
+        const btns = document.querySelectorAll('.tab-btn');
+        btns.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // 执行过滤
+        if (category === 'all') {
+            renderTable(houseData);
+        } else if (category === 'high') {
+            const filtered = houseData.filter(h => h.type === 'high');
+            renderTable(filtered);
+        }
+    }
+
+    // 初始加载全部数据
+    renderTable(houseData);
+</script>
+
+</body>
+</html>
