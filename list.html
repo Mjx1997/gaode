@@ -3,38 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>/*在租房源列表-卡片版*/</title>
     <style>
-        body { font-family: "Microsoft YaHei", sans-serif; margin: 0; padding: 20px; background-color: #f8f9fb; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* 1. 关键修改：网页最外层设为透明 */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            background-color: transparent; 
+        }
+        
+        /* 2. 保留白色容器背景，并添加轻微圆角和阴影，使其更有质感 */
+        .container { 
+            max-width: 900px; 
+            margin: 10px auto; 
+            background: #ffffff; /* 保留白色背景 */
+            padding: 25px; 
+            border-radius: 12px; /* 圆角 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* 淡淡的阴影，让卡片浮起来 */
+        }
         
         /* 头部样式 */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .title { font-size: 22px; font-weight: bold; color: #333; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .title { font-size: 20px; font-weight: bold; color: #333; }
         
-        /* 切换按钮样式 */
-        .tabs { display: flex; gap: 10px; }
-        .tab-btn { padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; background: #eef1f6; color: #666; transition: 0.3s; }
+        /* 切换按钮 */
+        .tabs { display: flex; gap: 8px; }
+        .tab-btn { padding: 7px 18px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px; background: #f0f2f5; color: #666; transition: 0.3s; }
         .tab-btn.active { background: #56eadd; color: #333; font-weight: bold; }
 
         /* 表格样式 */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f4f7fc; color: #666; font-weight: normal; padding: 12px; text-align: left; font-size: 14px; }
-        td { padding: 15px 12px; border-bottom: 1px solid #f0f2f5; font-size: 15px; color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f9fafc; color: #888; font-weight: normal; padding: 12px; text-align: left; font-size: 13px; border-bottom: 2px solid #f0f2f5; }
+        td { padding: 16px 12px; border-bottom: 1px solid #f0f2f5; font-size: 14px; color: #444; }
         
-        /* 状态圆点 */
-        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-        .status-ready { background: #27ae60; } /* 随时入驻-绿 */
-        .status-booked { background: #e67e22; } /* 预订中-橙 */
+        /* 状态标记 */
+        .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+        .status-ready { background: #27ae60; }
+        .status-booked { background: #e67e22; }
 
-        /* 链接样式 */
-        .detail-link { color: #1a73e8; text-decoration: none; font-size: 14px; }
+        .detail-link { color: #1a73e8; text-decoration: none; font-weight: 500; }
         .detail-link:hover { text-decoration: underline; }
 
-        /* 移动端优化 */
+        /* 移动端适配：隐藏不太重要的“交付标准”列 */
         @media (max-width: 600px) {
-            th:nth-child(3), td:nth-child(3) { display: none; } /* 手机端隐藏交付标准 */
-            .title { font-size: 18px; }
+            th:nth-child(3), td:nth-child(3) { display: none; }
+            .container { padding: 15px; margin: 5px; }
         }
     </style>
 </head>
@@ -42,10 +55,10 @@
 
 <div class="container">
     <div class="header">
-        <div class="title">在租房源</div>
+        <div class="title">/*在租房源*/</div>
         <div class="tabs" id="tabGroup">
-            <button class="tab-btn active" onclick="filterData('all')">全部在租</button>
-            <button class="tab-btn" onclick="filterData('high')">高区楼层</button>
+            <button class="tab-btn active" onclick="filterData('all', this)">全部在租</button>
+            <button class="tab-btn" onclick="filterData('high', this)">高区楼层</button>
         </div>
     </div>
 
@@ -65,7 +78,7 @@
 </div>
 
 <script>
-    // 1. 这里配置你的房源数据
+    // 房源数据，你可以根据需要随时在这里增减
     const houseData = [
         { area: '285', floor: '12层', type: 'mid', standard: '标准装修', status: 'ready', statusText: '随时入驻', link: '#' },
         { area: '420', floor: '18层', type: 'high', standard: '毛坯现房', status: 'ready', statusText: '随时入驻', link: '#' },
@@ -73,11 +86,9 @@
         { area: '150', floor: '6层', type: 'low', standard: '精致装修', status: 'booked', statusText: '预订中', link: '#' }
     ];
 
-    // 2. 渲染函数
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = ''; // 清空当前表格
-
+        tbody.innerHTML = '';
         data.forEach(item => {
             const row = `
                 <tr>
@@ -88,21 +99,20 @@
                         <span class="status-dot ${item.status === 'ready' ? 'status-ready' : 'status-booked'}"></span>
                         ${item.statusText}
                     </td>
-                    <td><a href="${item.link}" class="detail-link">详情</a></td>
+                    <td><a href="${item.link}" class="detail-link" target="_parent">详情</a></td>
                 </tr>
             `;
             tbody.innerHTML += row;
         });
     }
 
-    // 3. 过滤逻辑
-    function filterData(category) {
-        // 更新按钮状态
+    function filterData(category, btn) {
+        // 更新按钮激活样式
         const btns = document.querySelectorAll('.tab-btn');
-        btns.forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-        // 执行过滤
+        // 数据过滤
         if (category === 'all') {
             renderTable(houseData);
         } else if (category === 'high') {
@@ -111,7 +121,7 @@
         }
     }
 
-    // 初始加载全部数据
+    // 默认加载全部
     renderTable(houseData);
 </script>
 
