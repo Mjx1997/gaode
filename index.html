@@ -2,27 +2,27 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>恒大世纪广场-周边配套</title>
+    <title>恒大世纪广场写字楼-周边配套</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <script type="text/javascript">
         window._AMapSecurityConfig = {
-            securityJsCode: '1a299e101b30418737d94d5a74113bd3', 
+            securityJsCode: '1a299e101b30418737d94d5a74113bd3', // 确认你的安全密钥
         }
     </script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=04bee4addf98a8b9eb0d095d331297ab"></script>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: "Microsoft YaHei", sans-serif; }
         #container { display: flex; height: 100vh; overflow: hidden; }
-        /* 侧边栏列表 */
+        /* 侧边栏 */
         #panel { width: 300px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
         .header { padding: 20px; background: #1a73e8; color: #fff; }
-        .header h2 { margin: 0; font-size: 18px; }
+        /* 分类筛选按钮 */
+        .category-tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #eee; padding: 5px; }
+        .tab-btn { flex: 1; border: none; padding: 8px; cursor: pointer; background: none; font-size: 13px; color: #666; }
+        .tab-btn.active { color: #1a73e8; font-weight: bold; border-bottom: 2px solid #1a73e8; }
         .poi-list { flex: 1; overflow-y: auto; }
-        .poi-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; }
+        .poi-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
         .poi-item:hover { background: #f0f7ff; }
-        .poi-img { width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 1px solid #eee; }
-        .poi-info h4 { margin: 0; font-size: 14px; color: #333; }
-        /* 右侧地图 */
         #map-area { flex: 1; }
     </style>
 </head>
@@ -30,41 +30,112 @@
 <div id="container">
     <div id="panel">
         <div class="header"><h2>周边配套设施</h2></div>
+        <div class="category-tabs" id="tabs">
+            <button class="tab-btn active" data-type="all">全部</button>
+            <button class="tab-btn" data-type="交通">交通</button>
+            <button class="tab-btn" data-type="商业">商业</button>
+            <button class="tab-btn" data-type="休闲">休闲</button>
+        </div>
         <div class="poi-list" id="poi-list"></div>
     </div>
     <div id="map-area"></div>
 </div>
+
 <script>
-    // 配置坐标点（恒大世纪广场及周边）
+    // 1. 数据配置：在这里修改地点、经纬度和分类
     const pois = [
-        { name: "恒大世纪广场(本项目)", pos: [114.341, 30.551], img: "https://pic.imgdb.cn/item/664303350ea37410818274d8.png", desc: "写字楼中心位置" },
-        { name: "街道口地铁站", pos: [114.353, 30.526], img: "https://pic.imgdb.cn/item/664303350ea37410818274d9.png", desc: "2/8号线换乘，出行便利" },
-        { name: "群光广场", pos: [114.351, 30.527], img: "https://pic.imgdb.cn/item/664303350ea37410818274da.png", desc: "高端购物中心，商务配套完善" }
+        { name: "恒大世纪广场", type: "all", pos: [114.319443,30.573807], desc: "本项目所在地" },
+        { name: "轨道交通5号线-(三层楼站)", type: "交通", pos: [114.3153,30.56992], desc: "邻近积玉桥双线枢纽(2/5号线)，无缝衔接武昌与汉口核心" },
+        { name: "和平大道三角路站 (公交站)", type: "交通", pos: [114.31891,30.573965], desc: "下楼即达；多路公交直通武汉核心区，与地铁5号线互为补充，实现全方位立体交通。" },
+        { name: "武昌江滩 (临江大道)", type: "休闲", pos: [114.317478,30.579929], desc: "长江生态走廊，一线江景" },
+        { name: "漫时区(商业街)", type: "商业", pos: [114.323572,30.574851], desc: "集餐饮、咖啡、健身于一体，满足高品质午休与商务洽谈需求。" }
     ];
 
-    const map = new AMap.Map('map-area', { zoom: 14, center: [114.341, 30.551], viewMode: '3D' });
+    const map = new AMap.Map('map-area', {
+        zoom: 14,
+        center: [114.341, 30.551],
+        viewMode: '3D'
+    });
+
+    const markers = [];
     const infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
 
-    pois.forEach(item => {
-        // 创建列表按钮
-        const div = document.createElement('div');
-        div.className = 'poi-item';
-        div.innerHTML = `<img src="${item.img}" class="poi-img"><div class="poi-info"><h4>${item.name}</h4></div>`;
-        div.onclick = () => {
-            map.setZoomAndCenter(16, item.pos);
-            infoWindow.setContent(`<div style="padding:10px;"><b>${item.name}</b><br>${item.desc}</div>`);
-            infoWindow.open(map, item.pos);
-        };
-        document.getElementById('poi-list').appendChild(div);
+// 2. 渲染函数：处理列表、标记、颜色
+    function render(filterType = 'all') {
+        // 清理旧内容
+        document.getElementById('poi-list').innerHTML = '';
+        markers.forEach(m => m.setMap(null));
+        markers.length = 0;
 
-        // 创建地图标记
-        const marker = new AMap.Marker({ position: item.pos, map: map });
-        marker.on('click', () => {
-            map.setZoomAndCenter(16, item.pos);
-            infoWindow.setContent(`<div style="padding:10px;"><b>${item.name}</b><br>${item.desc}</div>`);
-            infoWindow.open(map, item.pos);
+        pois.forEach(item => {
+            // 过滤逻辑
+            if (filterType !== 'all' && item.type !== filterType) return;
+
+            // A. 生成侧边栏列表
+            const div = document.createElement('div');
+            div.className = 'poi-item';
+            div.innerHTML = `<h4>${item.name}</h4><p>${item.desc}</p>`;
+            div.onclick = () => {
+                map.setZoomAndCenter(17, item.pos);
+                showInfo(item);
+            };
+            document.getElementById('poi-list').appendChild(div);
+
+            // B. 颜色判断逻辑
+            let bgColor = '#1a73e8'; // 默认蓝色
+            if (item.name === '恒大世纪广场') {
+                bgColor = '#ff4d4f'; // 本项目用红色
+            } else if (item.type === '临近江滩') {
+                bgColor = '#00afc7'; // 江滩用江蓝色
+            } else if (item.type === '漫时区') {
+                bgColor = '#ff9c6e'; // 漫时区用暖橙色
+            }
+
+            // C. 创建地图文字标签标记
+            const marker = new AMap.LabelMarker({
+                name: item.name,
+                position: item.pos,
+                text: {
+                    content: item.name,
+                    direction: 'top',
+                    style: {
+                        fontSize: 12,
+                        fillColor: '#fff',
+                        backgroundColor: bgColor,
+                        padding: [4, 8],
+                        borderRadius: 4
+                    }
+                },
+                icon: { size: [0, 0] } // 隐藏默认的大头针图标
+            });
+
+            marker.on('click', () => showInfo(item));
+            markers.push(marker);
         });
-    });
+        
+        // 将标记加载到图层
+        const layer = new AMap.LabelsLayer({ zoomRange: [4, 20], zIndex: 1000 });
+        map.add(layer);
+        layer.add(markers);
+    }
+
+    // 弹出信息窗口
+    function showInfo(item) {
+        infoWindow.setContent(`<div style="padding:10px;"><b>${item.name}</b><br>${item.desc}</div>`);
+        infoWindow.open(map, item.pos);
+    }
+
+    // 3. 切换标签事件
+    document.getElementById('tabs').onclick = (e) => {
+        if (e.target.classList.contains('tab-btn')) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            render(e.target.dataset.type);
+        }
+    };
+
+    // 初始加载
+    render();
 </script>
 </body>
 </html>
