@@ -14,19 +14,22 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, "PingFang SC", sans-serif;
-            background-color: transparent !important; /* ← 保持您的全透明底色 */
+            background-color: transparent !important; /* 🔒 保持您的全透明底色 */
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            align-items: flex-start; /* 🚀 关键：改为置顶对齐，彻底取消上方的多余间距 */
+            margin: 0;               /* 🚀 关键：彻底取消外边距，像房源列表一样紧贴边缘 */
+            padding: 0;              /* 🚀 关键：彻底取消四周内边距，方便嵌入式自适应 */
+            min-height: auto;
+            width: 100%;
         }
         
         /* ------------------ 3D 翻转舞台（锁定经典竖版宽度） ------------------ */
         .card-stage {
             width: 100%;
-            max-width: 480px; /* 🔒 永久锁定经典竖版黄金名片宽度 */
+            max-width: 480px; /* 永久锁定经典竖版黄金名片宽度 */
             perspective: 1000px; /* 3D 深度透视感 */
+            margin: 0 auto; /* 保证在更宽的嵌入容器中依然居中 */
         }
         
         .card-flipper {
@@ -41,11 +44,14 @@
             transform: rotateY(180deg);
         }
         
-        /* 正面与背面的共有基础样式（完全继承您原本的 business-card） */
+        /* 正面与背面的共有基础样式 */
         .business-card-front, .business-card-back {
             background: #ffffff;
             border-radius: 20px; /* 延续圆润边框风格 */
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);/* 极简空气感阴影 */
+            
+            /* 🎨 关键优化：超级淡雅空气感阴影，不透明度仅2.5%，在浅色背景上绝无生硬黑边 */
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.025); 
+            
             padding: 30px;
             display: flex;
             flex-direction: column;
@@ -89,7 +95,7 @@
             overflow: hidden;
             flex-shrink: 0;
             border: 3px solid #f5f7fa;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
         }
         
         .avatar-box img {
@@ -121,7 +127,7 @@
             align-self: flex-start;
         }
         
-        /* ------------------ 🌟 中间详细联系信息列表（全面自适应升级） ------------------ */
+        /* ------------------ 中间详细联系信息列表（全面自适应） ------------------ */
         .contact-details {
             display: flex;
             flex-direction: column;
@@ -129,33 +135,33 @@
             background-color: #f9f9fbb3;
             padding: 16px;
             border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.01);
             width: 100%;
             height: auto !important; /* 强制高度跟随文字行数弹性延伸 */
         }
         
         .contact-item {
             display: flex;
-            align-items: flex-start; /* 顶部分齐：当右侧文字多行换行时，左侧标签保持置顶对齐 */
+            align-items: flex-start; /* 顶部分齐 */
             font-size: 14px;
             color: #424245;
-            line-height: 1.5; /* 扩充行高，让长文本换行时不拥挤 */
+            line-height: 1.5;
             width: 100%;
         }
         
         .contact-label {
             color: #86868b;
-            width: 70px; /* 略微加宽，让四个字对齐更舒展 */
-            flex-shrink: 0; /* 牢牢固定左侧标签宽度，窗口再小也绝不被挤压变形 */
+            width: 70px;
+            flex-shrink: 0; /* 牢牢固定左侧标签宽度 */
         }
         
         .contact-value {
             font-weight: 500;
             color: #1d1d1f;
-            flex: 1; /* 撑满右侧剩余的所有可用空间 */
-            min-width: 0; /* 触发弹性盒子的弹性换行计算 */
-            word-break: break-all; /* 🚀 核心：当遇到长邮箱或无空格字符时，强制从框内自动切断换行，绝对不溢出 */
-            white-space: normal; /* 确保文本正常随容器宽度折行 */
+            flex: 1;
+            min-width: 0;
+            word-break: break-all; /* 当遇到长邮箱时，强制从框内自动切断换行 */
+            white-space: normal;
         }
         
         /* ------------------ 底部动作按钮区域 ------------------ */
@@ -182,13 +188,13 @@
         .btn-primary {
             background-color: #0071e3;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.15);
         }
         
         .btn-primary:hover {
             background-color: #0077ed;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 113, 227, 0.2);
         }
         
         .btn-secondary {
@@ -239,6 +245,7 @@
             .business-card-front, .business-card-back {
                 padding: 24px;
                 gap: 20px;
+                border-radius: 16px; /* 窄屏下略微缩小圆角更精致 */
             }
             
             .card-header {
@@ -259,7 +266,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.3); 
+            background: rgba(0, 0, 0, 0.2); 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -276,11 +283,11 @@
         
         .toast-box {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px); /* 高级毛玻璃特效 */
+            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             padding: 16px 28px;
             border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             text-align: center;
             transform: scale(0.8);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -380,34 +387,28 @@
 
     <script>
         function handleConnect(event) {
-            // 精确检测用户是否使用手机/移动端设备访问
             var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (!isMobile) {
-                // 💻 【PC 电脑端逻辑】
-                event.preventDefault(); // 拦截默认拨号
-                document.getElementById('mainCardStage').classList.add('flipped'); // 卡片进行 3D 水平翻转
+                event.preventDefault(); 
+                document.getElementById('mainCardStage').classList.add('flipped'); 
             } else {
-                // 📱 【手机移动端逻辑】
-                event.preventDefault(); // 1. 先拦截直接跳转，留出时间显示我们的精美弹窗
+                event.preventDefault(); 
                 
                 var toast = document.getElementById('phoneToast');
-                toast.classList.add('show'); // 2. 激发弹窗显现
+                toast.classList.add('show'); 
                 
-                // 获取绑定的电话号码
                 var phoneNumber = event.currentTarget.getAttribute('data-phone');
                 
-                // 3. 停留 1.5 秒（1500毫秒）让用户看完舒适的动画提示后，再正式执行拨号
                 setTimeout(function() {
-                    toast.classList.remove('show'); // 隐藏弹窗
-                    window.location.href = 'tel:' + phoneNumber; // 正式唤起手机系统拨号盘
+                    toast.classList.remove('show'); 
+                    window.location.href = 'tel:' + phoneNumber; 
                 }, 1500);
             }
         }
         
-        // 点击背面“返回主面”按钮的复位动作
         function flipCardBack() {
-            document.getElementById('mainCardStage').classList.remove('flipped'); // 移除翻转类名，卡片回正
+            document.getElementById('mainCardStage').classList.remove('flipped'); 
         }
     </script>
 </body>
