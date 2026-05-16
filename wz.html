@@ -13,23 +13,21 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            background-color: #f5f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: transparent; /* 1. 设为透明背景，方便嵌入 */
+            width: 100%;
+            height: 100%;
         }
 
-        /* 核心卡片容器 */
+        /* 核心卡片容器：变为完全自适应 */
         .card-container {
-            background-color: #ffffff;
+            background-color: transparent; /* 2. 卡片背景设为透明 */
             width: 100%;
-            max-width: 1000px;
-            padding: 40px;
+            height: 100%;                  /* 让容器充满外部设置的窗口高度 */
+            padding: 20px;                 /* 保留适量内边距，防止贴边，可根据需要调整 */
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 48px;
+            gap: 40px;
         }
 
         /* 左侧文字区域 */
@@ -37,6 +35,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-width: 0; /* 防止内容过长撑破弹性盒子 */
         }
 
         /* 顶部标签 */
@@ -55,7 +54,7 @@
         }
 
         .tag-badge::before {
-            content: "✓"; /* 还原原图的小勾选图标 */
+            content: "✓";
             font-weight: bold;
             font-size: 11px;
         }
@@ -100,7 +99,7 @@
         }
 
         .metric-value {
-            color: #0052d9; /* 经典地标蓝 */
+            color: #0052d9;
             font-size: 26px;
             font-weight: 700;
             display: flex;
@@ -118,19 +117,19 @@
             font-size: 14px;
         }
 
-        /* 右侧图片区域 */
+        /* 右侧图片区域：取消固定像素，改为弹性比例 */
         .image-right {
             position: relative;
-            width: 380px;
-            height: 380px;
-            flex-shrink: 0;
+            flex: 0 0 40%; /* 图片区域占总宽度的 40% */
+            max-width: 400px; /* 限制最大宽度防止过大 */
+            aspect-ratio: 1 / 1; /* 保持 1:1 的正方形比例 */
         }
 
         .building-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 16px; /* 还原大圆角设计 */
+            border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
 
@@ -162,15 +161,16 @@
         }
 
         /* 响应式适配：移动端自动变为上下布局 */
-        @media (max-width: 868px) {
+        @media (max-width: 768px) {
             .card-container {
                 flex-direction: column-reverse;
-                padding: 24px;
-                gap: 32px;
+                padding: 16px;
+                gap: 24px;
             }
             .image-right {
+                flex: none;
                 width: 100%;
-                height: 300px;
+                max-width: 100%;
             }
             .metric-item:not(:last-child) {
                 border-right: none;
