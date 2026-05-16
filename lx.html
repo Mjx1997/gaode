@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系名片窗口</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ------------------ 名片核心容器 ------------------ */
+        .business-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 480px; /* 黄金名片宽度 */
+            border-radius: 20px; /* 延续圆润边框风格 */
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06); /* 现代高级微阴影 */
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 上半部分：头像与基本信息组合 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* 左侧圆形头像包装盒 */
+        .avatar-box {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%; /* 强制圆形 */
+            overflow: hidden; /* 裁剪直角 */
+            flex-shrink: 0;
+            border: 3px solid #f5f7fa; /* 精致的双层边框质感 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保证头像缩放不拉伸变形 */
+        }
+
+        /* 右侧姓名与职位描述 */
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1d1d1f;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-title {
+            font-size: 14px;
+            color: #0071e3; /* 经典商务蓝 */
+            background-color: #e6f1fe;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            align-self: flex-start; /* 让标签宽度适应文字 */
+        }
+
+        /* ------------------ 中间详细联系信息列表 ------------------ */
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #f9f9fbb3; /* 浅色块底衬，凸显层次 */
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #424245;
+            line-height: 1.4;
+        }
+
+        /* 前缀标签样式（如 电话：） */
+        .contact-label {
+            color: #86868b;
+            width: 65px; /* 固定宽度，让后面的内容完美对齐 */
+            flex-shrink: 0;
+        }
+
+        .contact-value {
+            font-weight: 500;
+            color: #1d1d1f;
+        }
+
+        /* ------------------ 最下方双按钮区域 ------------------ */
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 按钮通用基础样式 */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 按钮一：立即联系（高亮主按钮） */
+        .btn-primary {
+            background-color: #0071e3;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #0077ed;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
+        }
+
+        /* 按钮二：预约实地看房（优雅次按钮） */
+        .btn-secondary {
+            background-color: #f2f2f7;
+            color: #0071e3;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e5ea;
+            transform: translateY(-2px);
+        }
+
+        /* 按钮被按下时的反馈效果 */
+        .btn:active {
+            transform: translateY(0);
+        }
+
+
+        /* ------------------ 📱 手机版式响应式优化 ------------------ */
+        @media screen and (max-width: 640px) {
+            .business-card {
+                padding: 24px;
+                gap: 20px;
+            }
+
+            /* 手机端头部变为垂直居中对齐，更符合大屏单手浏览习惯 */
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 14px;
+            }
+
+            .profile-title {
+                align-self: center; /* 标签在手机端也居中 */
+            }
+
+            .contact-details {
+                padding: 14px;
+            }
+            
+            .btn {
+                padding: 13px; /* 手机端按钮稍微紧凑一点 */
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="business-card">
+        
+        <div class="card-header">
+            <div class="avatar-box">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="张经理头像">
+            </div>
+            <div class="profile-info">
+                <span class="profile-name">张经理</span>
+                <span class="profile-title">招商负责人</span>
+            </div>
+        </div>
+
+        <div class="contact-details">
+            <div class="contact-item">
+                <span class="contact-label">联络电话</span>
+                <span class="contact-value">138-xxxx-xxxx</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">电子邮箱</span>
+                <span class="contact-value">zhang.manager@cbd-center.com</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">企业微信</span>
+                <span class="contact-value">wxid_zhangCBD</span>
+            </div>
+        </div>
+
+        <div class="action-group">
+            <button class="btn btn-primary" onclick="alert('正在唤起拨号或在线沟通...')">立即联系</button>
+            <button class="btn btn-secondary" onclick="alert('正在打开看房预约表单...')">预约实地看房</button>
+        </div>
+        
+    </div>
+    </body>
+</html>
