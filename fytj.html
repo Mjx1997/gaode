@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大厦内其他类似单元</title>
+    <style>
+        /* 基础重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 外部大容器：背景完全透明，无固定宽高，四周留白 24px */
+        .similar-units-section {
+            width: 100%;
+            background-color: transparent; 
+            padding: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* 头部栏布局（标题 + 左右按钮） */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        /* 左侧主标题 */
+        .section-title {
+            font-size: 22px;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        /* 右侧导航按钮包裹区 */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 左右圆形按钮通用样式 */
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid #dcdcdc;
+            background-color: #ffffff;
+            color: #333333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        /* 按钮悬停效果 */
+        .nav-btn:hover {
+            border-color: #999999;
+            background-color: #f5f5f5;
+        }
+
+        /* 轮播外层视窗：隐藏原生滚动条，保留丝滑滚动特性 */
+        .slider-container {
+            width: 100%;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        /* 隐藏谷歌/苹果浏览器的滚动条 */
+        .slider-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 轮播内部长轨道 */
+        .slider-track {
+            display: flex;
+            gap: 24px; /* 卡片之间的横向间距 */
+        }
+
+        /* 🛠️ 已升级：单个房源卡片改造成超链接，清除默认下划线，追加悬停交互 */
+        .unit-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #eaeaea; /* 纯净无阴影，改用浅色边框 */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none; /* 清除超链接自带的下划线 */
+            color: inherit; /* 继承普通文本颜色 */
+            cursor: pointer; /* 鼠标悬停时变成小手指针 */
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            flex: 0 0 calc(25% - 18px); /* 大屏幕一排显示 4 个卡片 */
+        }
+
+        /* 🛠️ 鼠标悬停在整张卡片上时的视觉反馈：边框稍微加深一点点 */
+        .unit-card:hover {
+            border-color: #b5b5b5;
+            background-color: #fafafa;
+        }
+
+        /* 响应式断点：中等屏幕一排显示 3 个 */
+        @media (max-width: 1200px) {
+            .unit-card { flex: 0 0 calc(33.333% - 16px); }
+        }
+        /* 响应式断点：小屏幕一排显示 2 个 */
+        @media (max-width: 900px) {
+            .unit-card { flex: 0 0 calc(50% - 12px); }
+        }
+        /* 响应式断点：手机端一排显示 1 个 */
+        @media (max-width: 600px) {
+            .unit-card { flex: 0 0 100%; }
+        }
+
+        /* 卡片图片区域 */
+        .card-img-wrapper {
+            width: 100%;
+            height: 180px; 
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+        }
+
+        /* 卡片文字信息区域 */
+        .card-content {
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* 第一行：名字与价格 */
+        .card-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        .card-price {
+            font-size: 16px;
+            color: #0052cc; 
+            font-weight: bold;
+        }
+
+        /* 第二行：面积与朝向 */
+        .card-row-bottom {
+            font-size: 14px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="similar-units-section">
+    <div class="section-header">
+        <h2 class="section-title">大厦内其他类似单元</h2>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prevBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="nav-btn" id="nextBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="slider-container" id="sliderContainer">
+        <div class="slider-track" id="sliderTrack"></div>
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // 📝【全局数据配置中心】—— 所有的图片、文字、以及【跳转链接】全部集合在这里！
+    // =========================================================================
+    const UNIT_DATA = [
+        {
+            title: "Suite 2201",
+            price: "¥2.9/m²/天",
+            info: "185 m² &nbsp;&nbsp; 东南朝向",
+            imgUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
+            // 📝【修改此处：卡片一的点击跳转链接】
+            linkUrl: "https://your-website.com/room-2201" 
+        },
+        {
+            title: "Suite 2304",
+            price: "¥2.7/m²/天",
+            info: "310 m² &nbsp;&nbsp; 西北朝向",
+            imgUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
+            // 📝【修改此处：卡片二的点击跳转链接】
+            linkUrl: "https://your-website.com/room-2304"
+        },
+        {
+            title: "Suite 2108",
+            price: "¥2.8/m²/天",
+            info: "220 m² &nbsp;&nbsp; 西南朝向",
+            imgUrl: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=600&q=80",
+            // 📝【修改此处：卡片三的点击跳转链接】
+            linkUrl: "https://your-website.com/room-2108"
+        },
+        {
+            title: "Suite 2402",
+            price: "¥3.0/m²/天",
+            info: "420 m² &nbsp;&nbsp; 正南朝向",
+            imgUrl: "https://images.unsplash.com/photo-1542623024-a797a7a4b35d?auto=format&fit=crop&w=600&q=80",
+            // 📝【修改此处：卡片四的点击跳转链接】
+            linkUrl: "https://your-website.com/room-2402"
+        },
+        {
+            title: "Suite 2506",
+            price: "¥3.2/m²/天",
+            info: "510 m² &nbsp;&nbsp; 东南朝向",
+            imgUrl: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=600&q=80",
+            // 📝【修改此处：卡片五的点击跳转链接】
+            linkUrl: "https://your-website.com/room-2506"
+        }
+    ];
+
+    // =========================================================================
+    // ⚙️【核心逻辑自动化渲染与轮播控制】
+    // =========================================================================
+    
+    // 1. 动态生成卡片（target="_blank" 代表在新窗口打开，若想在当前窗口打开，可删掉 target="_blank"）
+    const track = document.getElementById('sliderTrack');
+    track.innerHTML = UNIT_DATA.map(item => `
+        <a href="${item.linkUrl}" target="_blank" class="unit-card">
+            <div class="card-img-wrapper">
+                <img src="${item.imgUrl}" alt="${item.title}">
+            </div>
+            <div class="card-content">
+                <div class="card-row-top">
+                    <span class="card-title">${item.title}</span>
+                    <span class="card-price">${item.price}</span>
+                </div>
+                <div class="card-row-bottom">${item.info}</div>
+            </div>
+        </a>
+    `).join('');
+
+    // 2. 轮播控制与禁用状态切换
+    const container = document.getElementById('sliderContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function updateButtonStates() {
+        const scrollLeft = container.scrollLeft;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+
+        if (scrollLeft <= 2) {
+            prevBtn.style.opacity = '0.3';
+            prevBtn.style.pointerEvents = 'none';
+        } else {
+            prevBtn.style.opacity = '1';
+            prevBtn.style.pointerEvents = 'auto';
+        }
+
+        if (scrollLeft >= maxScroll - 2) {
+            nextBtn.style.opacity = '0.3';
+            nextBtn.style.pointerEvents = 'none';
+        } else {
+            nextBtn.style.opacity = '1';
+            nextBtn.style.pointerEvents = 'auto';
+        }
+    }
+
+    nextBtn.addEventListener('click', () => {
+        const firstCard = container.querySelector('.unit-card');
+        const moveDistance = firstCard ? firstCard.offsetWidth + 24 : 300;
+        container.scrollBy({ left: moveDistance, behavior: 'smooth' });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        const firstCard = container.querySelector('.unit-card');
+        const moveDistance = firstCard ? firstCard.offsetWidth + 24 : 300;
+        container.scrollBy({ left: -moveDistance, behavior: 'smooth' });
+    });
+
+    container.addEventListener('scroll', updateButtonStates);
+    window.addEventListener('resize', updateButtonStates);
+
+    // 初始化按钮检查
+    setTimeout(updateButtonStates, 200);
+</script>
+
+</body>
+</html>
