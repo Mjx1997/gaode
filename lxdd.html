@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如何到达</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 外部容器：全白背景，无阴影，增加了四周的留白间距 */
+        .transport-container {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 24px; /* 四周的内边距 */
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5%; /* 左右两栏的间距 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* 左侧图片区域：自适应宽度 */
+        .transport-map {
+            flex: 1 1 45%;
+            min-width: 320px;
+        }
+
+        .transport-map img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 24px; /* 四角圆润效果 */
+            object-fit: cover;
+        }
+
+        /* 右侧文字信息区域 */
+        .transport-info {
+            flex: 1 1 45%;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* 大标题 */
+        .transport-title {
+            color: #0033cc;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* 每一行交通方式项目 */
+        .transport-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        /* 图标通用样式 */
+        .icon-wrapper {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* 地铁蓝色图标 */
+        .icon-metro {
+            background-color: #e6f0ff;
+            color: #0052cc;
+        }
+
+        /* 公交绿色图标 */
+        .icon-bus {
+            background-color: #e6f7ed;
+            color: #03a64a;
+        }
+
+        /* 自驾橙色图标 */
+        .icon-parking {
+            background-color: #fdf2e9;
+            color: #b05106;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* 文本内容区域 */
+        .item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            line-height: 1.6;
+        }
+
+        .item-content h3 {
+            color: #333333;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .item-content p {
+            color: #666666;
+            font-size: 14px;
+        }
+
+        /* 移动端自适应：屏幕较小时自动减少间距，垂直堆叠 */
+        @media (max-width: 768px) {
+            .transport-container {
+                padding: 16px; /* 移动端适当缩小四周间距 */
+                gap: 24px;
+            }
+            .transport-info {
+                gap: 24px;
+            }
+            .transport-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="transport-container">
+    <div class="transport-map">
+        
+        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80" alt="区域位置实景图">
+        </div>
+
+    <div class="transport-info">
+        <h2 class="transport-title">如何到达</h2>
+
+        <div class="transport-item">
+            <div class="icon-wrapper icon-metro">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 17-4 4"/><path d="m16 17 4 4"/></svg>
+            </div>
+            <div class="item-content">
+                <h3>地铁线路</h3>
+                <p>地铁2号线/7号线：<strong>王家墩东站</strong> C出口直达</p>
+                <p>地铁3号线：<strong>云飞路站</strong> 步行约500米</p>
+            </div>
+        </div>
+
+        <div class="transport-item">
+            <div class="icon-wrapper icon-bus">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M8 3v8"/><path d="M16 3v8"/><path d="M6 19v2"/><path d="M18 19v2"/></svg>
+            </div>
+            <div class="item-content">
+                <h3>公交站台</h3>
+                <p>建设大道青年路口站：509路, 542路, 605路, 703路</p>
+                <p>商务中心站：342路, 585路, 704路</p>
+            </div>
+        </div>
+
+        <div class="transport-item">
+            <div class="icon-wrapper icon-parking">P</div>
+            <div class="item-content">
+                <h3>自驾停车</h3>
+                <p>地库入口位于大厦北侧，配有1500个智能停车位，提供预约车位服务。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
