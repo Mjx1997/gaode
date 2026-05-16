@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>武汉中心·城市地标写字楼</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 核心卡片容器 */
+        .card-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 48px;
+        }
+
+        /* 左侧文字区域 */
+        .content-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部标签 */
+        .tag-badge {
+            align-self: flex-start;
+            background-color: #edf2fc;
+            color: #409eff;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .tag-badge::before {
+            content: "✓"; /* 还原原图的小勾选图标 */
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        /* 主标题 */
+        .main-title {
+            color: #1a1a1a;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        /* 副标题/描述 */
+        .description {
+            color: #666666;
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            letter-spacing: 0.2px;
+        }
+
+        /* 底部三列数据指标 */
+        .metrics-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .metric-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* 数据项之间的分割线 */
+        .metric-item:not(:last-child) {
+            border-right: 1px solid #ebeef5;
+            padding-right: 20px;
+            margin-right: 20px;
+        }
+
+        .metric-value {
+            color: #0052d9; /* 经典地标蓝 */
+            font-size: 26px;
+            font-weight: 700;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .metric-unit {
+            font-size: 13px;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .metric-label {
+            color: #333333;
+            font-size: 14px;
+        }
+
+        /* 右侧图片区域 */
+        .image-right {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            flex-shrink: 0;
+        }
+
+        .building-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px; /* 还原大圆角设计 */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 左下角毛玻璃价格标签 */
+        .price-badge {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .price-status {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .price-amount {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        /* 响应式适配：移动端自动变为上下布局 */
+        @media (max-width: 868px) {
+            .card-container {
+                flex-direction: column-reverse;
+                padding: 24px;
+                gap: 32px;
+            }
+            .image-right {
+                width: 100%;
+                height: 300px;
+            }
+            .metric-item:not(:last-child) {
+                border-right: none;
+                margin-right: 0;
+                padding-right: 0;
+            }
+            .metrics-group {
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <div class="content-left">
+            <div class="tag-badge">顶级地段·黄金中轴</div>
+            
+            <h1 class="main-title">武汉中心·城市地标写字楼</h1>
+            
+            <p class="description">
+                坐落于武汉CBD核心区位，双地铁交汇，垂直城市生态系统，为企业打造无与伦比的办公体验。
+            </p>
+            
+            <div class="metrics-group">
+                <div class="metric-item">
+                    <div class="metric-value">5<span class="metric-unit">Mins</span></div>
+                    <div class="metric-label">步行至地铁站</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">1.2<span class="metric-unit">Km</span></div>
+                    <div class="metric-label">直达长江大桥</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">300<span class="metric-unit">M+</span></div>
+                    <div class="metric-label">天际景观视野</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="image-right">
+            <img class="building-img" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=80" alt="武汉中心大楼">
+            
+            <div class="price-badge">
+                <div class="price-status">现房租赁</div>
+                <div class="price-amount">¥ 5.5/㎡/天</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
