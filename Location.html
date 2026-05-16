@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Wuhan Office - 空间数字座舱</title>
+
+    <script type="text/javascript">
+        // ★ 完美保留您的高德安全密钥（必须在加载主JS前执行）
+        window._AMapSecurityConfig = {
+            securityJsCode: '1a299e101b30418737d94d5a74113bd3', 
+        }
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=04bee4addf98a8b9eb0d095d331297ab&plugin=AMap.Walking"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #f4f7fc; }
+        
+        #dashboard-container { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; }
+        #map-core { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        /* 延续 Apple 质感的高级纯白半透明毛玻璃面板 */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+            z-index: 10;
+            color: #1d1d1f;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* 左侧：配套资产发现面板 */
+        .left-interconnect-panel {
+            position: absolute; left: 24px; top: 24px; width: 340px;
+            padding: 22px; max-height: calc(100% - 160px); overflow-y: auto;
+            opacity: 0; transform: translateX(-30px); pointer-events: none;
+        }
+        .left-interconnect-panel.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+        
+        .console-title { font-size: 17px; font-weight: 700; color: #1d1d1f; display: flex; align-items: center; gap: 8px; }
+        .console-title::before { content: ''; width: 4px; height: 15px; background: #0071e3; border-radius: 2px; }
+        .console-subtitle { font-size: 12px; color: #86868b; margin: 4px 0 16px 12px; }
+        
+        /* 左侧资产列表项 */
+        .poi-list-item {
+            padding: 14px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; font-size: 13px; transition: all 0.2s;
+        }
+        .poi-list-item:hover { background: #ffffff; border-color: #0071e3; box-shadow: 0 6px 16px rgba(0,0,0,0.04); }
+        .poi-info { display: flex; flex-direction: column; gap: 4px; width: 75%; }
+        .poi-name { font-weight: 600; color: #1d1d1f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .poi-addr { color: #86868b; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .poi-dist { font-size: 11px; font-weight: 700; color: #0071e3; background: #e6f1fe; padding: 4px 8px; border-radius: 8px; white-space: nowrap; }
+        
+        /* 下方：智慧生态雷达卡片栏 */
+        .bottom-shelf { position: absolute; bottom: 24px; left: 24px; right: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; z-index: 10; pointer-events: none; }
+        .radar-card { padding: 20px; pointer-events: auto; cursor: pointer; }
+        .radar-card:hover, .radar-card.selected { background: rgba(255, 255, 255, 0.96); border-color: rgba(0, 113, 227, 0.4); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .card-icon { font-size: 18px; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        
+        .c-blue .card-icon { background: #e6f1fe; color: #0071e3; }
+        .c-green .card-icon { background: #eafaf1; color: #34c759; }
+        .c-orange .card-icon { background: #fff5e6; color: #ff9500; }
+        
+        .card-title { font-size: 15px; font-weight: 600; color: #1d1d1f; }
+        .card-body { font-size: 12px; color: #86868b; line-height: 1.5; }
+        
+        /* 地图标注样式 */
+        .poi-text-tag {
+            background: rgba(31, 31, 31, 0.9); border: 1px solid currentcolor; color: #fff;
+            padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
+            white-space: nowrap; position: absolute; bottom: 16px; left: 50%;
+            transform: translateX(-50%); box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none;
+        }
+        .poi-text-tag::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); border-width: 4px 4px 0; border-style: solid; border-color: rgba(31, 31, 31, 0.9) transparent; }
+        .poi-core-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 6px currentcolor; margin: 0 auto; }
+        
+        /* 核心项目地标：中心写字楼专属雷达扩散脉冲 */
+        .center-radar-marker { position: relative; width: 40px; height: 40px; }
+        .radar-pulse { position: absolute; width: 100%; height: 100%; border: 2px solid #0071e3; background: rgba(0, 113, 227, 0.15); border-radius: 50%; animation: mapRipple 2.5s infinite ease-out; }
+        .radar-core { position: absolute; width: 14px; height: 14px; background: #0071e3; border: 2px solid #fff; border-radius: 50%; top: 13px; left: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        @keyframes mapRipple { 0% { transform: scale(0.4); opacity: 1; } 100% { transform: scale(2.4); opacity: 0; } }
+        
+        /* 固定写字楼位置上方精美圆形缩略图样式 */
+        .office-photo-marker {
+            position: absolute; top: -35px; left: -5px; width: 50px; height: 50px;
+            border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+            background-color: #e6f1fe; background-size: cover; background-position: center;
+            cursor: default; transition: transform 0.2s ease, box-shadow 0.2s; z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="dashboard-container">
+        <div id="map-core"></div>
+
+        <div class="left-interconnect-panel glass-panel" id="left-panel">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
+                <button onclick="resetToInitialState()" style="background: #f2f2f7; border: none; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; color: #86868b; cursor: pointer; transition: all 0.2s;">
+                    ✕ 关闭看板并返回
+                </button>
+            </div>
+
+            <div class="console-title" id="left-title">配套资产发现</div>
+            <div class="console-subtitle" id="left-subtitle">锁定周边配套设施资产详情</div>
+            <div id="poi-list-injector"></div>
+        </div>
+
+        <div class="bottom-shelf">
+            <div class="radar-card glass-panel c-blue" onclick="renderCustomDataset('traffic', this)">
+                <div class="card-header">
+                    <div class="card-icon">🚇</div>
+                    <div class="card-title">立体交通雷达</div>
+                </div>
+                <div class="card-body">调取写字楼附近的轨道交通、公交枢纽以及客户地下车库位置。</div>
+            </div>
+
+            <div class="radar-card glass-panel c-green" onclick="renderCustomDataset('business', this)">
+                <div class="card-header">
+                    <div class="card-icon">🛍️</div>
+                    <div class="card-title">商圈生活配套</div>
+                </div>
+                <div class="card-body">动态扫描周边核心商圈、高端餐饮及休闲娱乐综合体，透视品质白领生活圈。</div>
+            </div>
+
+            <div class="radar-card glass-panel c-orange" onclick="renderCustomDataset('finance', this)">
+                <div class="card-header">
+                    <div class="card-icon">💼</div>
+                    <div class="card-title">金融商务配套</div>
+                </div>
+                <div class="card-body">紧邻写字楼的各大主流商业银行网点与ATM，保障企业高效开展资金业务。</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ★ 项目核心写字楼坐标点
+        var officeLocation = [114.319437, 30.573809]; 
+        
+        // =========================================================================
+        // 🛠️ 【三个卡片的自定义专属数据集配置区】（在此处任意增删修改您的地点）
+        // =========================================================================
+        
+        // 1️⃣ 卡片一：全立体交通雷达数据
+        var myCustomTrafficData = [
+            { name: "恒大世纪广场公交站", address: "写字楼大门口正前方（和平大道旁）", coords: [114.319120, 30.574010] },
+            { name: "三层楼地铁站(5号线)", address: "乘坐一站至积玉桥可以换乘 2号线", coords: [114.315354,30.569982] },
+            { name: "恒大世纪广场地下停车场", address: "写字楼负一层至负三层客户专属车库", coords: [114.319525,30.574193] }
+        ];
+        
+        // 2️⃣ 卡片二：商圈生活配套数据（【改这里】您可以自由填写满意的商场、网红餐厅等）
+        var myCustomBusinessData = [
+            { name: "漫时区商业街", address: "", coords: [114.323579,30.574855] },
+            { name: "顺丰速运", address: "（恒大世纪广场店）", coords: [114.319702,30.573636] },
+            //{ name: "星巴克臻选(世纪广场店)", address: "本栋写字楼一楼大厅左侧", coords: [114.319620, 30.573910] }//
+        ];
+        
+        // 3️⃣ 卡片三：金融商务配套数据（【改这里】您可以自由填写紧邻写字楼的银行网点）
+        var myCustomFinanceData = [
+            { name: "中国农业银行", address: "(武汉积玉桥支行)", coords: [114.316286,30.570676] },
+            { name: "中国工商银行", address: "(武汉徐家棚支行)", coords: [114.32218,30.578479] },
+            { name: "浦发银行", address: "(滨江商务区支行)", coords: [114.321574,30.576016] }
+        ];
+        
+        // =========================================================================
+        
+        // 初始化地图：稳定 2D 官方底图渲染模式
+        var map = new AMap.Map('map-core', {
+            zoom: 15.5, 
+            center: officeLocation,
+            viewMode: '2D'
+        });
+        
+        // 写字楼实拍小缩略图配置
+        var officeImgUrl = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=150'; 
+        
+        var officeCombinedDom = document.createElement('div');
+        officeCombinedDom.style.position = 'relative';
+        officeCombinedDom.innerHTML = `
+            <div class="center-radar-marker" style="position: absolute; top: 0; left: 0;">
+                <div class="radar-pulse"></div>
+                <div class="radar-core"></div>
+            </div>
+            <div class="office-photo-marker" style="background-image: url('${officeImgUrl}');"></div>
+        `;
+        
+        var officeMarker = new AMap.Marker({
+            content: officeCombinedDom,
+            position: officeLocation,
+            offset: new AMap.Pixel(-20, -20)
+        });
+        officeMarker.setMap(map);
+        
+        // 初始化高德路径规划服务，自定义高度精致的细线条风格
+        var markerPool = [];
+        var walkingRouteEngine = new AMap.Walking({
+            map: map,
+            hideMarkers: true, // 隐藏高德默认起终点小图标
+            outlineColor: '#ffffff',
+            isOutline: true,
+            outlineWidth: 1,
+            strokeColor: '#0071e3', // 优雅的科技蓝
+            strokeWidth: 4,         // 现代主流细线样式
+            strokeOpacity: 0.95
+        });
+        
+        // 🔄 统一驱动本地定制数据集渲染的通用引擎函数
+        function renderCustomDataset(type, cardElement) {
+            // 切换卡片选中高亮状态
+            document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
+            cardElement.classList.add('selected');
+            
+            // 清理上一轮的数据和画线
+            clearPoiMarkers();
+            if(walkingRouteEngine) walkingRouteEngine.clear(); 
+        
+            var targetData = [];
+            var mainTitle = "";
+            var subTitle = "";
+            var themeColor = "#0071e3";
+        
+            // 根据点击传入的类型，自动锁定对应的纯净数据集
+            if (type === 'traffic') {
+                targetData = myCustomTrafficData;
+                mainTitle = "全立体交通雷达";
+                subTitle = "读取自本地专享定义交通枢纽数据集";
+                themeColor = "#0071e3"; // 科技蓝
+            } else if (type === 'business') {
+                targetData = myCustomBusinessData;
+                mainTitle = "商圈生活配套";
+                subTitle = "锁定辐射圈内成熟私享实体商业圈分布";
+                themeColor = "#34c759"; // 活力绿
+            } else if (type === 'finance') {
+                targetData = myCustomFinanceData;
+                mainTitle = "金融商务配套";
+                subTitle = "企业高频商务运转核心金融网点分布";
+                themeColor = "#ff9500"; // 商务橙
+            }
+        
+            // 激活并滑出左侧玻璃面板
+            var leftPanel = document.getElementById('left-panel');
+            leftPanel.classList.add('active');
+            document.getElementById('left-title').innerText = mainTitle;
+            document.getElementById('left-subtitle').innerText = subTitle;
+        
+            var injector = document.getElementById('poi-list-injector');
+            injector.innerHTML = '';
+        
+            // 循环遍历渲染数据集
+            targetData.forEach(function(poi) {
+                var distance = Math.round(AMap.GeometryUtil.distance(officeLocation, poi.coords));
+                
+                var customContent = `
+                    <div style="color: ${themeColor};">
+                        <div class="poi-text-tag" style="border-color:${themeColor};">${poi.name.substring(0, 9)}</div>
+                        <div class="poi-core-dot"></div>
+                    </div>
+                `;
+                
+                var marker = new AMap.Marker({
+                    content: customContent,
+                    position: poi.coords,
+                    offset: new AMap.Pixel(-7, -7)
+                });
+                marker.setMap(map);
+                
+                // 地图标记点点击：平移视窗 + 触发细线导航规划
+                marker.on('click', function() {
+                    map.panTo(poi.coords);
+                    if(walkingRouteEngine) {
+                        walkingRouteEngine.clear();
+                        walkingRouteEngine.search(officeLocation, poi.coords);
+                    }
+                });
+                markerPool.push(marker);
+        
+                // 注入左侧列表卡片
+                var item = document.createElement('div');
+                item.className = 'poi-list-item';
+                item.innerHTML = `
+                    <div class="poi-info">
+                        <span class="poi-name" style="color: #1d1d1f;">${poi.name}</span>
+                        <span class="poi-addr">${poi.address}</span>
+                    </div>
+                    <div class="poi-dist" style="color: ${themeColor}; background: ${themeColor}12;">${distance}米</div>
+                `;
+                
+                // 点击列表项：平移视窗 + 绘制路径线
+                item.onclick = function() {
+                    map.panTo(poi.coords);
+                    if(walkingRouteEngine) {
+                        walkingRouteEngine.clear();
+                        walkingRouteEngine.search(officeLocation, poi.coords);
+                    }
+                };
+                injector.appendChild(item);
+            });
+        
+            map.setZoomAndCenter(15.5, officeLocation);
+        }
+        
+        // 清理打点标记图层
+        function clearPoiMarkers() {
+            markerPool.forEach(m => m.setMap(null));
+            markerPool = [];
+        }
+        
+        // 一键取消并完美返回到最开始打开 HTML 的系统初始化状态
+        function resetToInitialState() {
+            document.getElementById('left-panel').classList.remove('active');
+            document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
+            clearPoiMarkers();
+            if (walkingRouteEngine) {
+                walkingRouteEngine.clear();
+            }
+            map.setZoomAndCenter(15.5, officeLocation);
+        }
+    </script>
+</body>
+
+</html>
