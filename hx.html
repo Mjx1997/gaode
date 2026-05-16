@@ -130,7 +130,7 @@
             font-weight: 500;
         }
 
-        /* 🛠️ 已修改：为您做成了固定大小的长方形区域，让图片自适应填充 */
+        /* 固定大小的长方形区域，让图片自适应填充 */
         .floorplan-img-wrapper {
             width: 100%;
             height: 130px; /* 固定长方形区域高度 */
@@ -174,100 +174,157 @@
 
     <div class="apartment-card">
         <div class="card-header">
-            <span class="card-tag tag-teal">拎包入住</span>
-            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80" alt="精装修小户型">
+            <span class="card-tag tag-teal" id="tag-1"></span>
+            <img src="" alt="户型大图" id="img-1">
         </div>
         <div class="card-body">
-            <h3 class="card-title">精装修小户型</h3>
-            <p class="card-description">适合初创团队与个人工作室，高标准装修配套。</p>
+            <h3 class="card-title" id="title-1"></h3>
+            <p class="card-description" id="desc-1"></p>
             
             <div class="card-specs">
                 <div class="spec-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
-                    <span>面积：85 - 120 m²</span>
+                    <span id="spec-1-1"></span>
                 </div>
                 <div class="spec-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span>容量：1 - 10 人</span>
+                    <span id="spec-1-2"></span>
                 </div>
             </div>
 
             <div class="floorplan-container">
                 <div class="floorplan-title">2D 平面简图</div>
                 <div class="floorplan-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" alt="平面图">
+                    <img src="" alt="平面图" id="floorplan-1">
                 </div>
             </div>
 
-            <a href="https://yourlink1.com" class="details-btn">查看详情</a>
+            <a href="" target="_blank" class="details-btn" id="link-1">查看详情</a>
         </div>
     </div>
 
-
     <div class="apartment-card">
         <div class="card-header">
-            <span class="card-tag tag-blue">独立经理室</span>
-            <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=600&q=80" alt="标准中型办公室">
+            <span class="card-tag tag-blue" id="tag-2"></span>
+            <img src="" alt="户型大图" id="img-2">
         </div>
         <div class="card-body">
-            <h3 class="card-title">标准中型办公室</h3>
-            <p class="card-description">动静分区明确，配备专属行政区与会议室。</p>
+            <h3 class="card-title" id="title-2"></h3>
+            <p class="card-description" id="desc-2"></p>
             
             <div class="card-specs">
                 <div class="spec-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
-                    <span>面积：240 - 450 m²</span>
+                    <span id="spec-2-1"></span>
                 </div>
                 <div class="spec-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span>容量：10 - 30 人</span>
+                    <span id="spec-2-2"></span>
                 </div>
             </div>
 
             <div class="floorplan-container">
                 <div class="floorplan-title">2D 平面简图</div>
                 <div class="floorplan-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" alt="平面图">
+                    <img src="" alt="平面图" id="floorplan-2">
                 </div>
             </div>
 
-            <a href="https://yourlink2.com" class="details-btn">查看详情</a>
+            <a href="" target="_blank" class="details-btn" id="link-2">查看详情</a>
         </div>
     </div>
 
-
     <div class="apartment-card">
         <div class="card-header">
-            <span class="card-tag tag-orange">专属电梯厅</span>
-            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80" alt="定制化大面积">
+            <span class="card-tag tag-orange" id="tag-3"></span>
+            <img src="" alt="户型大图" id="img-3">
         </div>
         <div class="card-body">
-            <h3 class="card-title">定制化大面积 (整层)</h3>
-            <p class="card-description">全景总部空间，支持品牌定制化装修与私密门禁。</p>
+            <h3 class="card-title" id="title-3"></h3>
+            <p class="card-description" id="desc-3"></p>
             
             <div class="card-specs">
                 <div class="spec-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
-                    <span>面积：1200 - 2400 m²</span>
+                    <span id="spec-3-1"></span>
                 </div>
                 <div class="spec-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="16"/><line x1="15" y1="22" x2="15" y2="16"/><line x1="9" y1="16" x2="15" y2="16"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/></svg>
-                    <span>特色：企业总部挂牌</span>
+                    <span id="spec-3-2"></span>
                 </div>
             </div>
 
             <div class="floorplan-container">
                 <div class="floorplan-title">2D 平面简图</div>
                 <div class="floorplan-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" alt="平面图">
+                    <img src="" alt="平面图" id="floorplan-3">
                 </div>
             </div>
 
-            <a href="https://yourlink3.com" class="details-btn">查看详情</a>
+            <a href="" target="_blank" class="details-btn" id="link-3">查看详情</a>
         </div>
     </div>
 
 </div>
+
+
+<script>
+    const apartmentData = {
+        // ------------------ 户型一配置 ------------------
+        card1: {
+            tag: "拎包入住",
+            title: "精装修小户型",
+            desc: "适合初创团队与个人工作室，高标准装修配套。",
+            spec1: "面积：85 - 120 m²",
+            spec2: "容量：1 - 10 人",
+            // 📝 替换下方引号内的网址为您的 FTP 真实图片地址
+            imgUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
+            // 📝 替换下方引号内的网址为您的 FTP 2D平面图地址
+            floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
+            // 📝 替换下方引号内的网址为您要跳转的链接（比如您的 PDF 真实地址）
+            linkUrl: "www.baidu.com"
+        },
+
+        // ------------------ 户型二配置 ------------------
+        card2: {
+            tag: "独立经理室",
+            title: "标准中型办公室",
+            desc: "动静分区明确，配备专属行政区与会议室。",
+            spec1: "面积：240 - 450 m²",
+            spec2: "容量：10 - 30 人",
+            imgUrl: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=600&q=80",
+            floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
+            linkUrl: "www.baidu.com"
+        },
+
+        // ------------------ 户型三配置 ------------------
+        card3: {
+            tag: "专属电梯厅",
+            title: "定制化大面积 (整层)",
+            desc: "全景总部空间，支持品牌定制化装修与私密门禁。",
+            spec1: "面积：1200 - 2400 m²",
+            spec2: "特色：企业总部挂牌",
+            imgUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
+            floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
+            linkUrl: "www.baidu.com"
+        }
+    };
+
+    // 自动将数据渲染到页面中，请勿修改下方渲染逻辑代码
+    function renderCard(id, data) {
+        document.getElementById(`tag-${id}`).innerText = data.tag;
+        document.getElementById(`title-${id}`).innerText = data.title;
+        document.getElementById(`desc-${id}`).innerText = data.desc;
+        document.getElementById(`spec-${id}-1`).innerText = data.spec1;
+        document.getElementById(`spec-${id}-2`).innerText = data.spec2;
+        document.getElementById(`img-${id}`).src = data.imgUrl;
+        document.getElementById(`floorplan-${id}`).src = data.floorplanUrl;
+        document.getElementById(`link-${id}`).href = data.linkUrl;
+    }
+    renderCard(1, apartmentData.card1);
+    renderCard(2, apartmentData.card2);
+    renderCard(3, apartmentData.card3);
+</script>
 
 </body>
 </html>
