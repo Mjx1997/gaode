@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+</html><!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -16,9 +16,31 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #f4f7fc; }
         
-        #dashboard-container { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; }
+        /* 1. 将 body 设为透明（或根据你的外层设计自由设定底色），使其作为嵌入的宿主环境 */
+        body, html { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background: transparent; 
+        }
+        
+        /* 2. 核心修改：让主容器自适应大小、并完美裁剪出圆润四角 */
+        #dashboard-container { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            
+            border-radius: 20px;       /* 控制整个地图模块四角的圆润度（可根据喜好调整大小） */
+            overflow: hidden;          /* 核心：将高德地图尖锐的直角彻底“切掉” */
+            background: #f4f7fc;       /* 兜底背景色 */
+            
+            /* 可选：为模块增加一丝高级的微阴影，使它在被嵌入的页面中更有立体感 */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); 
+        }
+        
         #map-core { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
         /* 延续 Apple 质感的高级纯白半透明毛玻璃面板 */
@@ -157,14 +179,13 @@
             { name: "恒大世纪广场地下停车场", address: "写字楼负一层至负三层客户专属车库", coords: [114.319525,30.574193] }
         ];
         
-        // 2️⃣ 卡片二：商圈生活配套数据（【改这里】您可以自由填写满意的商场、网红餐厅等）
+        // 2️⃣ 卡片二：商圈生活配套数据
         var myCustomBusinessData = [
             { name: "漫时区商业街", address: "", coords: [114.323579,30.574855] },
-            { name: "顺丰速运", address: "（恒大世纪广场店）", coords: [114.319702,30.573636] },
-            //{ name: "星巴克臻选(世纪广场店)", address: "本栋写字楼一楼大厅左侧", coords: [114.319620, 30.573910] }//
+            { name: "顺丰速运", address: "（恒大世纪广场店）", coords: [114.319702,30.573636] }
         ];
         
-        // 3️⃣ 卡片三：金融商务配套数据（【改这里】您可以自由填写紧邻写字楼的银行网点）
+        // 3️⃣ 卡片三：金融商务配套数据
         var myCustomFinanceData = [
             { name: "中国农业银行", address: "(武汉积玉桥支行)", coords: [114.316286,30.570676] },
             { name: "中国工商银行", address: "(武汉徐家棚支行)", coords: [114.32218,30.578479] },
@@ -204,22 +225,20 @@
         var markerPool = [];
         var walkingRouteEngine = new AMap.Walking({
             map: map,
-            hideMarkers: true, // 隐藏高德默认起终点小图标
+            hideMarkers: true, 
             outlineColor: '#ffffff',
             isOutline: true,
             outlineWidth: 1,
-            strokeColor: '#0071e3', // 优雅的科技蓝
-            strokeWidth: 4,         // 现代主流细线样式
+            strokeColor: '#0071e3', 
+            strokeWidth: 4,         
             strokeOpacity: 0.95
         });
         
         // 🔄 统一驱动本地定制数据集渲染的通用引擎函数
         function renderCustomDataset(type, cardElement) {
-            // 切换卡片选中高亮状态
             document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
             cardElement.classList.add('selected');
             
-            // 清理上一轮的数据和画线
             clearPoiMarkers();
             if(walkingRouteEngine) walkingRouteEngine.clear(); 
         
@@ -228,25 +247,23 @@
             var subTitle = "";
             var themeColor = "#0071e3";
         
-            // 根据点击传入的类型，自动锁定对应的纯净数据集
             if (type === 'traffic') {
                 targetData = myCustomTrafficData;
                 mainTitle = "全立体交通雷达";
                 subTitle = "读取自本地专享定义交通枢纽数据集";
-                themeColor = "#0071e3"; // 科技蓝
+                themeColor = "#0071e3"; 
             } else if (type === 'business') {
                 targetData = myCustomBusinessData;
                 mainTitle = "商圈生活配套";
                 subTitle = "锁定辐射圈内成熟私享实体商业圈分布";
-                themeColor = "#34c759"; // 活力绿
+                themeColor = "#34c759"; 
             } else if (type === 'finance') {
                 targetData = myCustomFinanceData;
                 mainTitle = "金融商务配套";
                 subTitle = "企业高频商务运转核心金融网点分布";
-                themeColor = "#ff9500"; // 商务橙
+                themeColor = "#ff9500"; 
             }
         
-            // 激活并滑出左侧玻璃面板
             var leftPanel = document.getElementById('left-panel');
             leftPanel.classList.add('active');
             document.getElementById('left-title').innerText = mainTitle;
@@ -255,7 +272,6 @@
             var injector = document.getElementById('poi-list-injector');
             injector.innerHTML = '';
         
-            // 循环遍历渲染数据集
             targetData.forEach(function(poi) {
                 var distance = Math.round(AMap.GeometryUtil.distance(officeLocation, poi.coords));
                 
@@ -273,7 +289,6 @@
                 });
                 marker.setMap(map);
                 
-                // 地图标记点点击：平移视窗 + 触发细线导航规划
                 marker.on('click', function() {
                     map.panTo(poi.coords);
                     if(walkingRouteEngine) {
@@ -283,7 +298,6 @@
                 });
                 markerPool.push(marker);
         
-                // 注入左侧列表卡片
                 var item = document.createElement('div');
                 item.className = 'poi-list-item';
                 item.innerHTML = `
@@ -294,7 +308,6 @@
                     <div class="poi-dist" style="color: ${themeColor}; background: ${themeColor}12;">${distance}米</div>
                 `;
                 
-                // 点击列表项：平移视窗 + 绘制路径线
                 item.onclick = function() {
                     map.panTo(poi.coords);
                     if(walkingRouteEngine) {
@@ -308,13 +321,11 @@
             map.setZoomAndCenter(15.5, officeLocation);
         }
         
-        // 清理打点标记图层
         function clearPoiMarkers() {
             markerPool.forEach(m => m.setMap(null));
             markerPool = [];
         }
         
-        // 一键取消并完美返回到最开始打开 HTML 的系统初始化状态
         function resetToInitialState() {
             document.getElementById('left-panel').classList.remove('active');
             document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
