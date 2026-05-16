@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>户型介绍模块</title>
+    <style>
+        /* 基础重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 外部大容器：背景透明，四周留白24px，自适应响应式 */
+        .apartment-section {
+            width: 100%;
+            background-color: transparent; /* 背景保持透明 */
+            padding: 24px; /* 四周固定 24px 间距 */
+            display: grid;
+            /* 自动网格布局：随窗口拖动自动换行 */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px; /* 卡片之间的间距 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* 单个卡片样式 */
+        .apartment-card {
+            background-color: #ffffff; /* 卡片自身为白色背景 */
+            border-radius: 16px; /* 卡片圆角 */
+            border: 1px solid #eaeaea; /* 纯净无阴影，改用极淡边框防止纯白背景下无法分辨 */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* 卡片头部图片区域 */
+        .card-header {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; /* 4:3 黄金比例 */
+        }
+
+        .card-header img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 顶部左上角状态标签 */
+        .card-tag {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffffff;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        .tag-teal { background-color: #26c2cb; }   /* 户型一：青色 */
+        .tag-blue { background-color: #0066ff; }   /* 户型二：蓝色 */
+        .tag-orange { background-color: #ff5500; } /* 户型三：橙色 */
+
+        /* 卡片文字内容包裹区 */
+        .card-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        /* 标题 */
+        .card-title {
+            font-size: 20px;
+            color: #1a1a1a;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* 简介 */
+        .card-description {
+            font-size: 14px;
+            color: #666666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            min-height: 44px; /* 保持高度对齐 */
+        }
+
+        /* 参数信息行 */
+        .card-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #333333;
+        }
+
+        .spec-item svg {
+            color: #0052cc; 
+            flex-shrink: 0;
+        }
+
+        /* 2D平面图外层蓝色容器 */
+        .floorplan-container {
+            background-color: #f3f5ff; /* 淡蓝色背景 */
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 20px;
+            margin-top: auto; /* 将平面图固定压在卡片底部 */
+        }
+
+        .floorplan-title {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* 🛠️ 已修改：为您做成了固定大小的长方形区域，让图片自适应填充 */
+        .floorplan-img-wrapper {
+            width: 100%;
+            height: 130px; /* 固定长方形区域高度 */
+            background-color: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .floorplan-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 保持图片原本比例缩放在长方形框内 */
+        }
+
+        /* 查看详情按钮 */
+        .details-btn {
+            width: 100%;
+            background-color: #eef2ff;
+            color: #0052cc;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .details-btn:hover {
+            background-color: #e0e7ff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="apartment-section">
+
+    <div class="apartment-card">
+        <div class="card-header">
+            <span class="card-tag tag-teal">拎包入住</span>
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80" alt="精装修小户型">
+        </div>
+        <div class="card-body">
+            <h3 class="card-title">精装修小户型</h3>
+            <p class="card-description">适合初创团队与个人工作室，高标准装修配套。</p>
+            
+            <div class="card-specs">
+                <div class="spec-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
+                    <span>面积：85 - 120 m²</span>
+                </div>
+                <div class="spec-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>容量：1 - 10 人</span>
+                </div>
+            </div>
+
+            <div class="floorplan-container">
+                <div class="floorplan-title">2D 平面简图</div>
+                <div class="floorplan-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" alt="平面图">
+                </div>
+            </div>
+
+            <a href="https://yourlink1.com" class="details-btn">查看详情</a>
+        </div>
+    </div>
+
+
+    <div class="apartment-card">
+        <div class="card-header">
+            <span class="card-tag tag-blue">独立经理室</span>
+            <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=600&q=80" alt="标准中型办公室">
+        </div>
+        <div class="card-body">
+            <h3 class="card-title">标准中型办公室</h3>
+            <p class="card-description">动静分区明确，配备专属行政区与会议室。</p>
+            
+            <div class="card-specs">
+                <div class="spec-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
+                    <span>面积：240 - 450 m²</span>
+                </div>
+                <div class="spec-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>容量：10 - 30 人</span>
+                </div>
+            </div>
+
+            <div class="floorplan-container">
+                <div class="floorplan-title">2D 平面简图</div>
+                <div class="floorplan-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" alt="平面图">
+                </div>
+            </div>
+
+            <a href="https://yourlink2.com" class="details-btn">查看详情</a>
+        </div>
+    </div>
+
+
+    <div class="apartment-card">
+        <div class="card-header">
+            <span class="card-tag tag-orange">专属电梯厅</span>
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80" alt="定制化大面积">
+        </div>
+        <div class="card-body">
+            <h3 class="card-title">定制化大面积 (整层)</h3>
+            <p class="card-description">全景总部空间，支持品牌定制化装修与私密门禁。</p>
+            
+            <div class="card-specs">
+                <div class="spec-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
+                    <span>面积：1200 - 2400 m²</span>
+                </div>
+                <div class="spec-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="16"/><line x1="15" y1="22" x2="15" y2="16"/><line x1="9" y1="16" x2="15" y2="16"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/></svg>
+                    <span>特色：企业总部挂牌</span>
+                </div>
+            </div>
+
+            <div class="floorplan-container">
+                <div class="floorplan-title">2D 平面简图</div>
+                <div class="floorplan-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" alt="平面图">
+                </div>
+            </div>
+
+            <a href="https://yourlink3.com" class="details-btn">查看详情</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
