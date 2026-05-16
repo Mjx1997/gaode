@@ -12,15 +12,19 @@
             background-color: transparent; /* 背景透明，方便嵌入其他页面 */
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             color: #333;
+            width: 100%;
         }
 
+        /* 💻 100% 流式自适应容器：去除了固定的 max-width 限制，随外层窗口自由拉伸 */
         .container {
-            max-width: 1000px;
-            margin: 15px auto;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
             background: #ffffff;
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-sizing: border-box;
         }
 
         /* 顶部筛选区域 */
@@ -34,7 +38,7 @@
         }
         .list-title {
             font-size: 20px;
-            font-weight: black;
+            font-weight: bold;
             color: #1a1a1a;
         }
         .filter-tabs {
@@ -72,8 +76,13 @@
             margin-bottom: 10px;
         }
 
-        /* 列表项样式 */
-        .house-list { display: flex; flex-direction: column; gap: 8px; }
+        /* 列表项容器样式 */
+        .house-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            min-height: 550px; /* 💡 关键：固定 8 条数据的默认视觉高度，防止少数据时窗口塌陷缩短 */
+        }
         .house-item {
             display: grid;
             grid-template-columns: 1.2fr 1fr 1.5fr 1fr 0.8fr; /* 与表头保持一致 */
@@ -83,11 +92,12 @@
             border: 1px solid #f2f4f7;
             transition: all 0.2s ease;
             cursor: pointer;
+            background: #ffffff;
         }
         .house-item:hover {
             background: #f6faff;
             border-color: #1a73e8;
-            transform: scale(1.005);
+            transform: scale(1.002);
             box-shadow: 0 4px 12px rgba(26,115,232,0.08);
         }
 
@@ -127,7 +137,46 @@
         }
         .detail-link:hover { background: #1a73e8; color: #fff; }
 
-        /* 移动端适配：如果屏幕太窄，自动隐藏不重要的列 */
+        /* 📑 底部高级分页组件样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 24px;
+            padding-top: 15px;
+            border-top: 1px solid #f2f2f2;
+        }
+        .page-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid #e1e4e8;
+            background: #ffffff;
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .page-btn:hover:not(.disabled) {
+            background: #f0f4f9;
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+        .page-btn.active {
+            background: #1a73e8;
+            color: #ffffff;
+            border-color: #1a73e8;
+            font-weight: bold;
+        }
+        .page-btn.disabled {
+            background: #f5f5f5;
+            color: #b5b5b5;
+            cursor: not-allowed;
+            border-color: #e1e4e8;
+        }
+
+        /* 📱 移动端自适应完美保留 */
         @media (max-width: 600px) {
             .list-header { display: none; }
             .house-item { 
@@ -137,6 +186,8 @@
             }
             .col-standard, .col-floor { font-size: 12px; }
             .col-action { grid-column: span 2; border-top: 1px solid #eee; padding-top: 10px; text-align: center; }
+            .house-list { min-height: auto; } /* 移动端卡片高度变动大，解除最小高度限制 */
+            .pagination { margin-top: 15px; }
         }
     </style>
 </head>
@@ -160,21 +211,15 @@
         <div style="text-align: right;">操作</div>
     </div>
 
-    <div class="house-list" id="houseList">
-        </div>
+    <div class="house-list" id="houseList"></div>
+
+    <div class="pagination" id="pagination"></div>
 </div>
 
 <script>
     /**
-     * 【数据修改指南】
-     * 如果你想增加或修改房源，只需在下面的 houseData 数组中增删对象即可。
-     * 字段说明：
-     * area: 面积数字
-     * floor: 所在楼层
-     * standard: 交付标准（如：精装修、毛坯、带家具）
-     * status: 逻辑状态（ready 代表在租，booked 代表已租/预订）
-     * statusText: 显示出来的文字
-     * type: 对应顶部的分类按钮
+     * 【原始房源数据库集群】
+     * 提示：后期只需在这个数组里无脑添加新对象即可，代码会自动分页渲染，无需再次调整任何高度和逻辑！
      */
     const houseData = [
         { area: '285', floor: '12层', type: 'mid', standard: '精装修 · 带全套家具', status: 'ready', statusText: '随时入驻', link: '#' },
@@ -184,52 +229,135 @@
         { area: '150', floor: '6层', type: 'low', standard: '简约装修 · 采光极佳', status: 'booked', statusText: '已预订', link: '#' }
     ];
 
+    // 分页管理核心状态控制变量
+    let currentCategory = 'all'; // 当前激活的顶部筛选分类
+    let currentPage = 1;          // 当前所处页码
+    const itemsPerPage = 8;       // 💡 每页固定展示的房源最大条数
+
     /**
-     * 渲染函数
+     * 根据当前分类筛选原始数据
      */
-    function renderList(data) {
+    function getFilteredData() {
+        return currentCategory === 'all' 
+            ? houseData 
+            : houseData.filter(h => h.type === currentCategory);
+    }
+
+    /**
+     * 核心渲染驱动引擎：合并处理筛选+分页切割渲染
+     */
+    function renderList() {
+        const filtered = getFilteredData();
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        
+        // 健壮性自检：防止页码超出安全边界范围
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        // 计算当前页数据的切片起止索引
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const pageData = filtered.slice(startIndex, startIndex + itemsPerPage);
+
         const listContainer = document.getElementById('houseList');
         listContainer.innerHTML = '';
         
-        data.forEach(item => {
-            const statusClass = item.status === 'ready' ? 'ready' : 'booked';
-            const dotColor = item.status === 'ready' ? '#1a73e8' : '#fa8c16';
-            
-            const itemHtml = `
-                <div class="house-item" onclick="window.open('${item.link}', '_parent')">
-                    <div class="col-area">${item.area}<span>㎡</span></div>
-                    <div class="col-floor">${item.floor}</div>
-                    <div class="col-standard">${item.standard}</div>
-                    <div class="col-status">
-                        <span class="status-badge ${statusClass}">
-                            <span class="dot" style="background:${dotColor}"></span>
-                            ${item.statusText}
-                        </span>
+        // 如果当前分类下毫无数据，进行友好空提示
+        if (pageData.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center;color:#999;padding:60px 0;font-size:14px;width:100%;grid-column: span 5;">暂无对应在租房源记录</div>';
+        } else {
+            // 循环遍历并吐出渲染内容
+            pageData.forEach(item => {
+                const statusClass = item.status === 'ready' ? 'ready' : 'booked';
+                const dotColor = item.status === 'ready' ? '#1a73e8' : '#fa8c16';
+                
+                const itemHtml = `
+                    <div class="house-item" onclick="window.open('${item.link}', '_parent')">
+                        <div class="col-area">${item.area}<span>㎡</span></div>
+                        <div class="col-floor">${item.floor}</div>
+                        <div class="col-standard">${item.standard}</div>
+                        <div class="col-status">
+                            <span class="status-badge ${statusClass}">
+                                <span class="dot" style="background:${dotColor}"></span>
+                                ${item.statusText}
+                            </span>
+                        </div>
+                        <div class="col-action">
+                            <a href="${item.link}" class="detail-link">详情</a>
+                        </div>
                     </div>
-                    <div class="col-action">
-                        <a href="${item.link}" class="detail-link">详情</a>
-                    </div>
-                </div>
-            `;
-            listContainer.innerHTML += itemHtml;
-        });
+                `;
+                listContainer.innerHTML += itemHtml;
+            });
+        }
+
+        // 联动刷新底部的分页按钮状态
+        renderPagination(totalPages);
     }
 
     /**
-     * 过滤函数
+     * 动态生成并挂载底部控制按钮
+     */
+    function renderPagination(totalPages) {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+
+        // 1. 上一页按钮
+        const prevBtn = document.createElement('button');
+        prevBtn.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
+        prevBtn.innerText = '上一页';
+        prevBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (currentPage > 1) {
+                currentPage--;
+                renderList();
+            }
+        };
+        paginationContainer.appendChild(prevBtn);
+
+        // 2. 循环生成数字页码按钮
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+            pageBtn.innerText = i;
+            pageBtn.onclick = (e) => {
+                e.stopPropagation();
+                currentPage = i;
+                renderList();
+            };
+            paginationContainer.appendChild(pageBtn);
+        }
+
+        // 3. 下一页按钮
+        const nextBtn = document.createElement('button');
+        nextBtn.className = `page-btn ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextBtn.innerText = '下一页';
+        nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderList();
+            }
+        };
+        paginationContainer.appendChild(nextBtn);
+    }
+
+    /**
+     * 顶部标签分类过滤触发函数
      */
     function filterHouse(category, btn) {
-        // 切换按钮高亮
+        // 切换高亮样式
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // 执行过滤逻辑
-        const filtered = category === 'all' ? houseData : houseData.filter(h => h.type === category);
-        renderList(filtered);
+        // 状态更新并重置回第 1 页
+        currentCategory = category;
+        currentPage = 1; 
+        renderList();
     }
 
-    // 初始渲染
-    renderList(houseData);
+    // 默认执行初始化渲染加载
+    renderList();
 </script>
 </body>
 </html>
