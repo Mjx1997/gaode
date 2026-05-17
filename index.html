@@ -1,254 +1,103 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
     <meta charset="utf-8">
-    <title>周边配套-多端完美自适应高阶版</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>周边配套-视觉增强版</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <script type="text/javascript">
-        // ✍️ 【安全密钥配置】：保持您原有的高德安全密钥不变
         window._AMapSecurityConfig = { securityJsCode: '1a299e101b30418737d94d5a74113bd3' };
     </script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=04bee4addf98a8b9eb0d095d331297ab"></script>
     <style>
-        /* ==========================================
-           1. 全局流式布局重置
-           ========================================== */
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; 
-            -webkit-font-smoothing: antialiased;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Microsoft YaHei", sans-serif; }
+        #map-area { width: 100%; height: 100%; position: absolute; }
         
-        #map-area { 
-            width: 100%; 
-            height: 100%; 
-            position: absolute; 
-            top: 0;
-            left: 0;
-        }
-        
-        /* ==========================================
-           2. 悬浮操控面板（现代毛玻璃工艺 Glassmorphism）
-           ========================================== */
+        /* 顶部悬浮面板 */
         .glass-panel {
-            position: absolute; 
-            top: 16px; 
-            left: 16px; 
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 6px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 32px rgba(31, 35, 41, 0.08); 
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            display: flex; 
-            gap: 6px;
-            transition: all 0.3s ease;
+            position: absolute; top: 12px; left: 12px; z-index: 100;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
+            padding: 6px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; gap: 6px;
         }
-
-        /* 选项卡按钮通用高级样式 */
         .filter-btn {
-            padding: 8px 16px; 
-            border: none; 
-            background: transparent;
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 13px; 
-            color: #1f2329;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 8px 15px; border: none; background: transparent;
+            border-radius: 8px; cursor: pointer; font-size: 13px; color: #555;
+            transition: 0.3s; font-weight: bold;
         }
+        .filter-btn.active { background: #1a73e8; color: #fff; }
 
-        .filter-btn:hover:not(.active) {
-            background: rgba(31, 35, 41, 0.05);
-            color: #000000;
-        }
+        /* --- 核心呼吸灯特效开始 --- */
+        .marker-container { position: relative; display: flex; flex-direction: column; align-items: center; }
 
-        /* 激活状态切换为极客蓝品牌色 */
-        .filter-btn.active { 
-            background: #0052cc; 
-            color: #ffffff; 
-            box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2);
-        }
-
-        /* ==========================================================================
-           3. 🛠️ 【核心突破：全新一代几何学绝对几何坐标点样式（全面替代硬编码Pixel位移）】
-           通过定义 0x0 的几何锚点，内部使用 transform 自由向上延展，彻底解决地名字数不同、
-           手机端缩放导致的文字乱飘、不对齐指标中心问题。
-           ========================================================================== */
-        .marker-container { 
-            position: relative; 
-            width: 0; 
-            height: 0; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* 基础配套设施标签 */
-        .marker-label {
-            position: absolute;
-            bottom: 4px; /* 让卡片底部贴近坐标原点 */
-            transform: translateX(-50%); /* 几何水平正中心对齐 */
-            padding: 6px 14px; 
-            background: #ffffff; 
-            border-radius: 30px;
-            box-shadow: 0 4px 16px rgba(31, 35, 41, 0.12); 
-            font-size: 12px;
-            font-weight: 700; 
-            color: #1f2329;
-            border: 2px solid #0052cc; 
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .marker-label:hover {
-            transform: translateX(-50%) translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 82, 204, 0.2);
-        }
-        
-        /* 本项目写字楼：核心高亮标签专属样式 */
-        .marker-center-text { 
-            background: #ff4d4f; 
-            color: #ffffff; 
-            border-color: #ffffff; 
-            box-shadow: 0 6px 20px rgba(255, 77, 79, 0.3);
-            bottom: 14px; /* 向上抬高，留出下方核心呼吸灯圆点的位置 */
-            z-index: 10;
-        }
-        
-        .marker-center-text:hover {
-            transform: translateX(-50%) translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255, 77, 79, 0.45);
-        }
-
-        /* 中心大楼绝对圆心红点 */
-        .dot-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 10px; 
-            height: 10px; 
-            background: #ff4d4f;
-            border-radius: 50%; 
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 8px rgba(0,0,0,0.3);
-            z-index: 2;
-        }
-
-        /* 高阶平滑呼吸光圈动画 */
+        /* 呼吸光圈动画 */
         .breath-ring {
-            position: absolute; 
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 32px; 
-            height: 32px;
-            background: rgba(255, 77, 79, 0.4); 
-            border-radius: 50%;
-            z-index: 1; 
-            animation: advancedBreathe 2s infinite cubic-bezier(0.25, 0, 0, 1);
-            pointer-events: none; /* 穿透图层，不干扰鼠标点击 */
+            position: absolute; width: 30px; height: 30px;
+            background: rgba(255, 77, 79, 0.5); border-radius: 50%;
+            z-index: -1; animation: breathe 2s infinite ease-out;
         }
 
-        @keyframes advancedBreathe {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.9; }
-            100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+        @keyframes breathe {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
         }
 
-        /* ==========================================================================
-           4. 📱 【重头戏：移动端极致自适应媒体查询架构】
-           ========================================================================== */
-        @media (max-width: 768px) {
-            /* 顶部菜单华丽转变为单行手势横向滑阻栏 */
-            .glass-panel {
-                top: 12px; 
-                left: 12px; 
-                right: 12px;
-                width: calc(100% - 24px); /* 撑满两侧，保留精致边缘间距 */
-                padding: 5px;
-                overflow-x: auto; /* 核心：激活横向手势无缝滚动 */
-                white-space: nowrap; /* 核心：强迫按钮单行横向排列，不换行 */
-                scrollbar-width: none; /* 隐藏火狐滚动条 */
-                -ms-overflow-style: none; /* 隐藏IE滚动条 */
-            }
-            
-            /* 隐藏谷歌/苹果手机内核的横向原生滚动条，保持纯净视觉 */
-            .glass-panel::-webkit-scrollbar {
-                display: none; 
-            }
-
-            .filter-btn {
-                padding: 8px 14px; 
-                font-size: 12px; /* 稍微缩小移动端字号 */
-                flex-shrink: 0; /* 极其关键：防止按钮被弹性容器挤压变窄 */
-                display: inline-block;
-            }
-
-            /* 移动端标签整体微调，防止重叠 */
-            .marker-label {
-                font-size: 11px;
-                padding: 5px 11px;
-            }
+        /* 核心标记的小圆点 */
+        .dot-center {
+            width: 10px; height: 10px; background: #ff4d4f;
+            border-radius: 50%; border: 2px solid #fff;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
         }
+
+        /* 标签基础样式 */
+        .marker-label {
+            padding: 5px 12px; background: #fff; border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 12px;
+            font-weight: bold; border: 2px solid #1a73e8; white-space: nowrap;
+            margin-bottom: 5px; /* 与下方圆点保持距离 */
+        }
+        
+        /* 主体标记文字颜色优化 */
+        .marker-center-text { background: #ff4d4f; color: #fff; border-color: #fff; }
+        /* --- 核心呼吸灯特效结束 --- */
+
+        .info-card { padding: 10px; min-width: 150px; }
     </style>
 </head>
 <body>
 
 <div class="glass-panel">
-    <button class="filter-btn active" onclick="filterData('all', this)">写字楼</button>
+    <button class="filter-btn active" onclick="filterData('all', this)">本写字楼</button>
     <button class="filter-btn" onclick="filterData('traffic', this)">轨道交通</button>
     <button class="filter-btn" onclick="filterData('bas', this)">公共交通</button>
-    <button class="filter-btn" onclick="filterData('scenery', this)">休闲绿化</button>
-    <button class="filter-btn" onclick="filterData('business', this)">成熟商业街</button>
+    <button class="filter-btn" onclick="filterData('scenery', this)">休闲</button>
+    <button class="filter-btn" onclick="filterData('business', this)">商业街</button>
 </div>
 
 <div id="map-area"></div>
 
 <script>
-    // ✍️ 【配套设施基础数据库集群】：保持您原有的高精度坐标数据不变
+    // 数据保持不变
     const pois = [
-        { name: "恒大世纪广场", type: "center", pos: [114.319443, 30.573807], desc: "本项目核心位置，高端商务地标" },
-        { name: "5号线-三层楼站", type: "traffic", pos: [114.3153, 30.56992], desc: "轨道交通5号线，畅达武昌汉口核心区" },
-        { name: "三角路公交站", type: "bas", pos: [114.31891, 30.573965], desc: "楼下即是多路常规及快线公交站" },
+        { name: "恒大世纪广场", type: "center", pos: [114.319443, 30.573807], desc: "本项目核心位置" },
+        { name: "5号线-三层楼站", type: "traffic", pos: [114.3153, 30.56992], desc: "双线枢纽" },
+        { name: "三角路公交站", type: "bas", pos: [114.31891, 30.573965], desc: "楼下即是多路公交" },
         { name: "武昌江滩", type: "scenery", pos: [114.317478, 30.579929], desc: "一线江景" },
-        { name: "漫时区商业街", type: "business", pos: [114.323572, 30.574851], desc: "涵盖餐饮、娱乐、休闲配套" }
+        { name: "漫时区商业街", type: "business", pos: [114.323572, 30.574851], desc: "包含餐饮、娱乐、休闲" }
     ];
 
     const centerPos = [114.319443, 30.573807];
-    
-    // 初始化地图，开启高阶轻量化浅色科技皮肤
     const map = new AMap.Map('map-area', {
-        zoom: 16, 
-        center: centerPos, 
-        mapStyle: 'amap://styles/light'
+        zoom: 16, center: centerPos, mapStyle: 'amap://styles/light'
     });
 
     const markers = [];
-    
-    // ✍️ 深度优化：高阶客制化精装信息窗（InfoWindow），确保样式优雅现代
-    const infoWindow = new AMap.InfoWindow({ 
-        offset: new AMap.Pixel(0, -12),
-        anchor: 'bottom-center' // 统一使用新版高级对齐策略
-    });
+    const infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
 
-    /**
-     * 核心渲染驱动：动态生成全新点标记
-     */
     function initMarkers() {
         pois.forEach(item => {
             const container = document.createElement('div');
             container.className = 'marker-container';
 
-            // 构建高阶纯 CSS 架构内部节点
+            // 构建内部 HTML：如果是中心点，加入呼吸环和圆点
             if (item.type === 'center') {
                 container.innerHTML = `
                     <div class="marker-label marker-center-text">${item.name}</div>
@@ -259,35 +108,29 @@
                 container.innerHTML = `<div class="marker-label">${item.name}</div>`;
             }
 
-            // 动态权衡层级权重
+            // 避让位移逻辑保持不变
+            let finalOffset = new AMap.Pixel(-40, -35); 
             let zIndex = 100;
+
             if (item.type === 'center') {
-                zIndex = 999; // 确保中心大楼始终盖在最上层
+                zIndex = 999; 
+                finalOffset = new AMap.Pixel(0, -25); // 中心点采用底部对齐
+            } else if (item.name === '三角路公交站') {
+                finalOffset = new AMap.Pixel(-40, 10); 
             }
 
-            // 核心重构：利用高德 2.0 官方原生 anchor 技术，配合刚才写的 0x0 几何样式
             const marker = new AMap.Marker({
                 position: item.pos,
                 content: container,
-                anchor: 'center', // 🎯 绝对中心对齐，配合 CSS 彻底消灭漂移
+                offset: finalOffset,
                 zIndex: zIndex,
                 extData: { type: item.type, pos: item.pos }
             });
 
-            // 点击点标记唤起高级卡片样式弹窗
             marker.on('click', () => {
-                const customInfoContent = `
-                    <div style="padding: 12px 16px; background: #ffffff; border-radius: 12px; min-width: 200px; box-shadow: 0 4px 24px rgba(0,0,0,0.06);">
-                        <div style="font-size: 15px; font-weight: 700; color: #1f2329; margin-bottom: 5px; display:flex; align-items:center; gap:6px;">
-                            <span style="width:3px; height:13px; background:#0052cc; border-radius:2px; display:inline-block;"></span>
-                            ${item.name}
-                        </div>
-                        <div style="font-size: 13px; color: #646a73; line-height: 1.5; word-break: break-all;">${item.desc}</div>
-                    </div>
-                `;
-                infoWindow.setContent(customInfoContent);
+                infoWindow.setContent(`<div class="info-card"><b>${item.name}</b><br>${item.desc}</div>`);
                 infoWindow.open(map, item.pos);
-                map.panTo(item.pos); // 平滑居中移过去
+                map.panTo(item.pos);
             });
 
             markers.push(marker);
@@ -295,15 +138,11 @@
         map.add(markers);
     }
 
-    /**
-     * 顶部标签分类联动控制引擎
-     */
+    // 筛选功能保持不变
     function filterData(type, btn) {
-        // 激活高亮动效切换
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        // 智能显隐决策逻辑
         markers.forEach(m => {
             const mData = m.getExtData();
             if (type === 'all' || mData.type === 'center' || mData.type === type) {
@@ -313,24 +152,14 @@
             }
         });
 
-        // 视口平滑归位引导
         if (type === 'all') {
             map.setZoomAndCenter(16, centerPos);
-            infoWindow.close();
         } else {
             const target = pois.find(p => p.type === type);
-            if (target) {
-                map.panTo(target.pos);
-                // 自动触发目标点位的点击事件，体验更连贯
-                const targetMarker = markers.find(m => m.getExtData().type === type);
-                if (targetMarker) {
-                    AMap.Event.trigger(targetMarker, 'click');
-                }
-            }
+            if (target) map.panTo(target.pos);
         }
     }
 
-    // 唤醒引擎初始化
     initMarkers();
 </script>
 </body>
