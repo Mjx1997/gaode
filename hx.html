@@ -34,6 +34,7 @@
             flex-direction: column;
             height: 100%;
             position: relative; /* 用于手机端撑满超链接点击区域 */
+            transition: opacity 0.4s ease, transform 0.4s ease; /* 💡 新增：展开时的淡入动画 */
         }
 
         /* 卡片头部图片区域 */
@@ -93,7 +94,7 @@
             font-weight: bold;
         }
 
-        /* 💡 价格区域样式：已经帮你修改为淡蓝色（与按钮一致的商务科技蓝） */
+        /* 价格区域样式：商务淡蓝色 */
         .card-price {
             font-size: 16px;
             color: #0052cc; 
@@ -185,6 +186,26 @@
             background-color: #e0e7ff;
         }
 
+        /* 💡 新增：“展开更多”按钮在电脑端默认不显示 */
+        .load-more-container {
+            display: none;
+            width: 100%;
+            justify-content: center;
+            padding: 10px 24px 24px 24px;
+        }
+
+        .load-more-btn {
+            background-color: #ffffff;
+            color: #0052cc;
+            border: 1px solid #0052cc;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
 
         /* ==========================================================================
            💡 手机端/移动端 专属样式 (当屏幕宽度小于 768px 时自动生效)
@@ -227,12 +248,31 @@
                 bottom: 0;
                 z-index: 5; 
             }
+
+            /* 💡 4. 核心功能：手机端默认隐藏第三个及以后的卡片 */
+            .apartment-card.mobile-hidden {
+                display: none !important;
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            /* 当被点击展开时，恢复显示 */
+            .apartment-card.mobile-show {
+                display: flex !important;
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* 💡 5. 手机端显示“展开更多”按钮容器 */
+            .load-more-container {
+                display: flex;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="apartment-section">
+<div class="apartment-section" id="apartment-grid">
 
     <div class="apartment-card">
         <div class="card-header">
@@ -302,7 +342,7 @@
         </div>
     </div>
 
-    <div class="apartment-card">
+    <div class="apartment-card mobile-hidden">
         <div class="card-header">
             <span class="card-tag tag-orange" id="tag-3"></span>
             <img src="" alt="户型大图" id="img-3">
@@ -338,6 +378,10 @@
 
 </div>
 
+<div class="load-more-container" id="load-more-box">
+    <button class="load-more-btn" onclick="showMoreApartments()">展开更多户型 ↓</button>
+</div>
+
 
 <script>
     const apartmentData = {
@@ -349,11 +393,8 @@
             desc: "适合初创团队与个人工作室，高标准装修配套。",
             spec1: "面积：85 - 120 m²",
             spec2: "容量：1 - 10 人",
-            // 📝 替换下方引号内的网址为您的 FTP 真实图片地址
             imgUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
-            // 📝 替换下方引号内的网址为您的 FTP 2D平面图地址
             floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
-            // 📝 这里的链接在手机端会作为【全卡片点击跳转】的地址，电脑端作为【查看详情】按钮的地址
             linkUrl: "https://www.baidu.com/"
         },
 
@@ -399,6 +440,19 @@
     renderCard(1, apartmentData.card1);
     renderCard(2, apartmentData.card2);
     renderCard(3, apartmentData.card3);
+
+    // 💡 新增：点击按钮展示隐藏户型的控制逻辑
+    function showMoreApartments() {
+        // 找到所有带有手机端隐藏类名的卡片
+        const hiddenCards = document.querySelectorAll('.mobile-hidden');
+        
+        hiddenCards.forEach(card => {
+            card.classList.add('mobile-show'); // 添加显示和动画样式
+        });
+
+        // 展开后，隐藏“展开更多”按钮
+        document.getElementById('load-more-box').style.display = 'none';
+    }
 </script>
 
 </body>
