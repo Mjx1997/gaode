@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>毛玻璃科技感左侧抽屉导航</title>
+    <title>高兼容自适应毛玻璃抽屉导航</title>
     <style>
         /* ==========================================
-           1. 基础样式与科技蓝全局变量
+           1. 基础配置与浅色科技蓝全局变量
            ========================================== */
         * {
             box-sizing: border-box;
@@ -14,158 +14,143 @@
             padding: 0;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            /* 💡 注意：这里为了测试毛玻璃透明效果，放了一个渐变背景。
-               放到建站宝盒里后，导航栏会自动透出你原本网页的背景，非常漂亮！ */
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0052cc 100%);
-            height: 2000px; 
-        }
-
         :root {
-            --tech-blue: #0052cc;       /* 💡 核心科技蓝（商务、沉稳） */
-            --glow-blue: #00d2ff;       /* 💡 点缀亮蓝（用于高科技微光） */
-            /* 💡 核心修改：大幅降低背景不透明度（0.55），留给毛玻璃完美的透光空间 */
-            --drawer-bg: rgba(15, 23, 42, 0.55); 
-            --border-line: rgba(0, 82, 204, 0.25); /* 💡 科技感微光边框线 */
+            --tech-blue: #0052cc;       /* 核心科技蓝 */
+            --glow-blue: #00d2ff;       /* 激活时的点缀亮蓝 */
+            /* 💡 核心优化：提高白色不透明度至 0.98，确保在纯白网页上点击时也绝对清晰可见，不再“隐形” */
+            --drawer-bg: rgba(255, 255, 255, 0.98); 
+            --border-line: rgba(0, 82, 204, 0.15); 
         }
 
         /* ==========================================
-           2. 左侧默认缩略图表容器（已改为轻量毛玻璃）
+           2. 左侧默认缩略图表按钮
            ========================================== */
         .mini-nav-trigger {
             position: fixed;
-            top: 16px;
-            left: 16px;
-            width: 44px;
-            height: 44px;
-            background: rgba(255, 255, 255, 0.06); /* 💡 极其轻薄的白色半透 */
-            backdrop-filter: blur(10px);           /* 💡 毛玻璃效果 */
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15); /* 柔和白边 */
-            border-radius: 12px;
-            display: flex;
+            top: 1rem;   
+            left: 1rem;
+            
+            width: auto;
+            height: auto;
+            padding: 0.8em; 
+            
+            background: rgba(243, 245, 255, 0.85); 
+            backdrop-filter: blur(12px);           
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 82, 204, 0.25); 
+            border-radius: 25%; 
+            
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10005;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
+            /* 💡 强行提到极高层级，防止被建站宝盒的其他轮播图或大图挡住 */
+            z-index: 2000000002; 
+            box-shadow: 0 4px 16px rgba(0, 82, 204, 0.12);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* 悬停在缩略图标上时稍微亮一点 */
         .mini-nav-trigger:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--glow-blue);
+            background: rgba(243, 245, 255, 0.95);
+            border-color: var(--tech-blue);
+            transform: scale(1.05); 
         }
 
-        /* 纯CSS科技感方块缩略图标 */
-        .tech-icon {
-            position: relative;
-            width: 18px;
-            height: 14px;
+        .tech-icon-svg {
+            width: 1.4em; 
+            height: 1.4em;
+            fill: none;
+            stroke: var(--tech-blue); 
+            stroke-width: 3; /* 线条微调加粗，提升浅色下的清晰度 */
+            stroke-linecap: round;
+            transition: transform 0.3s ease;
         }
 
-        .tech-icon::before, .tech-icon::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            height: 2px;
-            background-color: #ffffff;
-            border-radius: 2px;
-            transition: transform 0.3s ease, width 0.3s ease, background-color 0.3s ease;
+        /* 展开状态：点击后图标内部线条转变为“X” */
+        .mini-nav-trigger.active .line-top {
+            transform: translate(4px, 1px) rotate(45deg);
+            transform-origin: left top;
+            stroke: var(--tech-blue);
         }
-
-        .tech-icon::before {
-            top: 2px;
-            width: 18px;
+        .mini-nav-trigger.active .line-bottom {
+            transform: translate(3px, -1px) rotate(-45deg);
+            transform-origin: left bottom;
+            stroke: var(--tech-blue);
         }
-
-        .tech-icon::after {
-            bottom: 2px;
-            width: 12px;
-        }
-
-        /* 当点击展开后，左侧缩略图标无缝变成关闭“X” */
-        .mini-nav-trigger.active .tech-icon::before {
-            transform: translateY(4px) rotate(45deg);
-            width: 16px;
-            background-color: var(--glow-blue);
-        }
-
-        .mini-nav-trigger.active .tech-icon::after {
-            transform: translateY(-4px) rotate(-45deg);
-            width: 16px;
-            background-color: var(--glow-blue);
-        }
-
 
         /* ==========================================
-           3. 左侧滑出全屏抽屉菜单（高级毛玻璃主体）
+           3. 左侧滑出全屏抽屉菜单主体
            ========================================== */
         .side-drawer-wrapper {
             position: fixed;
             top: 0;
-            left: -100%; 
-            width: 280px; 
+            left: -100%; /* 默认藏在左边外面 */
+            
+            width: 80%; 
+            max-width: 280px; 
             height: 100vh;
+            
             background: var(--drawer-bg);
-            /* 💡 核心引入：大厂超酷的物理重度毛玻璃滤镜 */
-            backdrop-filter: blur(24px) saturate(120%); 
-            -webkit-backdrop-filter: blur(24px) saturate(120%);
+            backdrop-filter: blur(30px) saturate(140%); 
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
             border-right: 1px solid var(--border-line);
-            box-shadow: 15px 0 40px rgba(0, 0, 0, 0.2); /* 减弱了阴影，靠透明度拉开层次 */
+            
+            /* 💡 核心优化：加深了右侧投影的颜色和范围，让白色的面板在全白背景上滑出时，有明显的阴影边界线 */
+            box-shadow: 15px 0 35px rgba(0, 82, 204, 0.12); 
+            
             display: flex;
             flex-direction: column;
-            padding: 80px 24px 40px 24px; 
-            z-index: 10002;
+            padding: 6rem 1.5rem 2rem 1.5rem; /* 增加了顶部的 padding，防止叠在按钮正下方 */
+            
+            /* 💡 强行提到极高层级，确保遮住大楼网站的内容 */
+            z-index: 2000000000; 
             transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
         }
 
-        /* 激活状态：从左侧优雅滑入 */
+        /* 💡 激活滑出状态：确保能顺利滑到坐标 0 */
         .side-drawer-wrapper.open {
-            left: 0;
+            left: 0 !important;
         }
 
-        /* 侧边栏大厂风品牌标识 */
+        /* 品牌标识文字 */
         .drawer-brand {
-            font-size: 16px;
+            font-size: 1.1rem;
             font-weight: bold;
-            color: #ffffff;
+            color: #1a1a1a; 
             letter-spacing: 1px;
-            margin-bottom: 40px;
+            margin-bottom: 2.5rem;
             padding-left: 8px;
             border-left: 3px solid var(--tech-blue); 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* 防止背景太亮时字看不清 */
         }
 
         /* 导航栏目菜单列表 */
         .drawer-menu {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 0.5rem;
         }
 
-        /* 单个栏目链接 */
+        /* 单个栏目超链接 */
         .drawer-item {
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            color: #333333; /* 颜色加深，保证在浅色网页上清晰 */
             text-decoration: none;
-            padding: 12px 16px;
+            padding: 0.75rem 1rem;
             border-radius: 8px;
             transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
+            display: block; /* 确保撑满整行可点击 */
         }
 
-        /* 点击或悬停时的科技感 */
+        /* 点击或悬停时的科技高亮 */
         .drawer-item:hover, .drawer-item:active {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1); /* 改为白色泛光半透底 */
-            padding-left: 22px; 
+            color: var(--tech-blue); 
+            background: rgba(0, 82, 204, 0.06); 
+            padding-left: 1.4rem; 
         }
 
-        /* 栏目左侧暗藏的高科技亮蓝光边 */
+        /* 栏目左侧高科技亮蓝光边 */
         .drawer-item::before {
             content: '';
             position: absolute;
@@ -173,8 +158,7 @@
             top: 0;
             width: 3px;
             height: 100%;
-            background-color: var(--glow-blue);
-            box-shadow: 0 0 8px var(--glow-blue);
+            background-color: var(--tech-blue);
             transform: scaleY(0); 
             transition: transform 0.2s ease;
         }
@@ -186,24 +170,24 @@
         /* 底部快捷招商电话 */
         .drawer-footer-phone {
             margin-top: auto; 
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            color: #555555;
             text-decoration: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 16px;
-            transition: color 0.3s;
+            border-top: 1px solid rgba(0, 82, 204, 0.1);
+            padding-top: 1rem;
+            display: block;
         }
         
         .drawer-footer-phone span {
-            color: var(--glow-blue);
-            font-weight: 500;
+            color: var(--tech-blue);
+            font-weight: bold;
             display: block;
-            margin-top: 4px;
-            text-shadow: 0 0 6px rgba(0, 210, 255, 0.3);
+            margin-top: 0.3rem;
+            font-size: 0.95rem;
         }
 
         /* ==========================================
-           4. 全屏幕遮罩层
+           4. 全屏幕淡雅背景遮罩层
            ========================================== */
         .drawer-overlay {
             position: fixed;
@@ -211,25 +195,29 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(4, 7, 13, 0.25); /* 降低了遮罩层颜色，更显通透 */
-            backdrop-filter: blur(2px); 
-            -webkit-backdrop-filter: blur(2px);
-            z-index: 10001;
+            /* 💡 遮罩层稍微调深了一点点，点击后后面的大楼内容会微微变暗，更能烘托出滑出的菜单 */
+            background: rgba(15, 23, 42, 0.15); 
+            backdrop-filter: blur(3px); 
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 1999999999; /* 刚好在抽屉下面一层 */
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .drawer-overlay.show {
-            display: block;
-            opacity: 1;
+            display: block !important;
+            opacity: 1 !important;
         }
     </style>
 </head>
 <body>
 
     <div class="mini-nav-trigger" id="nav-trigger-btn" onclick="toggleDrawer()">
-        <div class="tech-icon"></div>
+        <svg class="tech-icon-svg" viewBox="0 0 24 24">
+            <line class="line-top" x1="4" y1="7" x2="20" y2="7" style="transition: transform 0.3s;" />
+            <line class="line-bottom" x1="4" y1="17" x2="14" y2="17" style="transition: transform 0.3s;" />
+        </svg>
     </div>
 
     <div class="drawer-overlay" id="menu-shadow-mask" onclick="toggleDrawer()"></div>
