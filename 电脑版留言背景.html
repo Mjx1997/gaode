@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC表单数智背景容器 - V3终极版</title>
+    <style>
+        /* ====================================================
+           💡【核心智能控制台】在这里修改一切，全页面无缝同步
+           ==================================================== */
+        :root {
+            /* 📝 1. 顶部标题与简介文字内容配置 (在这里直接改字) */
+            --text-title: "意向留言";                                 /* 主标题 */
+            --text-subtitle: "留下您的联系方式，我们的招商顾问将在2小时内与您联系"; /* 副标题 */
+
+
+            /* ----------------------------------------------------
+               ✍️ 【字体大小控制台】（修改这里的数字，即可调整大小）
+               ---------------------------------------------------- */
+            --title-font-size: 26px;      /* 【主标题】字体大小 (默认26px，想调小改写为22px，想调大改写为30px) */
+            --subtitle-font-size: 14px;   /* 【副标题简介】字体大小 (默认14px，标准说明字号，推荐范围13px-15px) */
+            
+            --title-font-weight: 700;     /* 主标题粗细：700为加粗，800为特粗，500为常规 */
+            --subtitle-font-weight: 500;  /* 副标题粗细：500为中等字重，高内聚优雅质感 */
+
+
+            /* 📐 2. 核心自适应尺寸与留白控制台 (完美适配PC版拉伸) */
+            --container-min-height: 620px; /* 【核心保障】：大背景的最小高度！确保没数据时依然能稳稳撑开整个PC表单 */
+            
+            --page-margin: 0px;            /* 整个背景舱与建站宝盒窗口边缘的【外边距】（设为0完美贴合窗口） */
+            --container-padding-top: 38px; /* 内部主标题距离大框顶部的【上内边距】 */
+            --container-padding-x: 36px;   /* 内部内容距离左右两侧大框的【左右内边距】(PC端更宽阔，显大气) */
+            --title-gap: 12px;             /* 主标题与副标题之间的【上下间距】 */
+            --content-top-gap: 36px;       /* 副标题与你下方表单内容之间的【安全空隙距离】 */
+
+
+            /* 🎨 3. 视觉与现代线条控制台 (大厂奢华极简风格) */
+            --bg-title-color: #1d1d1f;     /* 主标题文字颜色（苹果科技黑） */
+            --bg-subtitle-color: #646a73;  /* 副标题文字颜色（优雅中灰） */
+            
+            /* 【背景流光】：精选多维微光渐变（右上角至左下角极其微弱的柔蓝紫过渡到纯白，让PC表单极其高级有深度） */
+            --panel-gradient-bg: linear-gradient(135deg, #f3f7ff 0%, #f8faff 25%, #ffffff 70%, #ffffff 100%);
+            
+            /* 【微光折边】：高精度极细复合线条 border（采用微弱黑半透明 + 科技感，完美融入任何网页底色） */
+            --panel-border-color: rgba(0, 0, 0, 0.07);   /* 外圈高精度细微边框线条颜色 */
+            --panel-border-thickness: 1px;               /* 线条粗细 */
+            --panel-border-radius: 24px;                 /* 整个大背景舱的现代化优雅大圆角 */
+        }
+
+        /* ====================================================
+           🛠️ 核心架构样式（已利用 CSS 变量动态绑定上方控制台）
+           ==================================================== */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body, html { 
+            width: 100%;
+            height: 100%; /* 锁死高宽，填满建站宝盒窗口 */
+            overflow: hidden; 
+            background: transparent !important; /* 保持最外层完全透明，完美嵌入页面当背景 */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: var(--page-margin);       
+        }
+
+        /* 💎 现代化大圆角流光微光折边背景舱 */
+        .form-visual-deck {
+            width: 100%;
+            height: 100%; /* 高度自适应你在建站宝盒里拉动的窗口 */
+            min-height: var(--container-min-height); /* 最小高度兜底，绝对不缩水 */
+            
+            background: var(--panel-gradient-bg) !important; 
+            
+            /* 核心线条：双层极简内嵌折边质感 */
+            border: var(--panel-border-thickness) solid var(--panel-border-color) !important;
+            border-radius: var(--panel-border-radius) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01); /* 极其微弱的空气感投影，防止死板 */
+            
+            /* 精密边距绑定 */
+            padding: var(--container-padding-top) var(--container-padding-x) 36px var(--container-padding-x);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 标题组排版空间 */
+        .form-header-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--title-gap);
+            text-align: left; /* 左对齐彰显洗练感 */
+            width: 100%;
+            flex-shrink: 0; /* 确保标题文字不会被表单组件压缩变形 */
+        }
+
+        /* 动态标题渲染（已绑定控制台字号变量） */
+        .form-header-group h2 {
+            font-size: var(--title-font-size) !important;       /* 🔍 自动抓取控制台的主标题大小 */
+            font-weight: var(--title-font-weight) !important;   /* 🔍 自动抓取粗细 */
+            color: var(--bg-title-color);
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+        .form-header-group h2::before { content: var(--text-title); }
+
+        /* 动态简介副标题（已绑定控制台字号变量） */
+        .form-header-group p {
+            font-size: var(--subtitle-font-size) !important;    /* 🔍 自动抓取控制台的副标题大小 */
+            font-weight: var(--subtitle-font-weight) !important;/* 🔍 自动抓取粗细 */
+            color: var(--bg-subtitle-color);
+            line-height: 1.6;
+        }
+        .form-header-group p::before { content: var(--text-subtitle); }
+
+        /* 占位透空舱：专门用来完美对齐和承载你叠在正上方的表单组件 */
+        .form-content-slot {
+            margin-top: var(--content-top-gap);
+            width: 100%;
+            flex: 1; /* 自动撑满剩余的所有垂直空间，形成完美的背景保护盾 */
+            background: transparent; /* 完全透明，绝对不影响上层表单输入框的点击与交互 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-visual-deck">
+        
+        <div class="form-header-group">
+            <h2></h2>
+            <p></p>
+        </div>
+
+        <div class="form-content-slot"></div>
+
+    </div>
+
+</body>
+</html>
