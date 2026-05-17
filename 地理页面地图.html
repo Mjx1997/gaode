@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恒大世纪广场 - 空间数字座舱完美多端适配版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>恒大世纪广场 - 空间数字座舱顶部下沉自适应版</title>
 
     <script type="text/javascript">
         // ★ 完美保留您的高德安全密钥
@@ -27,7 +27,6 @@
             background: transparent; 
         }
         
-        /* 核心大容器 */
         .cockpit-wrapper {
             position: relative;
             width: 100%;
@@ -35,17 +34,16 @@
             display: flex;
             background: #f5f5f7;
         }
-        
-        /* 地图挂载主视窗 */
+
         #map-container {
             flex: 1;
             height: 100%;
             position: relative;
             z-index: 1;
         }
-        
+
         /* ==========================================
-           2. 💻 电脑端：高档左侧浮动数字面板
+           2. 💻 电脑端：高档左侧浮动现代面板（保持原版卓越体验）
            ========================================== */
         #left-panel {
             position: absolute;
@@ -65,14 +63,13 @@
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        
-        /* 顶部写字楼核心信息头 */
+
         .panel-header {
             padding: 24px;
             background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
             border-bottom: 1px solid rgba(0,0,0,0.04);
         }
-        
+
         .office-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -84,22 +81,20 @@
             margin-bottom: 8px;
             letter-spacing: 1px;
         }
-        
+
         .office-title {
             font-size: 20px;
             font-weight: 700;
             color: #1d1d1f;
         }
-        
-        /* 雷达卡片存放区 */
+
         .radar-grid {
             padding: 16px 24px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
-        
-        /* 独立雷达选项按钮 */
+
         .radar-card {
             background: #ffffff;
             border: 1px solid #e5e5ea;
@@ -111,19 +106,20 @@
             flex-direction: column;
             gap: 6px;
         }
-        
+
         .radar-card:hover {
             transform: translateY(-2px);
             border-color: #0052cc;
             box-shadow: 0 6px 16px rgba(0,82,204,0.06);
         }
-        
+
         .radar-card.selected {
             background: #ffffff;
             border-width: 2px;
+            border-color: #0052cc;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
-        
+
         .radar-icon-box {
             width: 32px;
             height: 32px;
@@ -134,23 +130,21 @@
         }
         
         .radar-icon-box svg { width: 18px; height: 18px; fill: currentColor; }
-        
         .radar-meta .num { font-size: 18px; font-weight: 700; color: #1d1d1f; }
         .radar-meta .label { font-size: 12px; color: #86868b; margin-top: 2px; font-weight: 500; }
-        
-        /* 动态吐出周边具体配套的滚动列表 */
+
+        /* 周边配套滚动列表区 */
         .poi-inject-list {
             flex: 1;
             overflow-y: auto;
             padding: 0 24px 24px 24px;
-            display: none; /* 初始隐藏，点击分类后展开 */
+            display: none; 
             flex-direction: column;
             gap: 10px;
         }
-        
-        /* 列表展示状态 */
+
         #left-panel.active .poi-inject-list { display: flex; }
-        
+
         .poi-list-item {
             display: flex;
             justify-content: space-between;
@@ -162,18 +156,13 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
-        .poi-list-item:hover {
-            background: #f5f5f7;
-            border-color: #e5e5ea;
-        }
-        
+
+        .poi-list-item:hover { background: #f5f5f7; border-color: #e5e5ea; }
         .poi-info { display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
         .poi-name { font-size: 14px; font-weight: 600; color: #1d1d1f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .poi-addr { font-size: 12px; color: #86868b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .poi-dist { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 6px; flex-shrink: 0; }
-        
-        /* 返回重置按钮 */
+
         .reset-bar {
             padding: 12px 24px;
             background: #ffffff;
@@ -183,22 +172,12 @@
         #left-panel.active .reset-bar { display: block; }
         
         .btn-reset {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            background: #f5f5f7;
-            color: #1d1d1f;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            width: 100%; padding: 10px; border: none; background: #f5f5f7; color: #1d1d1f;
+            font-size: 13px; font-weight: 600; border-radius: 10px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .btn-reset:hover { background: #e8e8ed; }
-        
+
         /* ==========================================
            3. 🎯 地图大楼中心点高级自定义样式
            ========================================== */
@@ -207,101 +186,85 @@
         .center-dot { position: absolute; transform: translate(-50%, -50%); width: 12px; height: 12px; background: #0052cc; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 0 6px rgba(0,0,0,0.2); }
         .center-pulse { position: absolute; transform: translate(-50%, -50%); width: 36px; height: 36px; background: rgba(0, 82, 204, 0.3); border-radius: 50%; animation: markerBreathe 2s infinite ease-out; pointer-events: none; }
         @keyframes markerBreathe { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; } }
-        
-        /* 周边配套动态样式 */
+
         .poi-marker-label { transform: translateY(-100%); background: #ffffff; color: #1d1d1f; padding: 5px 11px; border-radius: 30px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: all 0.2s ease; }
-        .poi-marker-label:hover { transform: translateY(-102%) scale(1.05); }
-        
+
         /* ==========================================
-           4. 📱 【核心突破：移动端极致抽屉响应式适配】
+           4. 📱 【核心重构：移动端极致顶部下沉式座舱】
            ========================================== */
         @media (max-width: 768px) {
-            .cockpit-wrapper {
-                flex-direction: column;
-            }
-        
-            /* ✍️ 改变面板定位：从左浮动改为现代“底部上滑抽屉” */
+            /* ✍️ 彻底重写定位：转变为顶部吸顶，向下生长扩充机制 */
             #left-panel {
                 position: absolute;
-                top: auto;
-                bottom: 0;
+                top: 0;
                 left: 0;
+                bottom: auto;
                 width: 100%;
-                /* 初始化高度：刚好只露出写字楼头和分类雷达卡片 */
-                max-height: 275px; 
-                border-radius: 24px 24px 0 0; /* 只保留上方圆角 */
-                box-shadow: 0 -8px 32px rgba(0,0,0,0.08);
-                background: #ffffff; /* 手机端使用纯白背景增强清晰度 */
+                /* 限制初始最高高度，刚好容纳头部和四大分类卡片 */
+                max-height: 250px; 
+                border-radius: 0 0 24px 24px; /* 改为下边缘大圆角 */
+                box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
                 border: none;
-                border-top: 1px solid #f2f2f7;
+                border-bottom: 1px solid #f2f2f7;
             }
-        
-            /* 当激活某一分类展示详情时，抽屉平滑伸展变高 */
+
+            /* ✍️ 激活分类时：面板向下丝滑下沉扩展高度，占据屏幕上半部分 */
             #left-panel.active {
-                max-height: 70%; /* 弹出展示列表，允许向上占据70%高 */
+                max-height: 60%; 
             }
-        
-            /* 手机端头部紧凑化 */
+
+            /* 手机端头部微调 */
             .panel-header {
-                padding: 16px 20px 8px 20px;
+                padding: 14px 20px 4px 20px;
                 text-align: center;
-                position: relative;
+                border-bottom: none;
             }
-        
-            /* 手机端专用：为抽屉顶部加一根高级的“灰色指示条” */
-            .panel-header::before {
-                content: '';
-                position: absolute;
-                top: 6px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 36px;
-                height: 4px;
-                background: #e5e5ea;
-                border-radius: 2px;
-            }
-        
-            .office-badge { margin-bottom: 4px; font-size: 10px; }
-            .office-title { font-size: 17px; }
-        
-            /* ✍️ 核心改动：卡片网格演变为手机端“单行左右横向滑动轮播轴” */
+
+            .office-badge { margin-bottom: 2px; font-size: 10px; }
+            .office-title { font-size: 16px; }
+
+            /* 移动端卡片横向滑阻滚动轴 */
             .radar-grid {
-                padding: 12px 20px;
+                padding: 10px 20px 14px 20px;
                 display: flex;
-                overflow-x: auto; /* 开启左右滑动 */
+                overflow-x: auto; 
                 white-space: nowrap;
                 gap: 10px;
-                /* 隐藏横向滚动条 */
                 scrollbar-width: none;
                 -ms-overflow-style: none;
             }
             .radar-grid::-webkit-scrollbar { display: none; }
-        
-            /* 调整手机端选项卡，防止变细变窄 */
+
             .radar-card {
-                flex-shrink: 0; /* 强迫不缩水 */
+                flex-shrink: 0; 
                 width: 110px;
                 padding: 10px;
                 align-items: center;
                 gap: 4px;
                 border-radius: 12px;
             }
-        
+
             .radar-icon-box { width: 28px; height: 28px; }
             .radar-icon-box svg { width: 16px; height: 16px; }
             .radar-meta { text-align: center; }
-            .radar-meta .num { font-size: 15px; }
+            .radar-meta .num { font-size: 14px; }
             .radar-meta .label { font-size: 11px; margin-top: 0; }
-        
-            /* 列表视图针对窄屏进行间距微调 */
+
+            /* ✍️ 终极痛点解决：下沉出来的具体配套列表变成一个“完全独立的滚动舱” */
             .poi-inject-list {
-                padding: 4px 20px 16px 20px;
+                padding: 4px 20px 12px 20px;
                 gap: 8px;
+                overflow-y: auto; /* 开启纯粹的内容纵向滚动 */
+                -webkit-overflow-scrolling: touch; /* 保证苹果iOS下极其顺滑不卡顿 */
             }
+            
             .poi-list-item { padding: 12px; border-radius: 10px; }
             .poi-name { font-size: 13px; }
             .poi-addr { font-size: 11px; }
-        
+
             .reset-bar { padding: 10px 20px; }
         }
     </style>
@@ -309,262 +272,230 @@
 
 <body>
 
-    <div class="cockpit-wrapper">
-        <div id="left-panel">
-            <div class="panel-header">
-                <span class="office-badge">高端地标写字楼</span>
-                <div class="office-title" id="dom-office-name">恒大世纪广场</div>
-            </div>
-
-            <div class="radar-grid" id="radar-anchor"></div>
-
-            <div class="poi-inject-list" id="poi-list-injector"></div>
-
-            <div class="reset-bar">
-                <button class="btn-reset" onclick="resetToInitialState()">
-                    <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;">
-                        <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
-                    </svg>
-                    返回全国视口
-                </button>
-            </div>
+<div class="cockpit-wrapper">
+    <div id="left-panel">
+        <div class="panel-header">
+            <span class="office-badge">高端地标写字楼</span>
+            <div class="office-title" id="dom-office-name">恒大世纪广场</div>
         </div>
-
-        <div id="map-container"></div>
+        
+        <div class="radar-grid" id="radar-anchor"></div>
+        
+        <div class="poi-inject-list" id="poi-list-injector"></div>
+        
+        <div class="reset-bar">
+            <button class="btn-reset" onclick="resetToInitialState()">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                返回初始视口
+            </button>
+        </div>
     </div>
 
-    <script>
-        /**
-         * =========================================================================
-         * ✍️ 【核心配置中心】—— 在这里修改您大楼的坐标、以及四大分类的网点数据
-         * =========================================================================
-         */
-        // 1. 设置您大楼的【真实经纬度坐标】
-        const officeLocation = [114.319443, 30.573807]; 
-        // 2. 设置大楼的名称文字
-        const officeName = "恒大世纪广场";
-        
-        // 3. 周边配套雷达数据库集群
-        const radarCategories = [
-            {
-                id: 'subway',
-                name: '公交站，地铁站',
-                count: '轨道交通',
-                color: '#0052cc', // 主色调：极客蓝
-                icon: `<svg viewBox="0 0 24 24"><path d="M12 2c-4.42 0-8 3.58-8 8v7c0 1.66 1.34 3 3 3l-1 1v1h12v-1l-1-1c1.66 0 3-1.34 3-3v-7c0-4.42-3.58-8-8-8zm3.5 15c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-7 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm8.5-6H8V7h8v4z"/></svg>`,
-                // ✍️ 具体的店名、地址、距离以及经纬度（coords）在这里进行增删查改
-                pois: [
-                    { name: '5号线-三层楼地铁站', address: '积玉桥大道与和平大道交叉口', distance: 520, coords: [114.3153, 30.56992] },
-                    { name: '2/7号线-螃蟹岬站', address: '中山路与凤凰山路交汇处', distance: 1200, coords: [114.3323, 30.5542] }
-                ]
-            },
-            {
-                id: 'food',
-                name: '商业街',
-                count: '餐饮美食',
-                color: '#ff9500', // 橙色
-                icon: `<svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>`,
-                pois: [
-                    { name: '漫时区商业美食街', address: '恒大世纪广场裙楼核心商圈', distance: 50, coords: [114.323572, 30.574851] },
-                    { name: '万松园传统美食老街', address: '雪松路美食集聚区', distance: 980, coords: [114.3211, 30.5785] }
-                ]
-            },
-            {
-                id: 'bank',
-                name: '银行',
-                count: '商务金融',
-                color: '#34c759', // 绿色
-                icon: `<svg viewBox="0 0 24 24"><path d="M11.5 1L2 6v2h19V6L11.5 1zm8.5 9H4v9h3v-9h3v9h3v-9h3v9h3v-9zM2 22h19v2H2v-2z"/></svg>`,
-                pois: [
-                    { name: '招商银行(武昌支行对公网点)', address: '和平大道积玉桥特1号', distance: 150, coords: [114.31891, 30.573965] },
-                    { name: '中国工商银行(三角路支行)', address: '和平大道三角路新村1号', distance: 340, coords: [114.3225, 30.5721] }
-                ]
-            },
-            {
-                id: 'hotel',
-                name: '休闲商超',
-                count: '休闲商超',
-                color: '#af52de', // 紫色
-                icon: `<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>`,
-                pois: [
-                    { name: '武昌江滩公园(一线江景)', address: '临江大道临江观景长廊', distance: 280, coords: [114.317478, 30.579929] },
-                    { name: '中百仓储(三角路旗舰店)', address: '和平大道核心生活广场', distance: 410, coords: [114.3251, 30.5762] }
-                ]
-            }
-        ];
-        
-        // =========================================================================
-        // ⚙️ 【数字座舱核心渲染引擎】（除非调整核心逻辑，否则无需改动下方代码）
-        // =========================================================================
-        document.getElementById('dom-office-name').innerText = officeName;
-        
-        // 初始化高德地图，加载新一代浅色扁平化现代皮肤
-        const map = new AMap.Map('map-container', {
-            zoom: 15.5,
-            center: officeLocation,
-            mapStyle: 'amap://styles/light',
-            viewMode: '2D'
+    <div id="map-container"></div>
+</div>
+
+<script>
+    // =========================================================================
+    // ✍️ 数据配置中心：完美保留大楼原始经纬度与网点信息
+    // =========================================================================
+    const officeLocation = [114.319443, 30.573807]; 
+    const officeName = "恒大世纪广场";
+
+    const radarCategories = [
+        {
+            id: 'subway',
+            name: '轨道交通',
+            count: '2 站',
+            color: '#0052cc', 
+            icon: `<svg viewBox="0 0 24 24"><path d="M12 2c-4.42 0-8 3.58-8 8v7c0 1.66 1.34 3 3 3l-1 1v1h12v-1l-1-1c1.66 0 3-1.34 3-3v-7c0-4.42-3.58-8-8-8zm3.5 15c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-7 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm8.5-6H8V7h8v4z"/></svg>`,
+            pois: [
+                { name: '5号线-三层楼地铁站', address: '积玉桥大道与和平大道交叉口', distance: 520, coords: [114.3153, 30.56992] },
+                { name: '2/7号线-螃蟹岬站', address: '中山路与凤凰山路交汇处', distance: 1200, coords: [114.3323, 30.5542] }
+            ]
+        },
+        {
+            id: 'food',
+            name: '餐饮美食',
+            count: '150+ 家',
+            color: '#ff9500', 
+            icon: `<svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>`,
+            pois: [
+                { name: '漫时区商业美食街', address: '恒大世纪广场裙楼核心商圈', distance: 50, coords: [114.323572, 30.574851] },
+                { name: '万松园传统美食老街', address: '雪松路美食集聚区', distance: 980, coords: [114.3211, 30.5785] }
+            ]
+        },
+        {
+            id: 'bank',
+            name: '金融银行',
+            count: '8 处',
+            color: '#34c759', 
+            icon: `<svg viewBox="0 0 24 24"><path d="M11.5 1L2 6v2h19V6L11.5 1zm8.5 9H4v9h3v-9h3v9h3v-9h3v9h3v-9zM2 22h19v2H2v-2z"/></svg>`,
+            pois: [
+                { name: '招商银行(武昌支行对公网点)', address: '和平大道积玉桥特1号', distance: 150, coords: [114.31891, 30.573965] },
+                { name: '中国工商银行(三角路支行)', address: '和平大道三角路新村1号', distance: 340, coords: [114.3225, 30.5721] }
+            ]
+        },
+        {
+            id: 'hotel',
+            name: '休闲商超',
+            count: '12 个',
+            color: '#af52de', 
+            icon: `<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>`,
+            pois: [
+                { name: '武昌江滩公园(一线江景)', address: '临江大道临江观景长廊', distance: 280, coords: [114.317478, 30.579929] },
+                { name: '中百仓储(三角路旗舰店)', address: '和平大道核心生活广场', distance: 410, coords: [114.3251, 30.5762] }
+            ]
+        }
+    ];
+
+    // =========================================================================
+    // ⚙️ 逻辑控制引擎
+    // =========================================================================
+    document.getElementById('dom-office-name').innerText = officeName;
+
+    const map = new AMap.Map('map-container', {
+        zoom: 15.5,
+        center: officeLocation,
+        mapStyle: 'amap://styles/light'
+    });
+
+    let markerPool = [];
+    let walkingRouteEngine = null;
+
+    AMap.plugin('AMap.Walking', function() {
+        walkingRouteEngine = new AMap.Walking({
+            map: map,
+            hideMarkers: true,
+            isOutline: true,
+            outlineColor: '#ffffff',
+            showDir: true
         });
-        
-        let markerPool = [];
-        let walkingRouteEngine = null;
-        
-        // 载入高德原生高级步行路径导航插件
-        AMap.plugin('AMap.Walking', function() {
-            walkingRouteEngine = new AMap.Walking({
-                map: map,
-                hideMarkers: true, // 隐藏原生死板图标，使用我们客制化的精装图标
-                isOutline: true,
-                outlineColor: '#ffffff',
-                showDir: true
-            });
-        });
-        
-        // 绘制大楼中心地标锚点
-        function drawOfficeCenterMarker() {
-            const markerDom = document.createElement('div');
-            markerDom.className = 'center-marker';
-            markerDom.innerHTML = `
-                <div class="center-label">${officeName}</div>
-                <div class="center-pulse"></div>
-                <div class="center-dot"></div>
+    });
+
+    function drawOfficeCenterMarker() {
+        const markerDom = document.createElement('div');
+        markerDom.className = 'center-marker';
+        markerDom.innerHTML = `
+            <div class="center-label">${officeName}</div>
+            <div class="center-pulse"></div>
+            <div class="center-dot"></div>
+        `;
+        new AMap.Marker({ position: officeLocation, content: markerDom, anchor: 'center', zIndex: 999, map: map });
+    }
+    drawOfficeCenterMarker();
+
+    function buildRadarDashboard() {
+        const container = document.getElementById('radar-anchor');
+        container.innerHTML = '';
+        radarCategories.forEach(cat => {
+            const card = document.createElement('div');
+            card.className = 'radar-card';
+            card.id = `card-${cat.id}`;
+            card.innerHTML = `
+                <div class="radar-icon-box" style="background: ${cat.color}10; color: ${cat.color};">
+                    ${cat.icon}
+                </div>
+                <div class="radar-meta">
+                    <div class="num">${cat.count}</div>
+                    <div class="label">${cat.name}</div>
+                </div>
             `;
+            card.onclick = () => selectRadarTab(cat.id);
+            container.appendChild(card);
+        });
+    }
+    buildRadarDashboard();
+
+    function selectRadarTab(categoryId) {
+        document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
+        const activeCard = document.getElementById(`card-${categoryId}`);
+        if(activeCard) activeCard.classList.add('selected');
+
+        const activeCat = radarCategories.find(c => c.id === categoryId);
+        if (!activeCat) return;
+
+        document.getElementById('left-panel').classList.add('active');
+
+        clearPoiMarkers();
+        if(walkingRouteEngine) walkingRouteEngine.clear();
+
+        const injector = document.getElementById('poi-list-injector');
+        injector.innerHTML = '';
+
+        activeCat.pois.forEach(poi => {
+            const labelDom = document.createElement('div');
+            labelDom.className = 'poi-marker-label';
+            labelDom.innerText = poi.name;
+            labelDom.style.borderBottom = `3px solid ${activeCat.color}`;
             
-            new AMap.Marker({
-                position: officeLocation,
-                content: markerDom,
-                anchor: 'center',
-                zIndex: 999,
-                map: map
+            const marker = new AMap.Marker({ position: poi.coords, content: labelDom, anchor: 'bottom-center', map: map });
+            marker.on('click', () => initiateRoutePlanning(poi, activeCat.color));
+            markerPool.push(marker);
+
+            const listItem = document.createElement('div');
+            listItem.className = 'poi-list-item';
+            listItem.innerHTML = `
+                <div class="poi-info">
+                    <span class="poi-name">${poi.name}</span>
+                    <span class="poi-addr">${poi.address}</span>
+                </div>
+                <div class="poi-dist" style="color: ${activeCat.color}; background: ${activeCat.color}12;">${poi.distance}米</div>
+            `;
+            listItem.onclick = () => initiateRoutePlanning(poi, activeCat.color);
+            injector.appendChild(listItem);
+        });
+
+        adjustMapView(officeLocation);
+    }
+
+    function initiateRoutePlanning(poi, themeColor) {
+        if(walkingRouteEngine) {
+            walkingRouteEngine.clear();
+            walkingRouteEngine.search(officeLocation, poi.coords, function(status, result) {
+                if (status === 'complete') {
+                    const paths = document.querySelectorAll('path.amap-polyline');
+                    paths.forEach(p => p.setAttribute('stroke', themeColor));
+                }
             });
         }
-        drawOfficeCenterMarker();
-        
-        // 动态绘制左侧雷达选项卡
-        function buildRadarDashboard() {
-            const container = document.getElementById('radar-anchor');
-            container.innerHTML = '';
-            
-            radarCategories.forEach(cat => {
-                const card = document.createElement('div');
-                card.className = 'radar-card';
-                card.id = `card-${cat.id}`;
-                card.innerHTML = `
-                    <div class="radar-icon-box" style="background: ${cat.color}10; color: ${cat.color};">
-                        ${cat.icon}
-                    </div>
-                    <div class="radar-meta">
-                        <div class="num">${cat.count}</div>
-                        <div class="label">${cat.name}</div>
-                    </div>
-                `;
-                card.onclick = () => selectRadarTab(cat.id);
-                container.appendChild(card);
-            });
+        adjustMapView(poi.coords);
+    }
+
+    // ✍️ 智能避让对齐策略
+    function adjustMapView(targetCoords) {
+        if (window.innerWidth <= 768) {
+            // 手机端因为面板挂载在顶部，为了不让顶部面板遮挡目标点，
+            // 我们将视口中心适当“向上推”（即增加约 0.0035 个纬度值），让地标显现在下方的安全空白区！
+            const adjustedCoords = [targetCoords[0], targetCoords[1] + 0.0035];
+            map.setZoomAndCenter(15, adjustedCoords);
+        } else {
+            map.setZoomAndCenter(15.5, targetCoords);
         }
-        buildRadarDashboard();
+    }
+
+    function clearPoiMarkers() {
+        markerPool.forEach(m => m.setMap(null));
+        markerPool = [];
+    }
+
+    function resetToInitialState() {
+        document.getElementById('left-panel').classList.remove('active');
+        document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
+        clearPoiMarkers();
+        if (walkingRouteEngine) walkingRouteEngine.clear();
         
-        // 选中分类雷达触发联动
-        function selectRadarTab(categoryId) {
-            document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
-            const activeCard = document.getElementById(`card-${categoryId}`);
-            if(activeCard) activeCard.classList.add('selected');
-        
-            const activeCat = radarCategories.find(c => c.id === categoryId);
-            if (!activeCat) return;
-        
-            // 给大面板贴上 active 样式，使其在电脑端展开列表、在手机端优雅升起弹性底栏
-            document.getElementById('left-panel').classList.add('active');
-        
-            clearPoiMarkers();
-            if(walkingRouteEngine) walkingRouteEngine.clear();
-        
-            const injector = document.getElementById('poi-list-injector');
-            injector.innerHTML = '';
-        
-            activeCat.pois.forEach(poi => {
-                // 1. 在地图上洒下对应的网点精美白标
-                const labelDom = document.createElement('div');
-                labelDom.className = 'poi-marker-label';
-                labelDom.innerText = poi.name;
-                labelDom.style.borderBottom = `3px solid ${activeCat.color}`;
-                
-                const marker = new AMap.Marker({
-                    position: poi.coords,
-                    content: labelDom,
-                    anchor: 'bottom-center',
-                    map: map
-                });
-                
-                // 移动端/桌面端点击白标，直接触发路线规划
-                marker.on('click', () => initiateRoutePlanning(poi, activeCat.color));
-                markerPool.push(marker);
-        
-                // 2. 灌注到左侧/底部的 HTML 列表中
-                const listItem = document.createElement('div');
-                listItem.className = 'poi-list-item';
-                listItem.innerHTML = `
-                    <div class="poi-info">
-                        <span class="poi-name">${poi.name}</span>
-                        <span class="poi-addr">${poi.address}</span>
-                    </div>
-                    <div class="poi-dist" style="color: ${activeCat.color}; background: ${activeCat.color}12;">${poi.distance}米</div>
-                `;
-                listItem.onclick = () => initiateRoutePlanning(poi, activeCat.color);
-                injector.appendChild(listItem);
-            });
-        
-            // 智能视口调整：在手机端将视口中心适当下移（即地图往上移），为底部展开的抽屉腾出视觉空间
-            adjustMapView(officeLocation);
+        if (window.innerWidth <= 768) {
+            map.setZoomAndCenter(15.5, [officeLocation[0], officeLocation[1] + 0.0015]);
+        } else {
+            map.setZoomAndCenter(15.5, officeLocation);
         }
-        
-        // 驱动高精度步行规划引擎
-        function initiateRoutePlanning(poi, themeColor) {
-            if(walkingRouteEngine) {
-                walkingRouteEngine.clear();
-                walkingRouteEngine.search(officeLocation, poi.coords, function(status, result) {
-                    if (status === 'complete') {
-                        // 动态调整路线规划线条的颜色以契合品牌质感
-                        const paths = document.querySelectorAll('path.amap-polyline');
-                        paths.forEach(p => p.setAttribute('stroke', themeColor));
-                    }
-                });
-            }
-            adjustMapView(poi.coords);
-        }
-        
-        // 针对手机窄屏和抽屉遮挡的智能化视口避让对齐算法
-        function adjustMapView(targetCoords) {
-            if (window.innerWidth <= 768) {
-                // ✍️ 手机端判断：由于底部抽屉占用了下方大块江山，我们将目标点在真机视窗中向上微调 0.003 个纬度，
-                // 这样大楼或路线就能极其完美的显现出来，绝不会被抽屉遮挡！
-                const adjustedCoords = [targetCoords[0], targetCoords[1] - 0.0035];
-                map.setZoomAndCenter(15, adjustedCoords);
-            } else {
-                // 桌面端则常规正中心对齐
-                map.setZoomAndCenter(15.5, targetCoords);
-            }
-        }
-        
-        function clearPoiMarkers() {
-            markerPool.forEach(m => m.setMap(null));
-            markerPool = [];
-        }
-        
-        // 彻底重置回大楼初始全国视角
-        function resetToInitialState() {
-            document.getElementById('left-panel').classList.remove('active');
-            document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
-            clearPoiMarkers();
-            if (walkingRouteEngine) walkingRouteEngine.clear();
-            
-            if (window.innerWidth <= 768) {
-                map.setZoomAndCenter(15.5, [officeLocation[0], officeLocation[1] - 0.0015]);
-            } else {
-                map.setZoomAndCenter(15.5, officeLocation);
-            }
-        }
-    </script>
+    }
+
+    // ✍️ 终极手势锁：阻止手机端滚动层事件冒泡，将滚动权牢牢锁定在 HTML 列表内部，隔绝背景地图
+    document.getElementById('poi-list-injector').addEventListener('touchmove', function(e) {
+        e.stopPropagation();
+    }, { passive: true });
+</script>
 </body>
 
 </html>
