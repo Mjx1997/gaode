@@ -3,10 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>恒大世纪广场-在租房源列表 (现代扁平定制版)</title>
+    <title>恒大世纪广场-在租房源列表 (高度分离独立锁定版)</title>
     <style>
+        /* ==========================================================================
+           📌 【配置中心 - 核心高度控制】
+           如果你后期发现页面有留白或挤压，只需在此处修改对应的像素数值即可。
+           ========================================================================== */
+        :root {
+            /* 🖥️ 电脑端设置：固定8条数据的高度 */
+            /* 计算参考：单行高度约 62px + 间距 10px，8条数据完美无缝无跳动 */
+            --desktop-list-height: 570px;
+
+            /* 📱 手机端设置：固定8条数据的高度 */
+            /* 计算参考：手机端单行内容纵向堆叠，单行高度约 76px + 间距 10px */
+            /* 独立分开设置，彻底解决手机端因为行高不同导致的“大面积留空”或“展示不全”问题 */
+            --mobile-list-height: 690px;
+        }
+
         /* ==========================================
-           1. 全局现代主义视觉重置 & 科技商务浅色变量
+           1. 全局现代主义视觉重置
            ========================================== */
         * {
             box-sizing: border-box;
@@ -16,13 +31,12 @@
 
         body, html { 
             width: 100%;
-            background-color: transparent; /* 保持透明，完美包容宿主网页背景 */
+            background-color: transparent; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
             -webkit-font-smoothing: antialiased;
-            color: #1f2329; /* 字节/大厂级核心深灰字，取代死黑，提升视觉高级感 */
+            color: #1f2329; 
         }
 
-        /* 100% 流式全包容响应式外壳 */
         .container {
             width: 100%;
             max-width: 100%;
@@ -30,7 +44,6 @@
             background: #ffffff;
             padding: 24px;
             border-radius: 16px;
-            /* 极其微弱的现代轻量化悬浮投影 */
             box-shadow: 0 4px 24px rgba(31, 35, 41, 0.03), 0 1px 2px rgba(31, 35, 41, 0.02);
         }
 
@@ -55,7 +68,6 @@
             padding-left: 12px;
         }
         
-        /* 装饰侧边商务蓝呼吸条 */
         .list-title::before {
             content: '';
             position: absolute;
@@ -71,7 +83,7 @@
         .filter-tabs {
             display: flex;
             gap: 6px;
-            background: #f4f5f6; /* 现代低饱和网格胶囊底色 */
+            background: #f4f5f6; 
             padding: 4px;
             border-radius: 20px;
         }
@@ -100,7 +112,7 @@
         }
 
         /* ==========================================
-           3. 桌面端对齐骨架线表头 (全面对齐下方卡片)
+           3. 桌面端对齐骨架线表头
            ========================================== */
         .list-header {
             display: flex;
@@ -142,18 +154,22 @@
             text-align: right;
         }
 
-        /* ==========================================
-           4. 房源核心列表空间 (规避内容塌陷)
-           ========================================== */
+        /* ==========================================================================
+           4. 房源核心列表空间 (高度锁死核心区)
+           ========================================================================== */
         .house-list { 
             display: flex; 
             flex-direction: column; 
             gap: 10px; 
-            min-height: 580px; /* 锁死8条数据黄金高度，防止翻页时产生页面视觉跳动跃迁 */
+            
+            /* 💡 核心改动：默认读取电脑端变量，锁死整体高度，翻页时容器绝不缩水跳动 */
+            min-height: var(--desktop-list-height); 
+            max-height: var(--desktop-list-height);
+            overflow: hidden; /* 防止溢出干扰 */
         }
 
         /* ==========================================
-           5. 【全网首创】现代双向对齐式房源卡片行样式
+           5. 现代双向对齐式房源卡片行样式
            ========================================== */
         .house-row {
             display: flex;
@@ -164,10 +180,11 @@
             border: 1px solid #f0f1f2;
             background: #ffffff;
             cursor: pointer;
+            height: 62px; /* 💡 电脑端强制单行高度固定，确保完美契合全局高度锁定 */
+            box-sizing: border-box;
             transition: all 0.25s cubic-bezier(0.215, 0.610, 0.355, 1);
         }
 
-        /* 呼吸式极简高亮悬浮动效 */
         .house-row:hover {
             border-color: rgba(0, 82, 204, 0.3);
             background: #f8faff;
@@ -175,7 +192,6 @@
             box-shadow: 0 6px 16px rgba(0, 82, 204, 0.04);
         }
 
-        /* 左侧主干核心信息聚合组 */
         .row-main-group {
             display: flex;
             align-items: center;
@@ -183,7 +199,6 @@
             gap: 40px;
         }
 
-        /* 面积与楼层强横向对齐容器 */
         .area-floor-box {
             display: flex;
             align-items: center;
@@ -192,7 +207,6 @@
             flex-shrink: 0;
         }
 
-        /* 面积数字化加粗凸显 */
         .meta-area { 
             font-size: 20px; 
             font-weight: 700; 
@@ -214,14 +228,15 @@
             font-weight: 500;
         }
         
-        /* 交付标准低沉文本 */
         .meta-standard { 
             font-size: 14px; 
             color: #646a73; 
             font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        /* 右侧操作交互信息聚合组 */
         .row-side-group {
             display: flex;
             align-items: center;
@@ -234,7 +249,6 @@
             align-items: center; 
         }
 
-        /* 高级新式浅背景状态徽章 */
         .status-badge {
             font-size: 12px;
             padding: 4px 10px;
@@ -245,13 +259,11 @@
             font-weight: 500;
         }
         
-        /* 随时入驻状态：低饱和高级蓝 */
         .status-badge.ready { 
             background: #e0f2fe; 
             color: #0369a1; 
         }
         
-        /* 已预订状态：低饱和秋麦橙 */
         .status-badge.booked { 
             background: #fef3c7; 
             color: #b45309; 
@@ -267,7 +279,6 @@
         .status-badge.ready .dot { background-color: #0284c7; }
         .status-badge.booked .dot { background-color: #d97706; }
 
-        /* 原生流线型详情按钮 */
         .meta-action {
             width: 64px;
             text-align: right;
@@ -292,7 +303,7 @@
         }
 
         /* ==========================================
-           6. 极简页码控制部件
+           6. 页码控制部件
            ========================================== */
         .pagination {
             display: flex;
@@ -340,11 +351,10 @@
             border-color: #dee0e3;
         }
 
-        /* ==========================================
-           7. 【核心解决】📱 移动端媒体查询架构极致优化
-           ========================================== */
+        /* ==========================================================================
+           7. 📱 移动端媒体查询架构极致优化（完美分离配置）
+           ========================================================================== */
         @media (max-width: 768px) {
-            /* 彻底抹去杂乱的横向表头 */
             .list-header { 
                 display: none; 
             }
@@ -357,58 +367,62 @@
                 margin-bottom: 16px;
             }
 
-            /* 核心：将横向扁平排版转换为“高集成非对称侧向卡片” */
-            .house-row {
-                display: flex;
-                flex-direction: row; /* 保持左右并列，彻底规避按钮掉到下一行 */
-                justify-content: space-between;
-                align-items: stretch; /* 强制拉伸，保持高度对称律 */
-                padding: 16px;
-                gap: 12px;
+            /* 💡 核心改动：手机端独立切换到专门的手机锁死高度变量，拒绝多余空白 */
+            .house-list {
+                min-height: var(--mobile-list-height);
+                max-height: var(--mobile-list-height);
             }
 
-            /* 左部核心内容容器垂直流 */
+            .house-row {
+                display: flex;
+                flex-direction: row; 
+                justify-content: space-between;
+                align-items: stretch; 
+                padding: 12px 14px;
+                gap: 12px;
+                height: 76px; /* 💡 手机端行高固定为 76px，配合全局变量完美填满空间 */
+            }
+
             .row-main-group {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 8px;
+                gap: 4px;
                 flex: 1;
+                overflow: hidden;
             }
 
-            /* 面积与楼层在移动端横向紧凑合并，节省空间 */
             .area-floor-box {
                 width: auto;
-                gap: 12px;
-                align-items: baseline; /* 基线对齐让楼层完美贴合面积 */
+                gap: 10px;
+                align-items: baseline; 
             }
 
             .meta-area {
-                font-size: 22px; /* 移动端放大核心数字面积 */
+                font-size: 19px; 
                 min-width: auto;
             }
 
-            /* 移动端将楼层优化为轻盈微型胶囊标签 */
             .meta-floor {
-                font-size: 12px;
+                font-size: 11px;
                 color: #646a73;
                 background: #f4f5f6;
-                padding: 2px 6px;
+                padding: 1px 4px;
                 border-radius: 4px;
                 font-weight: 500;
             }
 
             .meta-standard {
-                font-size: 13px;
-                line-height: 1.4;
+                font-size: 12px;
+                line-height: 1.3;
+                width: 100%;
             }
 
-            /* 右侧交互容器：变为独立的纵向对齐轨，垂直分立两端 */
             .row-side-group {
                 flex-direction: column;
-                justify-content: space-between; /* 💡 关键：状态 badge 压在右上角，按钮死锁在右下角，绝不换行占通栏 */
+                justify-content: space-between; 
                 align-items: flex-end;
-                gap: 6px;
-                min-width: 85px; /* 锁死右侧最小宽度，为详情按钮留足横向呼吸感 */
+                gap: 0;
+                min-width: 80px; 
             }
 
             .meta-status {
@@ -417,7 +431,7 @@
             }
 
             .status-badge {
-                padding: 2px 8px;
+                padding: 2px 6px;
                 font-size: 11px;
                 border-radius: 4px;
             }
@@ -427,19 +441,10 @@
                 text-align: right;
             }
 
-            /* 详情按钮缩减体积，融入卡片边角 */
             .action-btn {
-                padding: 5px 12px;
-                font-size: 13px;
-                border-radius: 6px;
-            }
-
-            .house-list { 
-                min-height: auto; /* 解锁移动端最小高度限制 */
-            } 
-            
-            .pagination { 
-                margin-top: 16px; 
+                padding: 4px 10px;
+                font-size: 12px;
+                border-radius: 5px;
             }
         }
     </style>
@@ -447,7 +452,6 @@
 <body>
 
 <div class="container">
-    <!-- 顶部综合筛选条 -->
     <div class="header-bar">
         <div class="list-title">在租房源</div>
         <div class="filter-tabs">
@@ -457,7 +461,6 @@
         </div>
     </div>
 
-    <!-- 骨架对齐表头 (桌面端可见) -->
     <div class="list-header">
         <div class="header-main-group">
             <div class="header-area-floor">面积 / 楼层</div>
@@ -472,25 +475,32 @@
     <!-- 动态房源挂载主容器 -->
     <div class="house-list" id="houseList"></div>
 
-    <!-- 底部极简分页控制模块 -->
+    <!-- 底部页码 -->
     <div class="pagination" id="pagination"></div>
 </div>
 
 <script>
     /**
      * 【原始房源数据库集群】
+     * 💡 为了方便测试分页切换时“高度依然死锁不跳动”的效果，我特意为你将测试数据扩充到了 10 条（每页显示8条）
+     * 这样你可以直接在电脑或手机上点击第 2 页，看看容器高度是不是完全保持稳定，不会缩水空出一大块！
      */
     const houseData = [
         { area: '285', floor: '12层', type: 'mid', standard: '精装修 · 带全套家具', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
         { area: '420', floor: '18层', type: 'high', standard: '标准装修 · 吊顶白墙', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
         { area: '1,100', floor: '25层', type: 'high', standard: '毛坯现房 · 空间自由', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
         { area: '1,200', floor: '43层', type: 'scenery', standard: '顶级装修 · 环幕江景', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
-        { area: '150', floor: '6层', type: 'low', standard: '简约装修 · 采光极佳', status: 'booked', statusText: '已预订', link: 'http://www.hdcentury.com/1201.html' }
+        { area: '150', floor: '6层', type: 'low', standard: '简约装修 · 采光极佳', status: 'booked', statusText: '已预订', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '310', floor: '15层', type: 'mid', standard: '精装修 · 经理室会议室齐全', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '560', floor: '22层', type: 'high', standard: '标准装修 · 随时定制大开间', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '880', floor: '31层', type: 'scenery', standard: '豪装核心层 · 正对中心绿地', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '190', floor: '9层', type: 'low', standard: '电商工作室精装 · 拎包入驻', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '640', floor: '28层', type: 'high', standard: '现代极简高标交付 · 视野开阔', status: 'booked', statusText: '已预订', link: 'http://www.hdcentury.com/1201.html' }
     ];
 
     let currentCategory = 'all'; 
     let currentPage = 1;          
-    const itemsPerPage = 8;       
+    const itemsPerPage = 8; /* 💡 固定单页输出 8 条记录 */      
 
     function getFilteredData() {
         return currentCategory === 'all' 
@@ -498,9 +508,6 @@
             : houseData.filter(h => h.type === currentCategory);
     }
 
-    /**
-     * 核心高拟真动态渲染引擎
-     */
     function renderList() {
         const filtered = getFilteredData();
         const totalItems = filtered.length;
@@ -521,7 +528,6 @@
             pageData.forEach(item => {
                 const statusClass = item.status === 'ready' ? 'ready' : 'booked';
                 
-                // 💡 采用了更高级的语义化复合架构排版，完美兼容了移动端侧向双列布局与桌面端长条布局
                 const itemHtml = `
                     <div class="house-row" onclick="window.open('${item.link}', '_parent')">
                         <div class="row-main-group">
