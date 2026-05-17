@@ -6,34 +6,54 @@
     <title>联系我们 - 手机版现代服务舱</title>
     <style>
         /* ====================================================
-           💡【配置中心】在这里修改数值和样式，全页面同步变化
+           💡【全能配置中心】在这里修改一切，全页面无缝同步
            ==================================================== */
         :root {
-            /* 🎨 品牌色彩控制中心 */
-            --brand-blue: #2563eb;         /* 电话图标与激活时的蓝色 */
-            --brand-green: #22c55e;        /* 微信生态绿色 */
-            --text-main: #1d1d1f;          /* 主标题、核心信息文字颜色（科技黑） */
-            --text-muted: #86868b;         /* 副标题、标签文字颜色（优雅灰） */
+            /* 📝 1. 文字内容配置台 (在这里直接改字) */
+            --text-heading: "联系我们";                             /* 页面大标题 */
+            --text-subheading: "即可一键直达专属招商服务中心";        /* 页面副标题 */
+            
+            --text-phone-title: "招商服务热线";                     /* 电话卡片的小标题 */
+            --text-phone-value: "132-1234-5678";                    /* 页面显示的电话号码 */
+            --link-phone-number: "13212345678";                     /* 点击后实际拨打的电话(纯数字，无横杠) */
+
+            --text-wechat-title: "官方微信客服";                    /* 微信卡片的小标题 */
+            --text-wechat-value: "HD_Centurys";                     /* 页面显示的微信号 / 复制的内容 */
+
+            --text-location-title: "项目入驻地址";                   /* 地址卡片的小标题 */
+            --text-location-value: "武汉市武昌区和平大道恒大世纪广场"; /* 页面显示的详细地址 */
+            --text-location-toast: "正在调起地图为您导航...";         /* 点击地址时的弹窗提示语 */
+
+            --text-time-title: "招商中心服务时间";                   /* 时间卡片的小标题 */
+            --text-time-value: "周一至周日 09:00 - 18:00";          /* 页面显示的时间范围 */
+
+            --text-copy-success: "微信号复制成功，可直接添加";       /* 微信复制成功后的气泡提示语 */
+
+
+            /* ↕️↔️ 2. 边距与间距控制台 (随时微调留白) */
+            --page-margin: 12px;           /* 【整个大盒子】与手机屏幕外边缘的【外边距】 */
+            --container-padding-y: 24px;   /* 【大盒子内部】内容距离外框顶部的【上下内边距】 */
+            --container-padding-x: 18px;   /* 【大盒子内部】内容距离外框线条的【左右内边距】 */
+            --card-gap: 16px;              /* 各个联系卡片、标题之间的【上下间距空隙】 */
+
+
+            /* 🎨 3. 品牌视觉与线条控制台 (纯白无阴影) */
+            --brand-blue: #2563eb;         /* 电话图标与触控激活时的蓝色 */
+            --brand-green: #22c55e;        /* 微信生态绿色 / 复制成功图标色 */
+            --text-color-main: #1d1d1f;    /* 核心文字颜色（苹果科技黑） */
+            --text-color-muted: #86868b;   /* 辅助说明标签颜色（高级优雅灰） */
             --container-bg: #ffffff;       /* 整个大盒子的背景色：纯白 */
             --card-sub-bg: #f8f9fa;        /* 内部小卡片的背景色：淡淡的浅灰衬底 */
             
-            /* 📐 核心边框控制中心（无任何box-shadow阴影） */
-            --outer-border-color: rgba(0, 0, 0, 0.08);   /* 整个外大框的线条颜色 (0.08代表淡灰色) */
-            --outer-border-thickness: 1px;               /* 整个外大框的线条粗细 */
-            --outer-border-radius: 24px;                 /* 整个大盒子的圆角大小 (数字越大圆角越钝) */
-            
+            --outer-border-color: rgba(0, 0, 0, 0.08);   /* 外围大框的线条颜色 */
+            --outer-border-thickness: 1px;               /* 外围大框的线条粗细 */
+            --outer-border-radius: 24px;                 /* 整个大盒子的圆角大小 */
             --card-border-radius: 16px;                  /* 内部单个小卡片的圆角大小 */
-            --card-border-hover: rgba(37, 99, 235, 0.25);/* 手机按压小卡片时，卡片线条变深的颜色 */
-
-            /* ↕️↔️ 边距与间距控制中心（方便随时调整留白） */
-            --page-margin: 12px;           /* 【整个大盒子】与手机屏幕左右边缘的【外边距】 */
-            --container-padding-y: 24px;   /* 【大盒子内部】文字和卡片距离顶部的【上下内边距】 */
-            --container-padding-x: 18px;   /* 【大盒子内部】卡片距离外框线条的【左右内边距】 */
-            --card-gap: 16px;              /* 各个联系卡片、标题之间的【上下间距空隙】 */
+            --card-border-hover: rgba(37, 99, 235, 0.25);/* 触控单条卡片时边框变蓝的透明度 */
         }
 
         /* ====================================================
-           🛠️ 核心架构样式（已锁死自适应逻辑，无需轻易改动）
+           🛠️ 核心架构样式（已利用 CSS 变量动态绑定配置中心）
            ==================================================== */
         * { 
             box-sizing: border-box; 
@@ -46,50 +66,43 @@
         body, html { 
             width: 100%;
             min-height: 100vh;
-            background: transparent !important; /* 背景完全透明，完美支持任何父级环境嵌入 */
+            background: transparent !important; /* 保持外层完全透明，方便嵌入 */
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: var(--page-margin);       /* 应用：页面外边距 */
+            padding: var(--page-margin);       
         }
 
-        /* 💎 页面大圆角纯白主容器 */
+        /* 页面大圆角纯白主容器 */
         .mobile-main-container {
             width: 100%;
             max-width: 480px; 
             background: var(--container-bg) !important; 
             
-            /* 核心：大圆角、纯外边框、彻底无阴影 */
             border: var(--outer-border-thickness) solid var(--outer-border-color) !important;
             border-radius: var(--outer-border-radius) !important;
-            box-shadow: none !important; 
+            box-shadow: none !important; /* 严格去除阴影 */
             
-            /* 应用：内边距控制 */
             padding: var(--container-padding-y) var(--container-padding-x); 
             display: flex;
             flex-direction: column;
-            gap: var(--card-gap); /* 应用：内部组件上下间距 */
+            gap: var(--card-gap); 
         }
 
-        /* 顶导标题组排版 */
-        .hub-intro {
-            text-align: center;
-            padding: 4px 0 4px 0;
-        }
+        /* 顶导标题组 */
+        .hub-intro { text-align: center; padding: 4px 0 4px 0; }
         .hub-intro h1 {
             font-size: 22px;
             font-weight: 800;
-            color: var(--text-main);
+            color: var(--text-color-main);
             letter-spacing: -0.5px;
             margin-bottom: 6px;
         }
-        .hub-intro p {
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
+        .hub-intro h1::before { content: var(--text-heading); } /* 动态绑定配置文字 */
+        .hub-intro p { font-size: 13px; color: var(--text-color-muted); font-weight: 500; }
+        .hub-intro p::before { content: var(--text-subheading); } /* 动态绑定配置文字 */
 
-        /* 内部小卡片基础 */
+        /* 内部小卡片通用样式 */
         .hub-card {
             background: var(--card-sub-bg); 
             border: 1px solid rgba(0, 0, 0, 0.03) !important;
@@ -103,7 +116,7 @@
             transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 手机端触控微动弹性反馈 */
+        /* 手机端触控轻微回弹反馈 */
         .hub-card:active {
             transform: scale(0.97);
             background: #f1f3f5;
@@ -123,39 +136,31 @@
         .icon-box svg { width: 20px; height: 20px; fill: currentColor; }
 
         /* 卡片文字排版 */
-        .card-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-            overflow: hidden;
-        }
-        .card-title {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .card-value {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .card-meta { display: flex; flex-direction: column; gap: 2px; flex: 1; overflow: hidden; }
+        .card-title { font-size: 12px; color: var(--text-color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-value { font-size: 15px; font-weight: 700; color: var(--text-color-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* 引导箭头 */
-        .arrow-action {
-            color: #c7c7cc;
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-        }
+        /* 各个板块动态注入配置文字 */
+        .title-phone::before { content: var(--text-phone-title); }
+        .value-phone::before { content: var(--text-phone-value); }
+        
+        .title-wechat::before { content: var(--text-wechat-title); }
+        .value-wechat::before { content: var(--text-wechat-value); }
+        
+        .title-location::before { content: var(--text-location-title); }
+        .value-location::before { content: var(--text-location-value); }
+        .value-location { white-space: normal !important; line-height: 1.4; }
+        
+        .title-time::before { content: var(--text-time-title); }
+        .value-time::before { content: var(--text-time-value); }
+
+        .toast-text::before { content: var(--text-copy-success); }
+
+        /* 右侧小箭头引导 */
+        .arrow-action { color: #c7c7cc; display: flex; align-items: center; margin-left: auto; }
         .arrow-action svg { width: 16px; height: 16px; fill: currentColor; }
 
-        /* 差异化板块配色逻辑 */
+        /* 区别配色外壳 */
         .card-phone .icon-box { background: rgba(37, 99, 235, 0.08); color: var(--brand-blue); }
         .card-wechat .icon-box { background: rgba(34, 197, 94, 0.08); color: var(--brand-green); }
         .card-location .icon-box { background: rgba(244, 63, 94, 0.08); color: #f43f5e; }
@@ -164,7 +169,7 @@
         .card-time:active { transform: none; background: var(--card-sub-bg); border-color: rgba(0, 0, 0, 0.03) !important; }
         .card-time .icon-box { background: rgba(234, 179, 8, 0.08); color: #eab308; }
 
-        /* 动态Toast弹出提示 */
+        /* 吐司气泡提示 */
         .toast-notification {
             position: fixed;
             bottom: 40px;
@@ -194,43 +199,43 @@
     <div class="mobile-main-container">
         
         <div class="hub-intro">
-            <h1>联系我们</h1>
-            <p>即可一键直达专属招商服务中心</p>
+            <h1></h1>
+            <p></p>
         </div>
 
-        <a href="tel:13212345678" class="hub-card card-phone">
+        <a href="javascript:void(0);" id="phone-trigger" class="hub-card card-phone">
             <div class="icon-box">
                 <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
             </div>
             <div class="card-meta">
-                <span class="card-title">招商服务热线</span>
-                <span class="card-value">132-1234-5678</span>
+                <span class="card-title title-phone"></span>
+                <span class="card-value value-phone"></span>
             </div>
             <div class="arrow-action">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
             </div>
         </a>
 
-        <a href="javascript:void(0);" onclick="copyWeChatID('HD_Centurys')" class="hub-card card-wechat">
+        <a href="javascript:void(0);" id="wechat-trigger" class="hub-card card-wechat">
             <div class="icon-box">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 2.75 1.12 5.24 2.94 7.05L4 22l3.14-1.03C8.6 21.6 10.25 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm-3.5 9c-.83 0-1.5-.67-1.5-1.5S7.67 8 8.5 8s1.5.67 1.5 1.5S9.33 11 8.5 11zm7 0c-.83 0-1.5-.67-1.5-1.5S14.67 8 15.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
             </div>
             <div class="card-meta">
-                <span class="card-title">官方微信客服</span>
-                <span class="card-value">HD_Centurys</span>
+                <span class="card-title title-wechat"></span>
+                <span class="card-value value-wechat"></span>
             </div>
             <div class="arrow-action" style="color: var(--brand-green); font-size: 12px; font-weight: bold;">
                 复制
             </div>
         </a>
 
-        <a href="javascript:void(0);" onclick="alert('正在调起高德地图为您导航...')" class="hub-card card-location">
+        <a href="javascript:void(0);" id="location-trigger" class="hub-card card-location">
             <div class="icon-box">
                 <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             </div>
             <div class="card-meta">
-                <span class="card-title">项目入驻地址</span>
-                <span class="card-value" style="white-space: normal; line-height: 1.4;">武汉市武昌区和平大道恒大世纪广场</span>
+                <span class="card-title title-location"></span>
+                <span class="card-value value-location"></span>
             </div>
             <div class="arrow-action">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -242,36 +247,56 @@
                 <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
             </div>
             <div class="card-meta">
-                <span class="card-title">招商中心服务时间</span>
-                <span class="card-value">周一至周日 09:00 - 18:00</span>
+                <span class="card-title title-time"></span>
+                <span class="card-value value-time"></span>
             </div>
         </div>
 
     </div>
 
     <div class="toast-notification" id="copy-toast">
-        <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#22c55e;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        微信号复制成功，可直接添加
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--brand-green);"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        <span class="toast-text"></span>
     </div>
 
     <script>
-        function copyWeChatID(text) {
-            navigator.clipboard.writeText(text).then(() => {
+        // 获取配置变量的辅助小引擎
+        const getStyleConfig = (varName) => getComputedStyle(document.documentElement).getPropertyValue(varName).trim().replace(/^"|"$/g, '');
+
+        // 1. 动态注入拨号功能
+        document.getElementById('phone-trigger').addEventListener('click', function() {
+            const phone = getStyleConfig('--link-phone-number');
+            window.location.href = `tel:${phone}`;
+        });
+
+        // 2. 动态注入微信复制逻辑
+        document.getElementById('wechat-trigger').addEventListener('click', function() {
+            const wechatId = getStyleConfig('--text-wechat-value');
+            
+            const doNotification = () => {
                 const toast = document.getElementById('copy-toast');
                 toast.classList.add('show');
                 setTimeout(() => { toast.classList.remove('show'); }, 1800);
-            }).catch(err => {
+            };
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(wechatId).then(doNotification);
+            } else {
                 const textArea = document.createElement("textarea");
-                textArea.value = text;
+                textArea.value = wechatId;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                const toast = document.getElementById('copy-toast');
-                toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 1800);
-            });
-        }
+                doNotification();
+            }
+        });
+
+        // 3. 动态注入地址弹窗提示
+        document.getElementById('location-trigger').addEventListener('click', function() {
+            const alertText = getStyleConfig('--text-location-toast');
+            alert(alertText);
+        });
     </script>
 </body>
 </html>
