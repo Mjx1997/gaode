@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周边配套-高度自适应及带备注版</title>
+    <style>
+        /* ==========================================
+           1. 全局现代主义视觉重置
+           ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html { 
+            width: 100%;
+            background-color: transparent; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            color: #1f2329; 
+        }
+
+        /* 外部大容器 */
+        .poi-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(31, 35, 41, 0.03), 0 1px 2px rgba(31, 35, 41, 0.02);
+        }
+
+        /* ==========================================
+           2. 头部标题栏
+           ========================================== */
+        .poi-header {
+            margin-bottom: 20px;
+        }
+        
+        .poi-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2329;
+            letter-spacing: 0.3px;
+        }
+
+        /* ==========================================
+           3. 栏目导航轴（支持手机端横向滑动）
+           ========================================== */
+        .poi-tabs-wrapper {
+            width: 100%;
+            overflow-x: auto; 
+            white-space: nowrap;
+            margin-bottom: 24px;
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+        }
+        
+        .poi-tabs-wrapper::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .poi-tabs {
+            display: inline-flex;
+            gap: 12px;
+            padding: 2px 0;
+        }
+
+        .poi-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 24px;
+            border: none;
+            background: #f0f1f5; 
+            color: #1f2329;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .poi-tab-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor; 
+        }
+
+        .poi-tab-btn:hover:not(.active) {
+            background: #e4e6ed;
+        }
+
+        .poi-tab-btn.active {
+            background: #2563eb; 
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        /* ==========================================
+           4. 配套内容卡片列表
+           ========================================== */
+        .poi-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 配套独立信息行 */
+        .poi-card {
+            display: flex;
+            /* ✍️ 核心改动：由居中对齐改为顶部对齐。当简介文字特别多、右侧拉长时，左侧图片依然美观地固定在左上角 */
+            align-items: flex-start; 
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid #f0f1f2;
+            background: #ffffff;
+            gap: 16px;
+            transition: all 0.25s ease;
+        }
+
+        .poi-card:hover {
+            border-color: rgba(37, 99, 235, 0.15);
+            box-shadow: 0 6px 20px rgba(31, 35, 41, 0.04);
+        }
+
+        /* 卡片左侧图片容器 */
+        .poi-img-box {
+            width: 84px;
+            height: 84px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #f4f5f6;
+        }
+
+        .poi-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 卡片右侧数据区 */
+        .poi-info-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow: hidden;
+        }
+
+        /* 标题+距离行 */
+        .poi-row-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .poi-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2329;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .poi-distance {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2563eb; 
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        /* ✍️ 核心改动：配套简介叙述层（已彻底解除字数隐藏锁定） */
+        .poi-desc {
+            font-size: 13px;
+            color: #646a73;
+            line-height: 1.5;
+            
+            /* 以下两条属性粉碎了原本不换行的限制，允许文字无限向下扩充撑开容器 */
+            white-space: normal;   /* 允许文本正常换行 */
+            word-break: break-all; /* 遇到超长数字或英文字符时强制换行，防止撑破版面 */
+        }
+
+        /* 标签群组 */
+        .poi-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        /* 青色高亮标签 */
+        .poi-badge.highlight {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            background: #e1fbf9;
+            color: #02938a;
+        }
+
+        /* 灰色基础标签 */
+        .poi-badge.normal {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            background: #f0f1f5;
+            color: #646a73;
+        }
+
+        /* ==========================================
+           5. 📱 移动端窄屏响应
+           ========================================== */
+        @media (max-width: 480px) {
+            .poi-container { padding: 16px; }
+            .poi-title { font-size: 20px; }
+            .poi-card { padding: 12px; gap: 12px; }
+            .poi-img-box { width: 76px; height: 76px; border-radius: 10px; }
+            .poi-name { font-size: 15px; }
+            .poi-distance { font-size: 13px; }
+            .poi-desc { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="poi-container">
+    <div class="poi-header">
+        <div class="poi-title">周边配套</div>
+    </div>
+
+    <div class="poi-tabs-wrapper">
+        <div class="poi-tabs">
+            <button class="poi-tab-btn active" onclick="switchPoiTab('traffic', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 2c-4.42 0-8 3.58-8 8v7c0 1.66 1.34 3 3 3l-1 1v1h12v-1l-1-1c1.66 0 3-1.34 3-3v-7c0-4.42-3.58-8-8-8zm3.5 15c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-7 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm8.5-6H8V7h8v4z"/></svg>
+                交通出行
+            </button>
+            <button class="poi-tab-btn" onclick="switchPoiTab('food', this)">
+                <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>
+                商务餐饮
+            </button>
+            <button class="poi-tab-btn" onclick="switchPoiTab('finance', this)">
+                <svg viewBox="0 0 24 24"><path d="M11.5 1L2 6v2h19V6L11.5 1zm8.5 9H4v9h3v-9h3v9h3v-9h3v9h3v-9zM2 22h19v2H2v-2z"/></svg>
+                金融服务
+            </button>
+        </div>
+    </div>
+
+    <div class="poi-list" id="poiList"></div>
+</div>
+
+<script>
+    /**
+     * =========================================================================
+     * ✍️ 【数据配置中心】—— 在这里修改、增加、删除具体的卡片内容！
+     * =========================================================================
+     * * 📢 【规则详解】：
+     * - traffic 对应“交通出行”；food 对应“商务餐饮”；finance 对应“金融服务”。
+     * - [ ... ] 里面包含的每一组 { ... } 就是一个独立卡片。
+     * - 如果你想增加一个新卡片，只需复制一组 { ... } 粘贴在逗号后面，然后修改文字即可。
+     * * 📢 【卡片字段含义】：
+     * 1. name:     配套设施的名称（比如店名、站名）。
+     * 2. distance: 显示在右上角的距离数值（比如：120m、1.2km）。
+     * 3. desc:     下方大段的简介描述。（重点：现在这里哪怕写几百字，也会自动换行把卡片往下撑大，绝不隐藏！）
+     * 4. tag1:     第一个标签（青色高亮背景，适合写“必吃榜”、“地铁站”、“ATM”等核心卖点）。
+     * 5. tag2:     第二个标签（灰色普通背景，适合写“日常通勤”、“24H办理”等次要特征）。
+     * 6. img:      左侧图片的链接路径。可以用网络绝对路径（如 https://...），也可以用建站宝盒的本地相对路径（如 images/xxx.jpg）。
+     */
+    const poiData = {
+        // 🚄 交通出行分类下的数据
+        traffic: [
+            { 
+                name: '王家墩东地铁站 (2号线/7号线)', 
+                distance: '120m', 
+                desc: '双地铁交汇核心站点，畅达武汉三镇各大主要商圈。这里是测试长文本自适应的效果：无论你在这里写多少字，或者添加多么详细的导视线路、换乘指南，系统都会自动向下换行扩展，绝对不会再出现被切断隐藏或者留白的问题，完美契合您的展示需求。', 
+                tag1: '地铁站', 
+                tag2: '核心枢纽', 
+                img: 'https://images.unsplash.com/photo-1541410965313-d53b3c16ef17?w=150&auto=format&fit=crop&q=60' 
+            },
+            { 
+                name: '建设大道航空路公交站', 
+                distance: '210m', 
+                desc: '覆盖超过15条常规及高架快线公交，日常通勤选择极其丰富。步行仅需3分钟即可到达。', 
+                tag1: '常规站', 
+                tag2: '多线通达', 
+                img: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=150&auto=format&fit=crop&q=60' 
+            }
+        ],
+        // 🍱 商务餐饮分类下的数据
+        food: [
+            { 
+                name: '万松园美食街', 
+                distance: '280m', 
+                desc: '武汉知名餐饮集聚地，汇聚全城老字号与现代潮流风味，招待宴请首选。无论是中午的工作便餐，还是晚上的高规格商务宴请，都能在这条街上找到最合适的顶级餐厅，配套极其成熟。', 
+                tag1: '必吃榜', 
+                tag2: '商务聚餐', 
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=150&auto=format&fit=crop&q=60' 
+            },
+            { 
+                name: '雪松路海鲜烧烤一条街', 
+                distance: '320m', 
+                desc: '极具江城夜生活代表性的标杆美食街区，夜间餐饮配套成熟度在全市首屈一折，是下班放松的绝佳去处。', 
+                tag1: '人气高', 
+                tag2: '特色风味', 
+                img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=150&auto=format&fit=crop&q=60' 
+            }
+        ],
+        // 🏦 金融服务分类下的数据
+        finance: [
+            { 
+                name: '招商银行(武汉分行)', 
+                distance: '150m', 
+                desc: '全功能对公业务网点，专门针对入驻本大楼的企业提供VIP开户绿色通道、大型企业资金结算、跨境金融收付以及企业员工代发工资等全方位、一体化的专业金融支持。', 
+                tag1: 'ATM', 
+                tag2: '对公办理', 
+                img: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=150&auto=format&fit=crop&q=60' 
+            },
+            { 
+                name: '威尔仕健身(CBD店)', 
+                distance: '450m', 
+                desc: '高端白领有氧打卡与日常放松圣地，配备高端进口器械、专业恒温池以及全天候私教课程。', 
+                tag1: '24H', 
+                tag2: '恒温泳池', 
+                img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=150&auto=format&fit=crop&q=60' 
+            }
+        ]
+    };
+
+    /**
+     * =========================================================================
+     * ⚙️ 【前端渲染引擎】—— 控制页面动态吐出和切换（不需要修改此处的逻辑代码）
+     * =========================================================================
+     */
+    function renderPoiList(category) {
+        const listContainer = document.getElementById('poiList');
+        listContainer.innerHTML = ''; 
+        
+        const currentItems = poiData[category] || [];
+        
+        currentItems.forEach(item => {
+            const cardHtml = `
+                <div class="poi-card">
+                    <div class="poi-img-box">
+                        <img src="${item.img}" alt="${item.name}">
+                    </div>
+                    <div class="poi-info-box">
+                        <div class="poi-row-title">
+                            <span class="poi-name">${item.name}</span>
+                            <span class="poi-distance">${item.distance}</span>
+                        </div>
+                        <div class="poi-desc">${item.desc}</div>
+                        <div class="poi-tags">
+                            <span class="poi-badge highlight">${item.tag1}</span>
+                            <span class="poi-badge normal">${item.tag2}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            listContainer.innerHTML += cardHtml;
+        });
+    }
+
+    function switchPoiTab(category, btnElement) {
+        document.querySelectorAll('.poi-tab-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+        renderPoiList(category);
+    }
+
+    // 初始化默认加载第一个分类（交通出行）
+    renderPoiList('traffic');
+</script>
+</body>
+</html>
