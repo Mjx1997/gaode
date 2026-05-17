@@ -33,6 +33,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative; /* 用于手机端撑满超链接点击区域 */
         }
 
         /* 卡片头部图片区域 */
@@ -76,12 +77,29 @@
             flex-grow: 1;
         }
 
-        /* 标题 */
+        /* 标题与价格的父级容器：实现左右对齐 */
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        /* 标题样式 */
         .card-title {
             font-size: 20px;
             color: #1a1a1a;
             font-weight: bold;
-            margin-bottom: 10px;
+        }
+
+        /* 💡 价格区域样式：已经帮你修改为淡蓝色（与按钮一致的商务科技蓝） */
+        .card-price {
+            font-size: 16px;
+            color: #0052cc; 
+            font-weight: bold;
+            white-space: nowrap; /* 防止价格换行 */
+            flex-shrink: 0;
         }
 
         /* 简介 */
@@ -166,6 +184,50 @@
         .details-btn:hover {
             background-color: #e0e7ff;
         }
+
+
+        /* ==========================================================================
+           💡 手机端/移动端 专属样式 (当屏幕宽度小于 768px 时自动生效)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            /* 1. 隐藏指定的项目：面积/容量、2D平面图、传统按钮 */
+            .card-specs, 
+            .floorplan-container, 
+            .details-btn {
+                display: none !important;
+            }
+
+            /* 2. 优化卡片布局 */
+            .card-description {
+                margin-bottom: 0px;
+                min-height: auto; 
+            }
+
+            /* 3. 手机端全卡片点击超链接 */
+            .apartment-card {
+                cursor: pointer;
+            }
+            
+            .details-btn {
+                display: block !important; 
+                position: static;
+                background: none !important;
+                padding: 0 !important;
+                height: 0 !important;
+                width: 0 !important;
+                text-indent: -9999px; 
+            }
+
+            .details-btn::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 5; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -178,7 +240,10 @@
             <img src="" alt="户型大图" id="img-1">
         </div>
         <div class="card-body">
-            <h3 class="card-title" id="title-1"></h3>
+            <div class="title-row">
+                <h3 class="card-title" id="title-1"></h3>
+                <span class="card-price" id="price-1"></span> 
+            </div>
             <p class="card-description" id="desc-1"></p>
             
             <div class="card-specs">
@@ -209,7 +274,10 @@
             <img src="" alt="户型大图" id="img-2">
         </div>
         <div class="card-body">
-            <h3 class="card-title" id="title-2"></h3>
+            <div class="title-row">
+                <h3 class="card-title" id="title-2"></h3>
+                <span class="card-price" id="price-2"></span> 
+            </div>
             <p class="card-description" id="desc-2"></p>
             
             <div class="card-specs">
@@ -240,7 +308,10 @@
             <img src="" alt="户型大图" id="img-3">
         </div>
         <div class="card-body">
-            <h3 class="card-title" id="title-3"></h3>
+            <div class="title-row">
+                <h3 class="card-title" id="title-3"></h3>
+                <span class="card-price" id="price-3"></span> 
+            </div>
             <p class="card-description" id="desc-3"></p>
             
             <div class="card-specs">
@@ -274,6 +345,7 @@
         card1: {
             tag: "拎包入住",
             title: "精装修小户型",
+            price: "¥ 2.5 元/m²/天",  // 📝 价格修改处
             desc: "适合初创团队与个人工作室，高标准装修配套。",
             spec1: "面积：85 - 120 m²",
             spec2: "容量：1 - 10 人",
@@ -281,7 +353,7 @@
             imgUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
             // 📝 替换下方引号内的网址为您的 FTP 2D平面图地址
             floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
-            // 📝 替换下方引号内的网址为您要跳转的链接（比如您的 PDF 真实地址）
+            // 📝 这里的链接在手机端会作为【全卡片点击跳转】的地址，电脑端作为【查看详情】按钮的地址
             linkUrl: "https://www.baidu.com/"
         },
 
@@ -289,6 +361,7 @@
         card2: {
             tag: "独立经理室",
             title: "标准中型办公室",
+            price: "¥ 3.2 元/m²/天",  // 📝 价格修改处
             desc: "动静分区明确，配备专属行政区与会议室。",
             spec1: "面积：240 - 450 m²",
             spec2: "容量：10 - 30 人",
@@ -301,6 +374,7 @@
         card3: {
             tag: "专属电梯厅",
             title: "定制化大面积 (整层)",
+            price: "¥ 4.5 元/m²/天",  // 📝 价格修改处
             desc: "全景总部空间，支持品牌定制化装修与私密门禁。",
             spec1: "面积：1200 - 2400 m²",
             spec2: "特色：企业总部挂牌",
@@ -314,6 +388,7 @@
     function renderCard(id, data) {
         document.getElementById(`tag-${id}`).innerText = data.tag;
         document.getElementById(`title-${id}`).innerText = data.title;
+        document.getElementById(`price-${id}`).innerText = data.price; 
         document.getElementById(`desc-${id}`).innerText = data.desc;
         document.getElementById(`spec-${id}-1`).innerText = data.spec1;
         document.getElementById(`spec-${id}-2`).innerText = data.spec2;
