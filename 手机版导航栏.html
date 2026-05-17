@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大厂风格左侧抽屉导航</title>
+    <title>毛玻璃科技感左侧抽屉导航</title>
     <style>
         /* ==========================================
            1. 基础样式与科技蓝全局变量
@@ -16,18 +16,22 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: #0b111e; /* 暂设一个深色背景方便预览，可融入建站宝盒 */
+            /* 💡 注意：这里为了测试毛玻璃透明效果，放了一个渐变背景。
+               放到建站宝盒里后，导航栏会自动透出你原本网页的背景，非常漂亮！ */
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0052cc 100%);
+            height: 2000px; 
         }
 
         :root {
             --tech-blue: #0052cc;       /* 💡 核心科技蓝（商务、沉稳） */
             --glow-blue: #00d2ff;       /* 💡 点缀亮蓝（用于高科技微光） */
-            --drawer-bg: rgba(10, 17, 33, 0.96); /* 💡 侧边栏背景 */
-            --border-line: rgba(0, 82, 204, 0.2); /* 💡 极细科技感边框线 */
+            /* 💡 核心修改：大幅降低背景不透明度（0.55），留给毛玻璃完美的透光空间 */
+            --drawer-bg: rgba(15, 23, 42, 0.55); 
+            --border-line: rgba(0, 82, 204, 0.25); /* 💡 科技感微光边框线 */
         }
 
         /* ==========================================
-           2. 左侧默认缩略图表容器（平时极省空间）
+           2. 左侧默认缩略图表容器（已改为轻量毛玻璃）
            ========================================== */
         .mini-nav-trigger {
             position: fixed;
@@ -35,28 +39,33 @@
             left: 16px;
             width: 44px;
             height: 44px;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--border-line);
-            border-radius: 12px; /* 精致小圆角 */
+            background: rgba(255, 255, 255, 0.06); /* 💡 极其轻薄的白色半透 */
+            backdrop-filter: blur(10px);           /* 💡 毛玻璃效果 */
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15); /* 柔和白边 */
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10005; /* 确保在最顶层 */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 10005;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
         }
 
-        /* 💡 纯CSS科技感方块缩略图标（大厂常用的极简几何感） */
+        /* 悬停在缩略图标上时稍微亮一点 */
+        .mini-nav-trigger:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--glow-blue);
+        }
+
+        /* 纯CSS科技感方块缩略图标 */
         .tech-icon {
             position: relative;
             width: 18px;
             height: 14px;
         }
 
-        /* 用两根不同长度的科技线条和光点组合成缩略图标 */
         .tech-icon::before, .tech-icon::after {
             content: '';
             position: absolute;
@@ -74,10 +83,10 @@
 
         .tech-icon::after {
             bottom: 2px;
-            width: 12px; /* 一长一短，极具大厂UI设计感 */
+            width: 12px;
         }
 
-        /* 💡 当点击展开后，左侧缩略图标无缝变成关闭“X” */
+        /* 当点击展开后，左侧缩略图标无缝变成关闭“X” */
         .mini-nav-trigger.active .tech-icon::before {
             transform: translateY(4px) rotate(45deg);
             width: 16px;
@@ -92,31 +101,33 @@
 
 
         /* ==========================================
-           3. 左侧滑出全屏抽屉菜单
+           3. 左侧滑出全屏抽屉菜单（高级毛玻璃主体）
            ========================================== */
         .side-drawer-wrapper {
             position: fixed;
             top: 0;
-            left: -100%; /* 💡 默认完美隐藏在屏幕左侧外面 */
-            width: 280px; /* 紧凑的主流大厂侧边栏宽度 */
+            left: -100%; 
+            width: 280px; 
             height: 100vh;
             background: var(--drawer-bg);
+            /* 💡 核心引入：大厂超酷的物理重度毛玻璃滤镜 */
+            backdrop-filter: blur(24px) saturate(120%); 
+            -webkit-backdrop-filter: blur(24px) saturate(120%);
             border-right: 1px solid var(--border-line);
-            box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 15px 0 40px rgba(0, 0, 0, 0.2); /* 减弱了阴影，靠透明度拉开层次 */
             display: flex;
             flex-direction: column;
-            padding: 80px 24px 40px 24px; /* 顶部留出空间防止挡住返回图标 */
+            padding: 80px 24px 40px 24px; 
             z-index: 10002;
-            /* 使用大厂常用的弹性贝塞尔曲线，滑出时有极其高级的弹簧顿感 */
             transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
         }
 
-        /* 💡 激活状态：从左侧优雅滑入 */
+        /* 激活状态：从左侧优雅滑入 */
         .side-drawer-wrapper.open {
             left: 0;
         }
 
-        /* 💡 侧边栏大厂风品牌标识 */
+        /* 侧边栏大厂风品牌标识 */
         .drawer-brand {
             font-size: 16px;
             font-weight: bold;
@@ -124,10 +135,11 @@
             letter-spacing: 1px;
             margin-bottom: 40px;
             padding-left: 8px;
-            border-left: 3px solid var(--tech-blue); /* 科技蓝左侧核心线 */
+            border-left: 3px solid var(--tech-blue); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* 防止背景太亮时字看不清 */
         }
 
-        /* 💡 导航栏目菜单列表 */
+        /* 导航栏目菜单列表 */
         .drawer-menu {
             display: flex;
             flex-direction: column;
@@ -137,7 +149,7 @@
         /* 单个栏目链接 */
         .drawer-item {
             font-size: 15px;
-            color: rgba(255, 255, 255, 0.75);
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             padding: 12px 16px;
             border-radius: 8px;
@@ -146,11 +158,11 @@
             overflow: hidden;
         }
 
-        /* 💡 点击或悬停时的科技感：左侧出现呼吸蓝色光效，底色变浅蓝透明 */
+        /* 点击或悬停时的科技感 */
         .drawer-item:hover, .drawer-item:active {
             color: #ffffff;
-            background: rgba(0, 82, 204, 0.12);
-            padding-left: 22px; /* 轻轻右移，极具灵动感 */
+            background: rgba(255, 255, 255, 0.1); /* 改为白色泛光半透底 */
+            padding-left: 22px; 
         }
 
         /* 栏目左侧暗藏的高科技亮蓝光边 */
@@ -163,21 +175,21 @@
             height: 100%;
             background-color: var(--glow-blue);
             box-shadow: 0 0 8px var(--glow-blue);
-            transform: scaleY(0); /* 默认隐藏 */
+            transform: scaleY(0); 
             transition: transform 0.2s ease;
         }
 
         .drawer-item:hover::before, .drawer-item:active::before {
-            transform: scaleY(1); /* 激活时展开光条 */
+            transform: scaleY(1); 
         }
 
-        /* 💡 底部快捷招商电话（采用不显眼的温和暗蓝细线包装） */
+        /* 底部快捷招商电话 */
         .drawer-footer-phone {
-            margin-top: auto; /* 自动压到抽屉最底部 */
+            margin-top: auto; 
             font-size: 13px;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
-            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 16px;
             transition: color 0.3s;
         }
@@ -187,10 +199,11 @@
             font-weight: 500;
             display: block;
             margin-top: 4px;
+            text-shadow: 0 0 6px rgba(0, 210, 255, 0.3);
         }
 
         /* ==========================================
-           4. 全屏幕遮罩层（大厂标准交互：点击菜单外任何地方都能收起菜单）
+           4. 全屏幕遮罩层
            ========================================== */
         .drawer-overlay {
             position: fixed;
@@ -198,9 +211,9 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(4, 7, 13, 0.4);
-            backdrop-filter: blur(4px); /* 背景微微模糊，视觉焦点锁在菜单上 */
-            -webkit-backdrop-filter: blur(4px);
+            background: rgba(4, 7, 13, 0.25); /* 降低了遮罩层颜色，更显通透 */
+            backdrop-filter: blur(2px); 
+            -webkit-backdrop-filter: blur(2px);
             z-index: 10001;
             display: none;
             opacity: 0;
@@ -247,15 +260,11 @@
             const drawerBox = document.getElementById('side-drawer-box');
             const shadowMask = document.getElementById('menu-shadow-mask');
 
-            // 切换缩略图标形态(三杠变X)
             triggerBtn.classList.toggle('active');
-            // 切换侧边栏滑出状态
             drawerBox.classList.toggle('open');
-            // 切换遮罩层显示状态
             shadowMask.classList.toggle('show');
         }
 
-        // 交互优化：点击菜单内的任意链接后，菜单自动收回，防阻挡阅读
         const drawerLinks = document.querySelectorAll('.drawer-item, .drawer-footer-phone');
         drawerLinks.forEach(link => {
             link.addEventListener('click', () => {
