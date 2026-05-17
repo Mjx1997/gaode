@@ -204,11 +204,11 @@
 <body>
 
 <div class="glass-panel">
-    <button class="filter-btn active" onclick="filterData('all', this)">写字楼</button>
+    <button class="filter-btn active" onclick="filterData('all', this)">本写字楼</button>
     <button class="filter-btn" onclick="filterData('traffic', this)">轨道交通</button>
     <button class="filter-btn" onclick="filterData('bas', this)">公共交通</button>
     <button class="filter-btn" onclick="filterData('scenery', this)">休闲绿化</button>
-    <button class="filter-btn" onclick="filterData('business', this)">成熟商业街</button>
+    <button class="filter-btn" onclick="filterData('business', this)">成熟商业</button>
 </div>
 
 <div id="map-area"></div>
@@ -217,10 +217,10 @@
     // ✍️ 【配套设施基础数据库集群】：保持您原有的高精度坐标数据不变
     const pois = [
         { name: "恒大世纪广场", type: "center", pos: [114.319443, 30.573807], desc: "本项目核心位置，高端商务地标" },
-        { name: "5号线-三层楼站", type: "traffic", pos: [114.3153, 30.56992], desc: "轨道交通5号线，畅达武昌汉口核心区" },
+        { name: "5号线-三层楼站", type: "traffic", pos: [114.3153, 30.56992], desc: "双线轨交枢纽，畅达武昌汉口核心区" },
         { name: "三角路公交站", type: "bas", pos: [114.31891, 30.573965], desc: "楼下即是多路常规及快线公交站" },
-        { name: "武昌江滩", type: "scenery", pos: [114.317478, 30.579929], desc: "一线江景" },
-        { name: "漫时区商业街", type: "business", pos: [114.323572, 30.574851], desc: "涵盖餐饮、娱乐、休闲配套" }
+        { name: "武昌江滩", type: "scenery", pos: [114.317478, 30.579929], desc: "一线绝美江景，白领下班散心圣地" },
+        { name: "漫时区商业街", type: "business", pos: [114.323572, 30.574851], desc: "下楼即达，涵盖全门类顶级餐饮、娱乐、休闲配套" }
     ];
 
     const centerPos = [114.319443, 30.573807];
