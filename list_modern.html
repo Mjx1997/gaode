@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恒大世纪广场-在租房源列表 (现代扁平定制版)</title>
+    <style>
+        /* ==========================================
+           1. 全局现代主义视觉重置 & 科技商务浅色变量
+           ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html { 
+            width: 100%;
+            background-color: transparent; /* 保持透明，完美包容宿主网页背景 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            color: #1f2329; /* 字节/大厂级核心深灰字，取代死黑，提升视觉高级感 */
+        }
+
+        /* 100% 流式全包容响应式外壳 */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            /* 极其微弱的现代轻量化悬浮投影 */
+            box-shadow: 0 4px 24px rgba(31, 35, 41, 0.03), 0 1px 2px rgba(31, 35, 41, 0.02);
+        }
+
+        /* ==========================================
+           2. 顶部现代卡片式筛选工具栏
+           ========================================== */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #f2f3f5;
+        }
+        
+        .list-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2329;
+            letter-spacing: 0.5px;
+            position: relative;
+            padding-left: 12px;
+        }
+        
+        /* 装饰侧边商务蓝呼吸条 */
+        .list-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3.5px;
+            height: 16px;
+            background-color: #0052cc;
+            border-radius: 2px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f4f5f6; /* 现代低饱和网格胶囊底色 */
+            padding: 4px;
+            border-radius: 20px;
+        }
+        
+        .tab-btn {
+            padding: 6px 16px;
+            border-radius: 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: #646a73;
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .tab-btn:hover { 
+            color: #1f2329; 
+        }
+        
+        .tab-btn.active {
+            background: #ffffff;
+            color: #0052cc;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 82, 204, 0.08);
+        }
+
+        /* ==========================================
+           3. 桌面端对齐骨架线表头 (全面对齐下方卡片)
+           ========================================== */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: #f7f9fa;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #646a73;
+            margin-bottom: 12px;
+        }
+        
+        .header-main-group {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            gap: 40px;
+        }
+        
+        .header-area-floor {
+            width: 200px;
+            flex-shrink: 0;
+        }
+        
+        .header-side-group {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .header-status {
+            width: 100px;
+        }
+        
+        .header-action {
+            width: 64px;
+            text-align: right;
+        }
+
+        /* ==========================================
+           4. 房源核心列表空间 (规避内容塌陷)
+           ========================================== */
+        .house-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            min-height: 580px; /* 锁死8条数据黄金高度，防止翻页时产生页面视觉跳动跃迁 */
+        }
+
+        /* ==========================================
+           5. 【全网首创】现代双向对齐式房源卡片行样式
+           ========================================== */
+        .house-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid #f0f1f2;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+
+        /* 呼吸式极简高亮悬浮动效 */
+        .house-row:hover {
+            border-color: rgba(0, 82, 204, 0.3);
+            background: #f8faff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 82, 204, 0.04);
+        }
+
+        /* 左侧主干核心信息聚合组 */
+        .row-main-group {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            gap: 40px;
+        }
+
+        /* 面积与楼层强横向对齐容器 */
+        .area-floor-box {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        /* 面积数字化加粗凸显 */
+        .meta-area { 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: #0052cc; 
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            min-width: 85px;
+        }
+        
+        .meta-area .unit { 
+            font-size: 12px; 
+            font-weight: 500;
+            margin-left: 2px; 
+            color: #646a73;
+        }
+        
+        .meta-floor { 
+            font-size: 14px; 
+            color: #1f2329; 
+            font-weight: 500;
+        }
+        
+        /* 交付标准低沉文本 */
+        .meta-standard { 
+            font-size: 14px; 
+            color: #646a73; 
+            font-weight: 400;
+        }
+        
+        /* 右侧操作交互信息聚合组 */
+        .row-side-group {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .meta-status { 
+            width: 100px;
+            display: flex; 
+            align-items: center; 
+        }
+
+        /* 高级新式浅背景状态徽章 */
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        
+        /* 随时入驻状态：低饱和高级蓝 */
+        .status-badge.ready { 
+            background: #e0f2fe; 
+            color: #0369a1; 
+        }
+        
+        /* 已预订状态：低饱和秋麦橙 */
+        .status-badge.booked { 
+            background: #fef3c7; 
+            color: #b45309; 
+        }
+        
+        .status-badge .dot { 
+            width: 6px; 
+            height: 6px; 
+            border-radius: 50%; 
+            display: inline-block; 
+        }
+        
+        .status-badge.ready .dot { background-color: #0284c7; }
+        .status-badge.booked .dot { background-color: #d97706; }
+
+        /* 原生流线型详情按钮 */
+        .meta-action {
+            width: 64px;
+            text-align: right;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            color: #0052cc;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 6px;
+            background: #f0f5ff;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover { 
+            background: #0052cc; 
+            color: #ffffff; 
+        }
+
+        /* ==========================================
+           6. 极简页码控制部件
+           ========================================== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #f2f3f5;
+        }
+        
+        .page-btn {
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 6px;
+            border: 1px solid #dee0e3;
+            background: #ffffff;
+            cursor: pointer;
+            font-size: 13px;
+            color: #1f2329;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page-btn:hover:not(.disabled) {
+            background: #f4f5f6;
+            border-color: #bbbfc4;
+        }
+        
+        .page-btn.active {
+            background: #0052cc;
+            color: #ffffff;
+            border-color: #0052cc;
+            font-weight: 600;
+        }
+        
+        .page-btn.disabled {
+            background: #f5f6f7;
+            color: #bbbfc4;
+            cursor: not-allowed;
+            border-color: #dee0e3;
+        }
+
+        /* ==========================================
+           7. 【核心解决】📱 移动端媒体查询架构极致优化
+           ========================================== */
+        @media (max-width: 768px) {
+            /* 彻底抹去杂乱的横向表头 */
+            .list-header { 
+                display: none; 
+            }
+            
+            .container {
+                padding: 16px;
+            }
+
+            .header-bar {
+                margin-bottom: 16px;
+            }
+
+            /* 核心：将横向扁平排版转换为“高集成非对称侧向卡片” */
+            .house-row {
+                display: flex;
+                flex-direction: row; /* 保持左右并列，彻底规避按钮掉到下一行 */
+                justify-content: space-between;
+                align-items: stretch; /* 强制拉伸，保持高度对称律 */
+                padding: 16px;
+                gap: 12px;
+            }
+
+            /* 左部核心内容容器垂直流 */
+            .row-main-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                flex: 1;
+            }
+
+            /* 面积与楼层在移动端横向紧凑合并，节省空间 */
+            .area-floor-box {
+                width: auto;
+                gap: 12px;
+                align-items: baseline; /* 基线对齐让楼层完美贴合面积 */
+            }
+
+            .meta-area {
+                font-size: 22px; /* 移动端放大核心数字面积 */
+                min-width: auto;
+            }
+
+            /* 移动端将楼层优化为轻盈微型胶囊标签 */
+            .meta-floor {
+                font-size: 12px;
+                color: #646a73;
+                background: #f4f5f6;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-weight: 500;
+            }
+
+            .meta-standard {
+                font-size: 13px;
+                line-height: 1.4;
+            }
+
+            /* 右侧交互容器：变为独立的纵向对齐轨，垂直分立两端 */
+            .row-side-group {
+                flex-direction: column;
+                justify-content: space-between; /* 💡 关键：状态 badge 压在右上角，按钮死锁在右下角，绝不换行占通栏 */
+                align-items: flex-end;
+                gap: 6px;
+                min-width: 85px; /* 锁死右侧最小宽度，为详情按钮留足横向呼吸感 */
+            }
+
+            .meta-status {
+                width: auto;
+                justify-content: flex-end;
+            }
+
+            .status-badge {
+                padding: 2px 8px;
+                font-size: 11px;
+                border-radius: 4px;
+            }
+
+            .meta-action {
+                width: auto;
+                text-align: right;
+            }
+
+            /* 详情按钮缩减体积，融入卡片边角 */
+            .action-btn {
+                padding: 5px 12px;
+                font-size: 13px;
+                border-radius: 6px;
+            }
+
+            .house-list { 
+                min-height: auto; /* 解锁移动端最小高度限制 */
+            } 
+            
+            .pagination { 
+                margin-top: 16px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 顶部综合筛选条 -->
+    <div class="header-bar">
+        <div class="list-title">在租房源</div>
+        <div class="filter-tabs">
+            <button class="tab-btn active" onclick="filterHouse('all', this)">全部</button>
+            <button class="tab-btn" onclick="filterHouse('high', this)">高区</button>
+            <button class="tab-btn" onclick="filterHouse('scenery', this)">江景</button>
+        </div>
+    </div>
+
+    <!-- 骨架对齐表头 (桌面端可见) -->
+    <div class="list-header">
+        <div class="header-main-group">
+            <div class="header-area-floor">面积 / 楼层</div>
+            <div class="header-standard">交付标准</div>
+        </div>
+        <div class="header-side-group">
+            <div class="header-status">当前状态</div>
+            <div class="header-action">资料</div>
+        </div>
+    </div>
+
+    <!-- 动态房源挂载主容器 -->
+    <div class="house-list" id="houseList"></div>
+
+    <!-- 底部极简分页控制模块 -->
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+    /**
+     * 【原始房源数据库集群】
+     */
+    const houseData = [
+        { area: '285', floor: '12层', type: 'mid', standard: '精装修 · 带全套家具', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '420', floor: '18层', type: 'high', standard: '标准装修 · 吊顶白墙', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '1,100', floor: '25层', type: 'high', standard: '毛坯现房 · 空间自由', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '1,200', floor: '43层', type: 'scenery', standard: '顶级装修 · 环幕江景', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
+        { area: '150', floor: '6层', type: 'low', standard: '简约装修 · 采光极佳', status: 'booked', statusText: '已预订', link: 'http://www.hdcentury.com/1201.html' }
+    ];
+
+    let currentCategory = 'all'; 
+    let currentPage = 1;          
+    const itemsPerPage = 8;       
+
+    function getFilteredData() {
+        return currentCategory === 'all' 
+            ? houseData 
+            : houseData.filter(h => h.type === currentCategory);
+    }
+
+    /**
+     * 核心高拟真动态渲染引擎
+     */
+    function renderList() {
+        const filtered = getFilteredData();
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const pageData = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+        const listContainer = document.getElementById('houseList');
+        listContainer.innerHTML = '';
+        
+        if (pageData.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center;color:#999;padding:60px 0;font-size:14px;width:100%;">暂无对应在租房源记录</div>';
+        } else {
+            pageData.forEach(item => {
+                const statusClass = item.status === 'ready' ? 'ready' : 'booked';
+                
+                // 💡 采用了更高级的语义化复合架构排版，完美兼容了移动端侧向双列布局与桌面端长条布局
+                const itemHtml = `
+                    <div class="house-row" onclick="window.open('${item.link}', '_parent')">
+                        <div class="row-main-group">
+                            <div class="area-floor-box">
+                                <span class="meta-area">${item.area}<span class="unit">㎡</span></span>
+                                <span class="meta-floor">${item.floor}</span>
+                            </div>
+                            <div class="meta-standard">${item.standard}</div>
+                        </div>
+                        <div class="row-side-group">
+                            <div class="meta-status">
+                                <span class="status-badge ${statusClass}">
+                                    <span class="dot"></span>
+                                    ${item.statusText}
+                                </span>
+                            </div>
+                            <div class="meta-action">
+                                <a href="${item.link}" class="action-btn" onclick="event.stopPropagation();">详情</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                listContainer.innerHTML += itemHtml;
+            });
+        }
+
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
+        prevBtn.innerText = '‹';
+        prevBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (currentPage > 1) {
+                currentPage--;
+                renderList();
+            }
+        };
+        paginationContainer.appendChild(prevBtn);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+            pageBtn.innerText = i;
+            pageBtn.onclick = (e) => {
+                e.stopPropagation();
+                currentPage = i;
+                renderList();
+            };
+            paginationContainer.appendChild(pageBtn);
+        }
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = `page-btn ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextBtn.innerText = '›';
+        nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderList();
+            }
+        };
+        paginationContainer.appendChild(nextBtn);
+    }
+
+    function filterHouse(category, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = category;
+        currentPage = 1; 
+        renderList();
+    }
+
+    renderList();
+</script>
+</body>
+</html>
