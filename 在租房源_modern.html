@@ -134,9 +134,12 @@
             gap: 40px;
         }
         
+        /* 💡 仅在此处增加了 display: flex 和 gap，使标题完美对齐数据列 */
         .header-area-floor {
             width: 200px;
             flex-shrink: 0;
+            display: flex;
+            gap: 24px;
         }
         
         .header-side-group {
@@ -463,7 +466,10 @@
 
     <div class="list-header">
         <div class="header-main-group">
-            <div class="header-area-floor">面积 / 楼层</div>
+            <div class="header-area-floor">
+                <span style="min-width: 85px;">面积</span>
+                <span>楼层</span>
+            </div>
             <div class="header-standard">交付标准</div>
         </div>
         <div class="header-side-group">
@@ -472,10 +478,8 @@
         </div>
     </div>
 
-    <!-- 动态房源挂载主容器 -->
     <div class="house-list" id="houseList"></div>
 
-    <!-- 底部页码 -->
     <div class="pagination" id="pagination"></div>
 </div>
 
