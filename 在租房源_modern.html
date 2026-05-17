@@ -3,23 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>恒大世纪广场-在租房源列表 (高度分离独立锁定版)</title>
+    <title>恒大世纪广场-在租房源列表 (高度自适应版)</title>
     <style>
-        /* ==========================================================================
-           📌 【配置中心 - 核心高度控制】
-           如果你后期发现页面有留白或挤压，只需在此处修改对应的像素数值即可。
-           ========================================================================== */
-        :root {
-            /* 🖥️ 电脑端设置：固定8条数据的高度 */
-            /* 计算参考：单行高度约 62px + 间距 10px，8条数据完美无缝无跳动 */
-            --desktop-list-height: 570px;
-
-            /* 📱 手机端设置：固定8条数据的高度 */
-            /* 计算参考：手机端单行内容纵向堆叠，单行高度约 76px + 间距 10px */
-            /* 独立分开设置，彻底解决手机端因为行高不同导致的“大面积留空”或“展示不全”问题 */
-            --mobile-list-height: 690px;
-        }
-
         /* ==========================================
            1. 全局现代主义视觉重置
            ========================================== */
@@ -134,7 +119,7 @@
             gap: 40px;
         }
         
-        /* 💡 仅在此处增加了 display: flex 和 gap，使标题完美对齐数据列 */
+        /* 面积与楼层表头完全独立分开对齐 */
         .header-area-floor {
             width: 200px;
             flex-shrink: 0;
@@ -158,17 +143,13 @@
         }
 
         /* ==========================================================================
-           4. 房源核心列表空间 (高度锁死核心区)
+           4. 房源核心列表空间 (已移除硬性高度死锁，改为跟随数据自动伸缩)
            ========================================================================== */
         .house-list { 
             display: flex; 
             flex-direction: column; 
             gap: 10px; 
-            
-            /* 💡 核心改动：默认读取电脑端变量，锁死整体高度，翻页时容器绝不缩水跳动 */
-            min-height: var(--desktop-list-height); 
-            max-height: var(--desktop-list-height);
-            overflow: hidden; /* 防止溢出干扰 */
+            /* 移除 min-height 和 max-height，让其根据实际渲染的房源行数自动跳转高度 */
         }
 
         /* ==========================================
@@ -183,7 +164,7 @@
             border: 1px solid #f0f1f2;
             background: #ffffff;
             cursor: pointer;
-            height: 62px; /* 💡 电脑端强制单行高度固定，确保完美契合全局高度锁定 */
+            height: 62px; 
             box-sizing: border-box;
             transition: all 0.25s cubic-bezier(0.215, 0.610, 0.355, 1);
         }
@@ -355,7 +336,7 @@
         }
 
         /* ==========================================================================
-           7. 📱 移动端媒体查询架构极致优化（完美分离配置）
+           7. 📱 移动端媒体查询架构极致优化
            ========================================================================== */
         @media (max-width: 768px) {
             .list-header { 
@@ -370,10 +351,10 @@
                 margin-bottom: 16px;
             }
 
-            /* 💡 核心改动：手机端独立切换到专门的手机锁死高度变量，拒绝多余空白 */
+            /* 手机端也同步去除了高度锁定，完全由内部行高自由撑开 */
             .house-list {
-                min-height: var(--mobile-list-height);
-                max-height: var(--mobile-list-height);
+                min-height: auto;
+                max-height: auto;
             }
 
             .house-row {
@@ -383,7 +364,7 @@
                 align-items: stretch; 
                 padding: 12px 14px;
                 gap: 12px;
-                height: 76px; /* 💡 手机端行高固定为 76px，配合全局变量完美填满空间 */
+                height: 76px; 
             }
 
             .row-main-group {
@@ -486,8 +467,6 @@
 <script>
     /**
      * 【原始房源数据库集群】
-     * 💡 为了方便测试分页切换时“高度依然死锁不跳动”的效果，我特意为你将测试数据扩充到了 10 条（每页显示8条）
-     * 这样你可以直接在电脑或手机上点击第 2 页，看看容器高度是不是完全保持稳定，不会缩水空出一大块！
      */
     const houseData = [
         { area: '285', floor: '12层', type: 'mid', standard: '精装修 · 带全套家具', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
@@ -504,7 +483,7 @@
 
     let currentCategory = 'all'; 
     let currentPage = 1;          
-    const itemsPerPage = 8; /* 💡 固定单页输出 8 条记录 */      
+    const itemsPerPage = 8; /* 💡 依然严格限制单页最多输出 8 条记录 */      
 
     function getFilteredData() {
         return currentCategory === 'all' 
