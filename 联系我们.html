@@ -6,22 +6,35 @@
     <title>联系我们 - 手机版现代服务舱</title>
     <style>
         /* ====================================================
-           🎨 1. 现代大厂色彩与动效控制台
+           💡【配置中心】在这里修改数值和样式，全页面同步变化
            ==================================================== */
         :root {
-            --brand-blue: #2563eb;       /* 品牌核心蓝 */
-            --brand-green: #22c55e;      /* 微信生态绿 */
-            --text-main: #1d1d1f;        /* 现代科技黑 */
-            --text-muted: #86868b;       /* 优雅高级灰 */
-            --container-bg: #ffffff;     /* 大容器纯白背景 */
-            --card-sub-bg: #f8f9fa;      /* 内部小卡片的浅灰衬底 */
+            /* 🎨 品牌色彩控制中心 */
+            --brand-blue: #2563eb;         /* 电话图标与激活时的蓝色 */
+            --brand-green: #22c55e;        /* 微信生态绿色 */
+            --text-main: #1d1d1f;          /* 主标题、核心信息文字颜色（科技黑） */
+            --text-muted: #86868b;         /* 副标题、标签文字颜色（优雅灰） */
+            --container-bg: #ffffff;       /* 整个大盒子的背景色：纯白 */
+            --card-sub-bg: #f8f9fa;        /* 内部小卡片的背景色：淡淡的浅灰衬底 */
             
-            /* 📐 核心边框颜色控制 */
-            --outer-border-color: rgba(0, 0, 0, 0.08); /* 整个页面大盒子的外边框颜色 */
-            --card-border-hover: rgba(37, 99, 235, 0.25); /* 内部卡片点击时的边框色 */
+            /* 📐 核心边框控制中心（无任何box-shadow阴影） */
+            --outer-border-color: rgba(0, 0, 0, 0.08);   /* 整个外大框的线条颜色 (0.08代表淡灰色) */
+            --outer-border-thickness: 1px;               /* 整个外大框的线条粗细 */
+            --outer-border-radius: 24px;                 /* 整个大盒子的圆角大小 (数字越大圆角越钝) */
+            
+            --card-border-radius: 16px;                  /* 内部单个小卡片的圆角大小 */
+            --card-border-hover: rgba(37, 99, 235, 0.25);/* 手机按压小卡片时，卡片线条变深的颜色 */
+
+            /* ↕️↔️ 边距与间距控制中心（方便随时调整留白） */
+            --page-margin: 12px;           /* 【整个大盒子】与手机屏幕左右边缘的【外边距】 */
+            --container-padding-y: 24px;   /* 【大盒子内部】文字和卡片距离顶部的【上下内边距】 */
+            --container-padding-x: 18px;   /* 【大盒子内部】卡片距离外框线条的【左右内边距】 */
+            --card-gap: 16px;              /* 各个联系卡片、标题之间的【上下间距空隙】 */
         }
 
-        /* 全局流式重置，专为手机触控优化 */
+        /* ====================================================
+           🛠️ 核心架构样式（已锁死自适应逻辑，无需轻易改动）
+           ==================================================== */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -33,37 +46,35 @@
         body, html { 
             width: 100%;
             min-height: 100vh;
-            /* ★ 核心升级：外层彻底透明 */
-            background: transparent !important; 
+            background: transparent !important; /* 背景完全透明，完美支持任何父级环境嵌入 */
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 12px; /* 给外框留出一点呼吸间距 */
+            padding: var(--page-margin);       /* 应用：页面外边距 */
         }
 
-        /* ====================================================
-           💎 2. 整个页面的大圆角边框白色主容器
-           ==================================================== */
+        /* 💎 页面大圆角纯白主容器 */
         .mobile-main-container {
             width: 100%;
-            max-width: 480px; /* 锁死移动端最佳视觉宽度 */
-            background: var(--container-bg) !important; /* 内部纯白 */
+            max-width: 480px; 
+            background: var(--container-bg) !important; 
             
-            /* ★ 核心要求：整个大区域加圆角、外边框，无任何阴影 */
-            border: 1px solid var(--outer-border-color) !important;
-            border-radius: 24px !important;
+            /* 核心：大圆角、纯外边框、彻底无阴影 */
+            border: var(--outer-border-thickness) solid var(--outer-border-color) !important;
+            border-radius: var(--outer-border-radius) !important;
             box-shadow: none !important; 
             
-            padding: 24px 18px; /* 大盒子内部四周的留白 */
+            /* 应用：内边距控制 */
+            padding: var(--container-padding-y) var(--container-padding-x); 
             display: flex;
             flex-direction: column;
-            gap: 16px; /* 内部小组件的黄金间距 */
+            gap: var(--card-gap); /* 应用：内部组件上下间距 */
         }
 
-        /* 极简顶导视觉话术 */
+        /* 顶导标题组排版 */
         .hub-intro {
             text-align: center;
-            padding: 4px 0 8px 0;
+            padding: 4px 0 4px 0;
         }
         .hub-intro h1 {
             font-size: 22px;
@@ -78,16 +89,13 @@
             font-weight: 500;
         }
 
-        /* ====================================================
-           🧱 3. 纯白大框内部的精致小卡片
-           ==================================================== */
+        /* 内部小卡片基础 */
         .hub-card {
-            background: var(--card-sub-bg); /* 小卡片用淡淡的浅灰，与纯白背景拉开精致的层次 */
+            background: var(--card-sub-bg); 
             border: 1px solid rgba(0, 0, 0, 0.03) !important;
-            border-radius: 16px; /* 小卡片圆角 */
+            border-radius: var(--card-border-radius); 
             padding: 16px;
-            box-shadow: none !important; /* 确保内部也无阴影 */
-            
+            box-shadow: none !important; 
             display: flex;
             align-items: center;
             gap: 14px;
@@ -95,14 +103,14 @@
             transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 📱 手机端专属全动感微压缩反馈 */
+        /* 手机端触控微动弹性反馈 */
         .hub-card:active {
             transform: scale(0.97);
             background: #f1f3f5;
-            border-color: var(--card-border-hover) !important; /* 激活时边框变蓝 */
+            border-color: var(--card-border-hover) !important; 
         }
 
-        /* 图标质感外壳 */
+        /* 图标外壳 */
         .icon-box {
             width: 42px;
             height: 42px;
@@ -112,13 +120,9 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        .icon-box svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
+        .icon-box svg { width: 20px; height: 20px; fill: currentColor; }
 
-        /* 卡片文字排版排布 */
+        /* 卡片文字排版 */
         .card-meta {
             display: flex;
             flex-direction: column;
@@ -142,37 +146,25 @@
             text-overflow: ellipsis;
         }
 
-        /* 右侧交互引导小箭头 */
+        /* 引导箭头 */
         .arrow-action {
             color: #c7c7cc;
             display: flex;
             align-items: center;
             margin-left: auto;
         }
-        .arrow-action svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
+        .arrow-action svg { width: 16px; height: 16px; fill: currentColor; }
 
-        /* ====================================================
-           🎨 4. 差异化板块主题色彩
-           ==================================================== */
-        /* 电话卡片 */
+        /* 差异化板块配色逻辑 */
         .card-phone .icon-box { background: rgba(37, 99, 235, 0.08); color: var(--brand-blue); }
-        /* 微信卡片 */
         .card-wechat .icon-box { background: rgba(34, 197, 94, 0.08); color: var(--brand-green); }
-        /* 地址卡片 */
         .card-location .icon-box { background: rgba(244, 63, 94, 0.08); color: #f43f5e; }
         
-        /* 时间卡片（无点击反馈与边框加深） */
         .card-time { cursor: default; }
         .card-time:active { transform: none; background: var(--card-sub-bg); border-color: rgba(0, 0, 0, 0.03) !important; }
         .card-time .icon-box { background: rgba(234, 179, 8, 0.08); color: #eab308; }
 
-        /* ====================================================
-           ✨ 5. 一键复制成功的现代动态吐司提示 (Toast)
-           ==================================================== */
+        /* 动态Toast弹出提示 */
         .toast-notification {
             position: fixed;
             bottom: 40px;
@@ -194,10 +186,7 @@
             align-items: center;
             gap: 8px;
         }
-        .toast-notification.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
+        .toast-notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
 </head>
 <body>
