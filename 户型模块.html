@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>户型介绍模块</title>
+    <title>户型介绍模块 - 独立平面图舱位版</title>
     <style>
         /* 基础重置 */
         * {
@@ -12,38 +12,43 @@
             padding: 0;
         }
 
-        /* 外部大容器：背景透明，四周留白24px，自适应响应式 */
+        /* 外部大容器：自适应网格布局 */
         .apartment-section {
             width: 100%;
-            background-color: transparent; /* 背景保持透明 */
-            padding: 24px; /* 四周固定 24px 间距 */
+            background-color: transparent; 
+            padding: 24px; 
             display: grid;
-            /* 自动网格布局：随窗口拖动自动换行 */
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px; /* 卡片之间的间距 */
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 24px; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         /* 单个卡片样式 */
         .apartment-card {
-            background-color: #ffffff; /* 卡片自身为白色背景 */
-            border-radius: 16px; /* 卡片圆角 */
-            border: 1px solid #eaeaea; /* 纯净无阴影，改用极淡边框防止纯白背景下无法分辨 */
+            background-color: #ffffff; 
+            border-radius: 16px; 
+            border: 1px solid #eaeaea; 
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            position: relative; /* 用于手机端撑满超链接点击区域 */
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
-        /* 卡片头部图片区域 */
-        .card-header {
+        .apartment-card:hover {
+            transform: translateY(-2px);
+            border-color: #d1d1d6;
+        }
+
+        /* 图片容器（控制纵横比 16:10）- 仅显示实景图 */
+        .card-image-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 75%; /* 4:3 黄金比例 */
+            padding-top: 62.5%; 
+            background-color: #f5f5f7;
+            overflow: hidden;
         }
 
-        .card-header img {
+        .apartment-img {
             position: absolute;
             top: 0;
             left: 0;
@@ -52,360 +57,344 @@
             object-fit: cover;
         }
 
-        /* 顶部左上角状态标签 */
+        /* 标签 */
         .card-tag {
             position: absolute;
-            top: 16px;
-            left: 16px;
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: bold;
+            top: 14px;
+            left: 14px;
+            background: rgba(29, 29, 31, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: #ffffff;
+            padding: 6px 12px;
             border-radius: 20px;
-            z-index: 10;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            z-index: 3;
         }
 
-        .tag-teal { background-color: #26c2cb; }   /* 户型一：青色 */
-        .tag-blue { background-color: #0066ff; }   /* 户型二：蓝色 */
-        .tag-orange { background-color: #ff5500; } /* 户型三：橙色 */
-
-        /* 卡片文字内容包裹区 */
-        .card-body {
-            padding: 24px;
+        /* 文字内容区域 */
+        .card-content {
+            padding: 20px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
 
-        /* 标题与价格的父级容器：实现左右对齐 */
-        .title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 10px;
-        }
-
-        /* 标题样式 */
         .card-title {
-            font-size: 20px;
-            color: #1a1a1a;
-            font-weight: bold;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 6px;
+            line-height: 1.4;
         }
 
-        /* 价格区域样式：已修改为与按钮、图标一致的淡蓝色 */
         .card-price {
-            font-size: 16px;
-            color: #0052cc; 
-            font-weight: bold;
-            white-space: nowrap; /* 防止价格换行 */
-            flex-shrink: 0;
+            font-size: 15px;
+            color: #2563eb; 
+            font-weight: 700;
+            margin-bottom: 12px;
         }
 
-        /* 简介 */
-        .card-description {
-            font-size: 14px;
-            color: #666666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            min-height: 44px; /* 保持高度对齐 */
+        .card-desc {
+            font-size: 13px;
+            color: #86868b;
+            line-height: 1.5;
+            margin-bottom: 18px;
+            min-height: 38px; 
         }
 
-        /* 参数信息行 */
+        /* 核心参数网格（横线上方） */
         .card-specs {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+            border-top: 1px solid #f5f5f7;
+            padding-top: 14px;
         }
 
         .spec-item {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            color: #333333;
+            flex-direction: column;
+            gap: 2px;
         }
 
-        .spec-item svg {
-            color: #0052cc; 
-            flex-shrink: 0;
+        .spec-label {
+            font-size: 11px;
+            color: #86868b;
         }
 
-        /* 2D平面图外层蓝色容器 */
+        .spec-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        /* ====================================================
+           🖥️ 电脑端（PC）专属：横线下方的独立户型平面图舱位
+           ==================================================== */
         .floorplan-container {
-            background-color: #f3f5ff; /* 淡蓝色背景 */
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 20px;
-            margin-top: auto; /* 将平面图固定压在卡片底部 */
-        }
-
-        .floorplan-title {
-            font-size: 12px;
-            color: #666666;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        /* 固定大小的长方形区域，让图片自适应填充 */
-        .floorplan-img-wrapper {
             width: 100%;
-            height: 130px; /* 固定长方形区域高度 */
-            background-color: #ffffff;
-            border-radius: 6px;
+            height: 135px; /* 优雅的矮长方形结构 */
+            background-color: #f5f5f7; /* 微灰色高质感背景底座 */
+            border-radius: 8px;
+            border: 1px dashed #e2e8f0; /* 现代感虚线边框 */
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            padding: 6px;
         }
 
-        .floorplan-img-wrapper img {
+        /* 平面图本身 */
+        .floorplan-preview-img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 保持图片原本比例缩放在长方形框内 */
+            object-fit: contain; /* 保证平面图不被裁剪，完整展示 */
+            padding: 8px; /* 留出安全边缘内边距 */
+            background-color: #ffffff;
         }
 
-        /* 查看详情按钮 */
-        .details-btn {
+        /* 标注水印角标（注明这个区域是展示户型图的） */
+        .floorplan-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #1d1d1f;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            pointer-events: none; /* 防止遮挡点击 */
+        }
+
+        /* 底部操作按钮 */
+        .card-button {
             width: 100%;
-            background-color: #eef2ff;
-            color: #0052cc;
+            background-color: #1d1d1f;
+            color: #ffffff;
             text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 12px 0;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
             text-decoration: none;
-            transition: background-color 0.2s;
+            margin-top: auto; 
+            transition: background-color 0.2s ease;
         }
 
-        .details-btn:hover {
-            background-color: #e0e7ff;
+        .card-button:hover {
+            background-color: #000000;
         }
 
-
-        /* ==========================================================================
-           💡 手机端/移动端 专属样式 (当屏幕宽度小于 768px 时自动生效)
-           ========================================================================== */
-        @media (max-width: 768px) {
-            /* 改变手机端的容器流向：卡片自然地从上到下垂直堆叠，滑动时跟随手势自然展现，永不遮挡 */
+        /* ====================================================
+           🔧 手机端专属自适应逻辑：【完全取消限制与局部纵向滚动，隐藏户型舱】
+           ==================================================== */
+        @media screen and (max-width: 640px) {
             .apartment-section {
-                display: flex;
-                flex-direction: column;
-                gap: 20px; /* 手机端卡片与卡片之间的上下间距 */
-                padding: 16px; /* 适当缩小手机端的外边距 */
-            }
-
-            /* 1. 隐藏指定的项目：面积/容量、2D平面图、传统按钮 */
-            .card-specs, 
-            .floorplan-container, 
-            .details-btn {
-                display: none !important;
-            }
-
-            /* 2. 优化卡片布局 */
-            .card-description {
-                margin-bottom: 0px;
-                min-height: auto; /* 手机端取消强制最小高度，高度完全自适应内容 */
-            }
-
-            /* 3. 手机端全卡片点击超链接 */
-            .apartment-card {
-                cursor: pointer;
-                width: 100%; /* 确保卡片横向撑满屏幕 */
+                max-height: none !important; 
+                overflow-y: visible !important; 
+                padding: 16px;
+                gap: 20px;
+                grid-template-columns: 1fr; /* 单列纵向顺畅滚动 */
             }
             
-            .details-btn {
-                display: block !important; 
-                position: static;
-                background: none !important;
-                padding: 0 !important;
-                height: 0 !important;
-                width: 0 !important;
-                text-indent: -9999px; 
+            /* 🔍 核心改动：在手机端将横线下方的户型图区域完全隐藏，不恢复多余功能，防止臃肿卡顿 */
+            .floorplan-container {
+                display: none !important;
             }
-
-            .details-btn::after {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 5; 
+            
+            .card-content {
+                padding: 16px;
+            }
+            
+            .card-title {
+                font-size: 17px;
+            }
+            
+            .card-desc {
+                min-height: auto; 
+                margin-bottom: 14px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="apartment-section">
+    <div class="apartment-section">
 
-    <div class="apartment-card">
-        <div class="card-header">
-            <span class="card-tag tag-teal" id="tag-1"></span>
-            <img src="" alt="户型大图" id="img-1">
+        <div class="apartment-card" id="card-1">
+            <div class="card-image-wrapper">
+                <span class="card-tag" id="tag-card1">加载中...</span>
+                <img class="apartment-img real-img" id="img-real-card1" src="" alt="实景图">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title" id="title-card1">加载中...</h3>
+                <p class="card-price" id="price-card1">加载中...</p>
+                <p class="card-desc" id="desc-card1">加载中...</p>
+                
+                <div class="card-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">SPACE</span>
+                        <span class="spec-value" id="spec1-card1">--</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">FEATURE</span>
+                        <span class="spec-value" id="spec2-card1">--</span>
+                    </div>
+                </div>
+
+                <div class="floorplan-container">
+                    <img class="floorplan-preview-img" id="img-floor-card1" src="" alt="户型平面图">
+                    <div class="floorplan-badge">户型平面图</div>
+                </div>
+
+                <a class="card-button" id="btn-card1" href="#" target="_blank">查看详情</a>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="title-row">
-                <h3 class="card-title" id="title-1"></h3>
-                <span class="card-price" id="price-1"></span> 
-            </div>
-            <p class="card-description" id="desc-1"></p>
-            
-            <div class="card-specs">
-                <div class="spec-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
-                    <span id="spec-1-1"></span>
-                </div>
-                <div class="spec-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span id="spec-1-2"></span>
-                </div>
-            </div>
 
-            <div class="floorplan-container">
-                <div class="floorplan-title">2D 平面简图</div>
-                <div class="floorplan-img-wrapper">
-                    <img src="" alt="平面图" id="floorplan-1">
-                </div>
+        <div class="apartment-card" id="card-2">
+            <div class="card-image-wrapper">
+                <span class="card-tag" id="tag-card2">加载中...</span>
+                <img class="apartment-img real-img" id="img-real-card2" src="" alt="实景图">
             </div>
+            <div class="card-content">
+                <h3 class="card-title" id="title-card2">加载中...</h3>
+                <p class="card-price" id="price-card2">加载中...</p>
+                <p class="card-desc" id="desc-card2">加载中...</p>
+                
+                <div class="card-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">SPACE</span>
+                        <span class="spec-value" id="spec1-card2">--</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">FEATURE</span>
+                        <span class="spec-value" id="spec2-card2">--</span>
+                    </div>
+                </div>
 
-            <a href="" target="_blank" class="details-btn" id="link-1">查看详情</a>
+                <div class="floorplan-container">
+                    <img class="floorplan-preview-img" id="img-floor-card2" src="" alt="户型平面图">
+                    <div class="floorplan-badge">户型平面图</div>
+                </div>
+
+                <a class="card-button" id="btn-card2" href="#" target="_blank">查看详情</a>
+            </div>
         </div>
+
+        <div class="apartment-card" id="card-3">
+            <div class="card-image-wrapper">
+                <span class="card-tag" id="tag-card3">加载中...</span>
+                <img class="apartment-img real-img" id="img-real-card3" src="" alt="实景图">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title" id="title-card3">加载中...</h3>
+                <p class="card-price" id="price-card3">加载中...</p>
+                <p class="card-desc" id="desc-card3">加载中...</p>
+                
+                <div class="card-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">SPACE</span>
+                        <span class="spec-value" id="spec1-card3">--</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">FEATURE</span>
+                        <span class="spec-value" id="spec2-card3">--</span>
+                    </div>
+                </div>
+
+                <div class="floorplan-container">
+                    <img class="floorplan-preview-img" id="img-floor-card3" src="" alt="户型平面图">
+                    <div class="floorplan-badge">户型平面图</div>
+                </div>
+
+                <a class="card-button" id="btn-card3" href="#" target="_blank">查看详情</a>
+            </div>
+        </div>
+
     </div>
 
-    <div class="apartment-card">
-        <div class="card-header">
-            <span class="card-tag tag-blue" id="tag-2"></span>
-            <img src="" alt="户型大图" id="img-2">
-        </div>
-        <div class="card-body">
-            <div class="title-row">
-                <h3 class="card-title" id="title-2"></h3>
-                <span class="card-price" id="price-2"></span> 
-            </div>
-            <p class="card-description" id="desc-2"></p>
-            
-            <div class="card-specs">
-                <div class="spec-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
-                    <span id="spec-2-1"></span>
-                </div>
-                <div class="spec-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span id="spec-2-2"></span>
-                </div>
-            </div>
+    <script>
+        const configData = {
+            // ====================================================
+            // 🏢 【户型卡片一】配置区域
+            // ====================================================
+            card1: {
+                tag: "优质采光",                         /* 1. 左上角小标签内容 */
+                title: "标准双人/精装办公区",             /* 2. 户型主标题文字 */
+                price: "¥ 3.2 元/m²/天",                /* 3. 租金价格文字 */
+                desc: "适合5-10人中小型创业团队，全套办公家具拎包入驻，带独立会议角。", /* 4. 详细描述 */
+                spec1: "面积：120 - 150 m²",            /* 5. 灰色横线上方的 SPACE 属性值 */
+                spec2: "朝向：正南向采光",               /* 6. 灰色横线上方的 FEATURE 属性值 */
+                
+                /* 🖼️ 图片链接：直接替换为你在建站宝盒后台上传后的图片绝对路径 URL */
+                imgUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",        /* 顶部大图：项目实景图 */
+                floorplanUrl: "https://images.unsplash.com/photo-1545464693-f1798a373343?auto=format&fit=crop&w=400&q=80",  /* 横线下方：长方形户型平面图 */
+                
+                /* 🔗 按钮超链接：点击“预约线下看房”跳转的表单页面或单页地址 */
+                linkUrl: "https://www.baidu.com/"
+            },
 
-            <div class="floorplan-container">
-                <div class="floorplan-title">2D 平面简图</div>
-                <div class="floorplan-img-wrapper">
-                    <img src="" alt="平面图" id="floorplan-2">
-                </div>
-            </div>
+            // ====================================================
+            // 🏢 【户型卡片二】配置区域
+            // ====================================================
+            card2: {
+                tag: "全景落地窗",
+                title: "中型企业联合办公空间",
+                price: "¥ 3.8 元/m²/天",
+                desc: "尊享270度东湖全景视野，配备独立经理间、茶水间及行政前台区。",
+                spec1: "面积：280 - 420 m²",
+                spec2: "特色：高管行政套间",
+                
+                imgUrl: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=600&q=80",        /* 顶部大图：项目实景图 */
+                floorplanUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80",  /* 横线下方：长方形户型平面图 */
+                
+                linkUrl: "https://www.baidu.com/"
+            },
 
-            <a href="" target="_blank" class="details-btn" id="link-2">查看详情</a>
-        </div>
-    </div>
+            // ====================================================
+            // 🏢 【户型卡片三】配置区域
+            // ====================================================
+            card3: {
+                tag: "专属电梯厅",
+                title: "定制化大面积 (整层)",
+                price: "¥ 4.5 元/m²/天",
+                desc: "全景总部空间，支持品牌定制化装修与私密门禁。",
+                spec1: "面积：1200 - 2400 m²",
+                spec2: "特色：企业总部挂牌",
+                
+                imgUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",        /* 顶部大图：项目实景图 */
+                floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",  /* 横线下方：长方形户型平面图 */
+                
+                linkUrl: "https://www.baidu.com/"
+            }
+        };
 
-    <div class="apartment-card">
-        <div class="card-header">
-            <span class="card-tag tag-orange" id="tag-3"></span>
-            <img src="" alt="户型大图" id="img-3">
-        </div>
-        <div class="card-body">
-            <div class="title-row">
-                <h3 class="card-title" id="title-3"></h3>
-                <span class="card-price" id="price-3"></span> 
-            </div>
-            <p class="card-description" id="desc-3"></p>
-            
-            <div class="card-specs">
-                <div class="spec-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 22L2 2v20z"/></svg>
-                    <span id="spec-3-1"></span>
-                </div>
-                <div class="spec-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="16"/><line x1="15" y1="22" x2="15" y2="16"/><line x1="9" y1="16" x2="15" y2="16"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/></svg>
-                    <span id="spec-3-2"></span>
-                </div>
-            </div>
-
-            <div class="floorplan-container">
-                <div class="floorplan-title">2D 平面简图</div>
-                <div class="floorplan-img-wrapper">
-                    <img src="" alt="平面图" id="floorplan-3">
-                </div>
-            </div>
-
-            <a href="" target="_blank" class="details-btn" id="link-3">查看详情</a>
-        </div>
-    </div>
-
-</div>
-
-
-<script>
-    const apartmentData = {
-        // ------------------ 户型一配置 ------------------
-        card1: {
-            tag: "拎包入住",
-            title: "精装修小户型",
-            price: "¥ 2.5 元/m²/天",  // 📝 价格修改处
-            desc: "适合初创团队与个人工作室，高标准装修配套。",
-            spec1: "面积：85 - 120 m²",
-            spec2: "容量：1 - 10 人",
-            imgUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
-            floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
-            linkUrl: "https://www.baidu.com/"
-        },
-
-        // ------------------ 户型二配置 ------------------
-        card2: {
-            tag: "独立经理室",
-            title: "标准中型办公室",
-            price: "¥ 3.2 元/m²/天",  // 📝 价格修改处
-            desc: "动静分区明确，配备专属行政区与会议室。",
-            spec1: "面积：240 - 450 m²",
-            spec2: "容量：10 - 30 人",
-            imgUrl: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=600&q=80",
-            floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
-            linkUrl: "https://www.baidu.com/"
-        },
-
-        // ------------------ 户型三配置 ------------------
-        card3: {
-            tag: "专属电梯厅",
-            title: "定制化大面积 (整层)",
-            price: "¥ 4.5 元/m²/天",  // 📝 价格修改处
-            desc: "全景总部空间，支持品牌定制化装修与私密门禁。",
-            spec1: "面积：1200 - 2400 m²",
-            spec2: "特色：企业总部挂牌",
-            imgUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-            floorplanUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
-            linkUrl: "https://www.baidu.com/"
+        // 底层数据流自动化动力引擎，请放心，这里无须任何人工修改
+        function renderCard(id, data) {
+            document.getElementById(`tag-${id}`).innerText = data.tag;
+            document.getElementById(`title-${id}`).innerText = data.title;
+            document.getElementById(`price-${id}`).innerText = data.price; 
+            document.getElementById(`desc-${id}`).innerText = data.desc;
+            document.getElementById(`spec1-${id}`).innerText = data.spec1;
+            document.getElementById(`spec2-${id}`).innerText = data.spec2;
+            document.getElementById(`img-real-${id}`).src = data.imgUrl;
+            document.getElementById(`img-floor-${id}`).src = data.floorplanUrl;
+            document.getElementById(`btn-${id}`).href = data.linkUrl;
         }
-    };
 
-    // 自动将数据渲染到页面中，请勿修改下方渲染逻辑代码
-    function renderCard(id, data) {
-        document.getElementById(`tag-${id}`).innerText = data.tag;
-        document.getElementById(`title-${id}`).innerText = data.title;
-        document.getElementById(`price-${id}`).innerText = data.price; 
-        document.getElementById(`desc-${id}`).innerText = data.desc;
-        document.getElementById(`spec-${id}-1`).innerText = data.spec1;
-        document.getElementById(`spec-${id}-2`).innerText = data.spec2;
-        document.getElementById(`img-${id}`).src = data.imgUrl;
-        document.getElementById(`floorplan-${id}`).src = data.floorplanUrl;
-        document.getElementById(`link-${id}`).href = data.linkUrl;
-    }
-    renderCard(1, apartmentData.card1);
-    renderCard(2, apartmentData.card2);
-    renderCard(3, apartmentData.card3);
-</script>
-
+        renderCard('card1', configData.card1);
+        renderCard('card2', configData.card2);
+        renderCard('card3', configData.card3);
+    </script>
 </body>
 </html>
