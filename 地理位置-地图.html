@@ -43,7 +43,7 @@
         }
 
         /* ==========================================
-           2. 💻 电脑端：高档左侧浮动现代面板（保持原版卓越体验）
+           2. 💻 电脑端：高档左侧浮动现代面板
            ========================================== */
         #left-panel {
             position: absolute;
@@ -88,22 +88,25 @@
             color: #1d1d1f;
         }
 
+        /* 【优化】移除餐饮后，平滑升级为完美的3列自适应网格布局 */
         .radar-grid {
             padding: 16px 24px;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px;
         }
 
         .radar-card {
             background: #ffffff;
             border: 1px solid #e5e5ea;
             border-radius: 14px;
-            padding: 14px;
+            padding: 14px 8px;
             cursor: pointer;
             transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            text-align: center;
             gap: 6px;
         }
 
@@ -130,8 +133,8 @@
         }
         
         .radar-icon-box svg { width: 18px; height: 18px; fill: currentColor; }
-        .radar-meta .num { font-size: 18px; font-weight: 700; color: #1d1d1f; }
-        .radar-meta .label { font-size: 12px; color: #86868b; margin-top: 2px; font-weight: 500; }
+        .radar-meta .num { font-size: 13px; font-weight: 700; color: #1d1d1f; white-space: nowrap; }
+        .radar-meta .label { font-size: 11px; color: #86868b; margin-top: 2px; font-weight: 500; white-space: nowrap; }
 
         /* 周边配套滚动列表区 */
         .poi-inject-list {
@@ -190,19 +193,17 @@
         .poi-marker-label { transform: translateY(-100%); background: #ffffff; color: #1d1d1f; padding: 5px 11px; border-radius: 30px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: all 0.2s ease; }
 
         /* ==========================================
-           4. 📱 【核心重构：移动端极致顶部下沉式座舱】
+           4. 📱 移动端自适应座舱排版微调
            ========================================== */
         @media (max-width: 768px) {
-            /* ✍️ 彻底重写定位：转变为顶部吸顶，向下生长扩充机制 */
             #left-panel {
                 position: absolute;
                 top: 0;
                 left: 0;
                 bottom: auto;
                 width: 100%;
-                /* 限制初始最高高度，刚好容纳头部和四大分类卡片 */
                 max-height: 250px; 
-                border-radius: 0 0 24px 24px; /* 改为下边缘大圆角 */
+                border-radius: 0 0 24px 24px;
                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(20px);
@@ -211,12 +212,10 @@
                 border-bottom: 1px solid #f2f2f7;
             }
 
-            /* ✍️ 激活分类时：面板向下丝滑下沉扩展高度，占据屏幕上半部分 */
             #left-panel.active {
                 max-height: 60%; 
             }
 
-            /* 手机端头部微调 */
             .panel-header {
                 padding: 14px 20px 4px 20px;
                 text-align: center;
@@ -226,22 +225,18 @@
             .office-badge { margin-bottom: 2px; font-size: 10px; }
             .office-title { font-size: 16px; }
 
-            /* 移动端卡片横向滑阻滚动轴 */
+            /* 移动端三列等高自适应排列 */
             .radar-grid {
                 padding: 10px 20px 14px 20px;
-                display: flex;
-                overflow-x: auto; 
-                white-space: nowrap;
-                gap: 10px;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                white-space: normal;
+                gap: 8px;
             }
-            .radar-grid::-webkit-scrollbar { display: none; }
 
             .radar-card {
-                flex-shrink: 0; 
-                width: 110px;
-                padding: 10px;
+                width: auto;
+                padding: 10px 4px;
                 align-items: center;
                 gap: 4px;
                 border-radius: 12px;
@@ -250,15 +245,14 @@
             .radar-icon-box { width: 28px; height: 28px; }
             .radar-icon-box svg { width: 16px; height: 16px; }
             .radar-meta { text-align: center; }
-            .radar-meta .num { font-size: 14px; }
-            .radar-meta .label { font-size: 11px; margin-top: 0; }
+            .radar-meta .num { font-size: 12px; }
+            .radar-meta .label { font-size: 10px; margin-top: 0; }
 
-            /* ✍️ 终极痛点解决：下沉出来的具体配套列表变成一个“完全独立的滚动舱” */
             .poi-inject-list {
                 padding: 4px 20px 12px 20px;
                 gap: 8px;
-                overflow-y: auto; /* 开启纯粹的内容纵向滚动 */
-                -webkit-overflow-scrolling: touch; /* 保证苹果iOS下极其顺滑不卡顿 */
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
             
             .poi-list-item { padding: 12px; border-radius: 10px; }
@@ -301,11 +295,12 @@
     const officeLocation = [114.319443, 30.573807]; 
     const officeName = "恒大世纪广场";
 
+    // 【优化】移除了美食，并将原先空洞的 ' ' 优化成了大厂规范的精准标签
     const radarCategories = [
         {
             id: 'subway',
-            name: ' ',
-            count: '轨道交通',
+            name: '轨道交通',
+            count: '500米内',
             color: '#0052cc', 
             icon: `<svg viewBox="0 0 24 24"><path d="M12 2c-4.42 0-8 3.58-8 8v7c0 1.66 1.34 3 3 3l-1 1v1h12v-1l-1-1c1.66 0 3-1.34 3-3v-7c0-4.42-3.58-8-8-8zm3.5 15c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-7 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm8.5-6H8V7h8v4z"/></svg>`,
             pois: [
@@ -314,20 +309,9 @@
             ]
         },
         {
-            id: 'food',
-            name: '餐饮美食',
-            count: '150+ 家',
-            color: '#ff9500', 
-            icon: `<svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>`,
-            pois: [
-                { name: '漫时区商业美食街', address: '恒大世纪广场裙楼核心商圈', distance: 50, coords: [114.323572, 30.574851] },
-                { name: '万松园传统美食老街', address: '雪松路美食集聚区', distance: 980, coords: [114.3211, 30.5785] }
-            ]
-        },
-        {
             id: 'bank',
-            name: ' ',
-            count: '金融银行',
+            name: '金融银行',
+            count: '周边健全',
             color: '#34c759', 
             icon: `<svg viewBox="0 0 24 24"><path d="M11.5 1L2 6v2h19V6L11.5 1zm8.5 9H4v9h3v-9h3v9h3v-9h3v9h3v-9zM2 22h19v2H2v-2z"/></svg>`,
             pois: [
@@ -337,12 +321,12 @@
         },
         {
             id: 'hotel',
-            name: ' ',
-            count: '休闲商超',
+            name: '休闲商超',
+            count: '配套完善',
             color: '#af52de', 
             icon: `<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>`,
             pois: [
-                { name: '漫时区商业街', address: '和平大道三角路水岸国际附近', distance: 280, coords: [114.317478, 30.579929] },
+                { name: '漫时区商业街', address: '和平大道三角路水岸国际附近', distance: 280, coords: [114.323453,30.575004] },
                 { name: '中百仓储(漫时区店)', address: '漫时区1楼', distance: 410, coords: [114.32448,30.574507] }
             ]
         }
@@ -461,11 +445,8 @@
         adjustMapView(poi.coords);
     }
 
-    // ✍️ 智能避让对齐策略
     function adjustMapView(targetCoords) {
         if (window.innerWidth <= 768) {
-            // 手机端因为面板挂载在顶部，为了不让顶部面板遮挡目标点，
-            // 我们将视口中心适当“向上推”（即增加约 0.0035 个纬度值），让地标显现在下方的安全空白区！
             const adjustedCoords = [targetCoords[0], targetCoords[1] + 0.0035];
             map.setZoomAndCenter(15, adjustedCoords);
         } else {
@@ -491,7 +472,6 @@
         }
     }
 
-    // ✍️ 终极手势锁：阻止手机端滚动层事件冒泡，将滚动权牢牢锁定在 HTML 列表内部，隔绝背景地图
     document.getElementById('poi-list-injector').addEventListener('touchmove', function(e) {
         e.stopPropagation();
     }, { passive: true });
