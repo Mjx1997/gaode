@@ -12,7 +12,7 @@
         /* 彻底隐藏高德自带的杂乱杂项，保持绝对纯净 */
         .amap-logo, .amap-copyright, .amap-mclogo { display: none !important; visibility: hidden !important; }
 
-        /* 【优化】现代高端写字楼专属：悬浮毛玻璃信息卡片 */
+        /* 大厂风：悬浮毛玻璃信息卡片 */
         .location-card {
             position: absolute;
             left: 20px;
@@ -23,8 +23,8 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(218, 222, 229, 0.6);
             padding: 14px 18px;
-            border-radius: 10px; /* 契合主站圆角 */
-            box-shadow: 0 10px 30px rgba(13, 26, 46, 0.06); /* 超级轻柔的大厂风阴影 */
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(13, 26, 46, 0.06);
             max-width: 260px;
             pointer-events: none;
         }
@@ -32,89 +32,113 @@
         .card-title::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #0066ff; border-radius: 50%; margin-right: 8px; }
         .card-desc { font-size: 12px; color: #666970; line-height: 1.5; font-weight: 400; }
 
-        /* 【优化】微动效：高级感雷达呼吸波纹 Marker */
+        /* 核心雷达呼吸灯动效 & 悬浮文字标签样式 */
         .radar-marker { position: relative; width: 20px; height: 20px; }
         .radar-core { 
-            width: 10px; 
-            height: 10px; 
-            background-color: #0066ff; 
-            border-radius: 50%; 
-            border: 2px solid #ffffff; 
-            position: absolute; 
-            top: 5px; 
-            left: 5px; 
-            z-index: 2; 
-            box-shadow: 0 2px 8px rgba(0, 102, 255, 0.5); 
+            width: 10px; height: 10px; background-color: #0066ff; border-radius: 50%; border: 2px solid #ffffff; 
+            position: absolute; top: 5px; left: 5px; z-index: 2; box-shadow: 0 2px 8px rgba(0, 102, 255, 0.5); 
         }
         .radar-wave { 
-            width: 20px; 
-            height: 20px; 
-            background: radial-gradient(circle, rgba(0, 102, 255, 0.4) 0%, rgba(0, 102, 255, 0) 70%); 
-            border-radius: 50%; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            z-index: 1; 
+            width: 20px; height: 20px; background: radial-gradient(circle, rgba(0, 102, 255, 0.4) 0%, rgba(0, 102, 255, 0) 70%); 
+            border-radius: 50%; position: absolute; top: 0; left: 0; z-index: 1; 
             animation: pulseWave 2.4s infinite cubic-bezier(0.215, 0.610, 0.355, 1); 
         }
         
+        /* 【新增样式】坐标点上方的悬浮文字气泡标签 */
+        .marker-label {
+            position: absolute;
+            bottom: 24px; /* 浮在呼吸灯上方 */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111214; /* 选用大厂高级黑 */
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 9px;
+            border-radius: 6px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.3px;
+        }
+        /* 气泡下方的小尖角 */
+        .marker-label::after {
+            content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent;
+            border-top: 4px solid #111214;
+        }
+
         @keyframes pulseWave {
             0% { transform: scale(0.6); opacity: 0.9; }
             80% { transform: scale(3.5); opacity: 0; }
             100% { transform: scale(3.5); opacity: 0; }
         }
     </style>
-</head>
+
+    <script type="text/javascript">
+        const CONFIG = {
+            // 1. 高德地图安全凭证配置
+            amapKey: '04bee4addf98a8b9eb0d095d331297ab',         // 填入高德JS API Key
+            securityCode: '1a299e101b30418737d94d5a74113bd3',    // 填入高德安全密钥
+
+            // 2. 地图视角与坐标控制
+            lnglat: [114.319437, 30.573809],                    // 写字楼经纬度坐标 [经度, 纬度]
+            zoomLevel: 16.2,                                    // 地图清晰度级别（数字越大越近、越清晰）
+
+            // 3. 地图文字内容修改
+            markerName: '恒大世纪广场',                          // 📍 地图中心点上悬浮的写字楼名称
+            cardTitle: '地理位置',                               // 🔤 左下角悬浮卡片的标题
+            cardDescription: '距5号线三层楼站 500米，周边交通便利' // 📝 左下角悬浮卡片的详细描述
+        };
+    </script>
+    </head>
 <body>
 
     <div id="map-container"></div>
 
     <div class="location-card">
-        <div class="card-title">地理位置</div>
-        <div class="card-desc">距5号线三层楼站 500米，周边交通便利</div>
+        <div class="card-title" id="ui-title"></div>
+        <div class="card-desc" id="ui-desc"></div>
     </div>
 
     <script type="text/javascript">
-        window._AMapSecurityConfig = {
-            securityJsCode: '1a299e101b30418737d94d5a74113bd3', 
-        }
+        window._AMapSecurityConfig = { securityJsCode: CONFIG.securityCode };
     </script>
 
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=04bee4addf98a8b9eb0d095d331297ab"></script>
+    <script type="text/javascript">
+        document.write('<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=' + CONFIG.amapKey + '"><\/script>');
+    </script>
 
     <script type="text/javascript">
-        // 📍 武汉写字楼精准坐标
-        const buildingCoords = [114.319437,30.573809]; 
+        // 将配置中心的数据注入到网页文本中
+        document.getElementById('ui-title').innerText = CONFIG.cardTitle;
+        document.getElementById('ui-desc').innerText = CONFIG.cardDescription;
 
-        // 初始化高级感定制底图
+        // 初始化高德地图
         const map = new AMap.Map('map-container', {
-            center: buildingCoords,
-            zoom: 15.8,             // 稍微放大一点点，视觉比例更完美
-            viewMode: '2D',         // 坚守纯 2D，丝滑轻量
+            center: CONFIG.lnglat,
+            zoom: CONFIG.zoomLevel,
+            viewMode: '2D',
             dragEnable: true,       
-            zoomEnable: false,      // 在小框里嵌入时，建议禁用滚轮缩放，防止客户滚动网页时误触放大缩小
-            touchZoom: true,
-            /* 💡 这里使用了高德官方的轻量浅色高级滤镜 'amap://styles/macaron'
-               如果你想尝试更震撼的黑客帝国暗色科技风，可以把下面这行换成: 'amap://styles/darkblue'
-            */
-            mapStyle: 'amap://styles/macaron' 
+            zoomEnable: true,       // 允许滚轮自由缩放
+            touchZoom: true,        
+            mapStyle: 'amap://styles/macaron' // 大厂浅色高级商务底图
         });
 
-        // 动效节点
+        // 动态构建带有【悬浮文字备注】+【雷达呼吸灯】的Marker内容
         const markerContent = `
             <div class="radar-marker">
+                <div class="marker-label">${CONFIG.markerName}</div>
                 <div class="radar-core"></div>
                 <div class="radar-wave"></div>
             </div>
         `;
 
-        // 绑定动效 Marker
+        // 创建并绑定 Marker
         const marker = new AMap.Marker({
-            position: buildingCoords,
+            position: CONFIG.lnglat,
             content: markerContent,
-            offset: new AMap.Pixel(-10, -10) // 完美居中对齐
+            offset: new AMap.Pixel(-10, -10)
         });
-
         map.add(marker);
     </script>
 </body>
