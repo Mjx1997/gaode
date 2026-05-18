@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目地理位置</title>
+    <style>
+        /* 极致无缝全面屏清理 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body, #map-container { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; }
+        
+        /* 彻底隐藏高德自带的杂乱杂项，保持绝对纯净 */
+        .amap-logo, .amap-copyright, .amap-mclogo { display: none !important; visibility: hidden !important; }
+
+        /* 【优化】现代高端写字楼专属：悬浮毛玻璃信息卡片 */
+        .location-card {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(218, 222, 229, 0.6);
+            padding: 14px 18px;
+            border-radius: 10px; /* 契合主站圆角 */
+            box-shadow: 0 10px 30px rgba(13, 26, 46, 0.06); /* 超级轻柔的大厂风阴影 */
+            max-width: 260px;
+            pointer-events: none;
+        }
+        .card-title { font-size: 14px; font-weight: 600; color: #111214; margin-bottom: 5px; display: flex; align-items: center; letter-spacing: 0.5px; }
+        .card-title::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #0066ff; border-radius: 50%; margin-right: 8px; }
+        .card-desc { font-size: 12px; color: #666970; line-height: 1.5; font-weight: 400; }
+
+        /* 【优化】微动效：高级感雷达呼吸波纹 Marker */
+        .radar-marker { position: relative; width: 20px; height: 20px; }
+        .radar-core { 
+            width: 10px; 
+            height: 10px; 
+            background-color: #0066ff; 
+            border-radius: 50%; 
+            border: 2px solid #ffffff; 
+            position: absolute; 
+            top: 5px; 
+            left: 5px; 
+            z-index: 2; 
+            box-shadow: 0 2px 8px rgba(0, 102, 255, 0.5); 
+        }
+        .radar-wave { 
+            width: 20px; 
+            height: 20px; 
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.4) 0%, rgba(0, 102, 255, 0) 70%); 
+            border-radius: 50%; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 1; 
+            animation: pulseWave 2.4s infinite cubic-bezier(0.215, 0.610, 0.355, 1); 
+        }
+        
+        @keyframes pulseWave {
+            0% { transform: scale(0.6); opacity: 0.9; }
+            80% { transform: scale(3.5); opacity: 0; }
+            100% { transform: scale(3.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map-container"></div>
+
+    <div class="location-card">
+        <div class="card-title">地理位置</div>
+        <div class="card-desc">距5号线三层楼站 500米，周边交通便利</div>
+    </div>
+
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode: '1a299e101b30418737d94d5a74113bd3', 
+        }
+    </script>
+
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=04bee4addf98a8b9eb0d095d331297ab"></script>
+
+    <script type="text/javascript">
+        // 📍 武汉写字楼精准坐标
+        const buildingCoords = [114.319437, 30.573809]; 
+
+        // 初始化高级感定制底图
+        const map = new AMap.Map('map-container', {
+            center: buildingCoords,
+            zoom: 15.8,             // 稍微放大一点点，视觉比例更完美
+            viewMode: '2D',         // 坚守纯 2D，丝滑轻量
+            dragEnable: true,       
+            zoomEnable: false,      // 在小框里嵌入时，建议禁用滚轮缩放，防止客户滚动网页时误触放大缩小
+            touchZoom: true,
+            /* 💡 这里使用了高德官方的轻量浅色高级滤镜 'amap://styles/macaron'
+               如果你想尝试更震撼的黑客帝国暗色科技风，可以把下面这行换成: 'amap://styles/darkblue'
+            */
+            mapStyle: 'amap://styles/macaron' 
+        });
+
+        // 动效节点
+        const markerContent = `
+            <div class="radar-marker">
+                <div class="radar-core"></div>
+                <div class="radar-wave"></div>
+            </div>
+        `;
+
+        // 绑定动效 Marker
+        const marker = new AMap.Marker({
+            position: buildingCoords,
+            content: markerContent,
+            offset: new AMap.Pixel(-10, -10) // 完美居中对齐
+        });
+
+        map.add(marker);
+    </script>
+</body>
+</html>
