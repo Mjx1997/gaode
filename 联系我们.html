@@ -1,4 +1,4 @@
-</html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -22,6 +22,10 @@
 
             --text-location-title: "项目入驻地址";                   /* 地址卡片的小标题 */
             --text-location-value: "武汉市武昌区和平大道恒大世纪广场"; /* 页面显示的详细地址 */
+            
+            /* 📍 地图导航专用坐标配置（已更新为你提供的精准高德经纬度） */
+            --map-longitude: "114.319437";                          /* 目标地点的经度 */
+            --map-latitude: "30.573809";                            /* 目标地点的纬度 */
 
             --text-time-title: "招商中心服务时间";                   /* 时间卡片的小标题 */
             --text-time-value: "周一至周日 09:00 - 18:00";          /* 页面显示的时间范围 */
@@ -292,10 +296,27 @@
             }
         });
 
-        // 3. 动态注入地址弹窗提示
+        // 3. 动态智能化一键调起手机地图导航
         document.getElementById('location-trigger').addEventListener('click', function() {
-            const alertText = getStyleConfig('--text-location-toast');
-            alert(alertText);
+            const address = encodeURIComponent(getStyleConfig('--text-location-value'));
+            const lng = getStyleConfig('--map-longitude');
+            const lat = getStyleConfig('--map-latitude');
+            
+            // 检测是否为 iOS 设备
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            if (isIOS) {
+                // iOS 核心逻辑：直接唤起原生 Apple 地图并开始路线规划
+                window.location.href = `maps://?daddr=${address}&ll=${lat},${lng}&q=${address}`;
+            } else {
+                // 安卓/通用核心逻辑：无提示直接通过 Schema 尝试调起高德地图 APP
+                window.location.href = `androidamap://navi?sourceApplication=ModernHub&poiname=${address}&lat=${lat}&lon=${lng}&dev=0&style=2`;
+                
+                // 兜底计时器：如果在 2 秒内没有成功唤起高德 APP（比如用户没装），则平滑无缝切换至高德 H5 网页版导航
+                setTimeout(function() {
+                    window.location.href = `https://uri.amap.com/navigation?to=${lng},${lat},${address}&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=1`;
+                }, 2000);
+            }
         });
     </script>
 </body>
