@@ -164,7 +164,6 @@
             color: #595959; 
             font-weight: 400;
             white-space: nowrap;
-            协作溢出隐藏剪裁: ellipsis;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 95%;
@@ -354,28 +353,17 @@
 </div>
 
 <script>
-    // ==========================================================================
-    // ⚙️【🛠️ 核心全自动化人性化控制集合区】
-    // 每一个列都使用了 fr 弹性单位。它们会组成一个完美比例。
-    // 如果你想删掉某一列，直接给那一列加 // 注释掉，其余列会自动按权重等比例放大填满整行！
-    // ==========================================================================
     const MAIN_CONTROL_CONFIG = {
-        itemsPerPage: 8, // 每页显示条数
-
+        itemsPerPage: 8, 
         columns: [
-            { key: 'area',     name: '面积',     width: '1fr',    align: 'center' }, // 占 1份 空间，居中对齐
-            //{ key: 'floor',    name: '楼层',     width: '1fr',    align: 'center' }, // 💡 想要删掉楼层？直接把这一行加 // 注释掉即可！
-            { key: 'standard', name: '交付标准', width: '2.5fr',  align: 'center' }, // 交付标准文字较长，分得 2.5份 空间，完美错落有致
-            { key: 'status',   name: '当前状态', width: '1.2fr',  align: 'center' }, // 占 1.2份 空间，状态居中
-            { key: 'action',   name: '资料/详情', width: '1fr',    align: 'center' }  // 占 1份 空间，操作居中
+            { key: 'area',     name: '面积',     width: '1fr',    align: 'center' },
+            { key: 'standard', name: '交付标准', width: '2.5fr',  align: 'center' },
+            { key: 'status',   name: '当前状态', width: '1.2fr',  align: 'center' },
+            { key: 'action',   name: '资料/详情', width: '1fr',    align: 'center' }
         ]
     };
 
-    // ==========================================================================
-    // 【集群-房源原始数据表】 (不作任何更改，保持原有数据与属性结构)
-    // ==========================================================================
     const houseData = [
-        //{ area: '285', floor: '12层', type: 'mid', standard: '精装修 · 带全套家具', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/1201.html' },
         { area: '85', type: 'mid', standard: '精装修 · 带全套家具', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/type1.html' },
         { area: '95', type: 'high', standard: '标准装修 · 吊顶白墙', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/type1.html' },
         { area: '120', type: 'high', standard: '毛坯现房 · 空间自由', status: 'ready', statusText: '随时入驻', link: 'http://www.hdcentury.com/type1.html' },
@@ -393,9 +381,6 @@
     let currentCategory = 'all'; 
     let currentPage = 1;          
 
-    /**
-     * 🚀 架构核心：动态计算生成自适应对齐的 CSS Grid
-     */
     function initAdaptiveLayout() {
         const colWidths = MAIN_CONTROL_CONFIG.columns.map(c => c.width).join(' ');
         const alignMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
@@ -407,7 +392,6 @@
             const justify = alignMap[align];
             const textAl = textAlignMap[align];
             
-            // 全自动生成列对齐规则
             alignStyles += `
                 .col-${col.key} { 
                     text-align: ${textAl} !important; 
@@ -416,7 +400,6 @@
             `;
         });
 
-        // 注入高级自适应样式，使用 display: contents 穿透移动端包装盒
         const dynamicStyleElement = document.createElement('style');
         dynamicStyleElement.innerHTML = `
             @media (min-width: 769px) {
@@ -449,9 +432,6 @@
         renderHeader();
     }
 
-    /**
-     * 💻 动态生成并渲染高级居中表头
-     */
     function renderHeader() {
         const headerContainer = document.getElementById('listHeader');
         headerContainer.innerHTML = '';
@@ -466,9 +446,6 @@
             : houseData.filter(h => h.type === currentCategory);
     }
 
-    /**
-     * 📦 极致优雅的数据驱动列表渲染引擎
-     */
     function renderList() {
         const filtered = getFilteredData();
         const totalItems = filtered.length;
@@ -490,16 +467,14 @@
             pageData.forEach(item => {
                 const statusClass = item.status === 'ready' ? 'ready' : 'booked';
                 
-                // 实时精准匹配当前配置区中哪些列处于启用状态
                 const hasArea = MAIN_CONTROL_CONFIG.columns.some(c => c.key === 'area');
                 const hasFloor = MAIN_CONTROL_CONFIG.columns.some(c => c.key === 'floor');
                 const hasStandard = MAIN_CONTROL_CONFIG.columns.some(c => c.key === 'standard');
                 const hasStatus = MAIN_CONTROL_CONFIG.columns.some(c => c.key === 'status');
                 const hasAction = MAIN_CONTROL_CONFIG.columns.some(c => c.key === 'action');
 
-                // 拼装符合人性化与多端对齐的 HTML 高阶骨架
                 const itemHtml = `
-                    <div class="house-row" onclick="window.open('${item.link}', '_parent')">
+                    <div class="house-row" onclick="window.open('${item.link}', '_blank')">
                         <div class="cell-group-left">
                             <div class="mobile-inner-row">
                                 ${hasArea ? `<div class="grid-cell col-area"><span class="meta-area">${item.area}<span class="unit">㎡</span></span></div>` : ''}
@@ -519,7 +494,7 @@
                             ` : ''}
                             ${hasAction ? `
                                 <div class="grid-cell col-action">
-                                    <a href="${item.link}" class="action-btn" onclick="event.stopPropagation();">详情</a>
+                                    <a href="${item.link}" target="_blank" class="action-btn" onclick="event.stopPropagation();">详情</a>
                                 </div>
                             ` : ''}
                         </div>
@@ -581,7 +556,6 @@
         renderList();
     }
 
-    // 🚀 初始化与启动自适应网格对齐系统
     initAdaptiveLayout();
     renderList();
 </script>
