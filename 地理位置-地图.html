@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>恒大世纪广场 - 空间数字座舱顶部下沉自适应版</title>
+    <title>恒大世纪广场 - 智能收纳舱自适应版</title>
 
     <script type="text/javascript">
-        // ★ 完美保留您的高德安全密钥
+        // ★ 保留高德安全密钥
         window._AMapSecurityConfig = {
             securityJsCode: '1a299e101b30418737d94d5a74113bd3', 
         }
@@ -16,7 +16,7 @@
 
     <style>
         /* ==========================================
-           1. 全局现代流式重置
+           1. 全局流式重置
            ========================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
         
@@ -32,18 +32,21 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: row; /* 电脑端默认左右 */
             background: #f5f5f7;
         }
 
         #map-container {
-            flex: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            position: relative;
             z-index: 1;
         }
 
         /* ==========================================
-           2. 💻 电脑端：高档左侧浮动现代面板
+           2. 💻 电脑端标准排版样式
            ========================================== */
         #left-panel {
             position: absolute;
@@ -88,7 +91,6 @@
             color: #1d1d1f;
         }
 
-        /* 【优化】移除餐饮后，平滑升级为完美的3列自适应网格布局 */
         .radar-grid {
             padding: 16px 24px;
             display: grid;
@@ -110,11 +112,7 @@
             gap: 6px;
         }
 
-        .radar-card:hover {
-            transform: translateY(-2px);
-            border-color: #0052cc;
-            box-shadow: 0 6px 16px rgba(0,82,204,0.06);
-        }
+        .radar-card:hover { transform: translateY(-2px); border-color: #0052cc; }
 
         .radar-card.selected {
             background: #ffffff;
@@ -136,7 +134,7 @@
         .radar-meta .num { font-size: 13px; font-weight: 700; color: #1d1d1f; white-space: nowrap; }
         .radar-meta .label { font-size: 11px; color: #86868b; margin-top: 2px; font-weight: 500; white-space: nowrap; }
 
-        /* 周边配套滚动列表区 */
+        /* 列表区域 */
         .poi-inject-list {
             flex: 1;
             overflow-y: auto;
@@ -179,87 +177,70 @@
             font-size: 13px; font-weight: 600; border-radius: 10px; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-        .btn-reset:hover { background: #e8e8ed; }
 
-        /* ==========================================
-           3. 🎯 地图大楼中心点高级自定义样式
-           ========================================== */
+        /* 中心点与大楼气泡样式 */
         .center-marker { position: relative; width: 0; height: 0; display: flex; flex-direction: column; align-items: center; }
         .center-label { position: absolute; bottom: 12px; transform: translateX(-50%); background: #1d1d1f; color: #ffffff; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2); }
         .center-dot { position: absolute; transform: translate(-50%, -50%); width: 12px; height: 12px; background: #0052cc; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 0 6px rgba(0,0,0,0.2); }
         .center-pulse { position: absolute; transform: translate(-50%, -50%); width: 36px; height: 36px; background: rgba(0, 82, 204, 0.3); border-radius: 50%; animation: markerBreathe 2s infinite ease-out; pointer-events: none; }
         @keyframes markerBreathe { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; } }
 
-        .poi-marker-label { transform: translateY(-100%); background: #ffffff; color: #1d1d1f; padding: 5px 11px; border-radius: 30px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: all 0.2s ease; }
+        .poi-marker-label { transform: translateY(-100%); background: #ffffff; color: #1d1d1f; padding: 5px 11px; border-radius: 30px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; }
 
         /* ==========================================
-           4. 📱 移动端自适应座舱排版微调
+           3. 📱 移动端自适应流式排版
            ========================================== */
         @media (max-width: 768px) {
+            .cockpit-wrapper {
+                flex-direction: column;
+                overflow: hidden;
+            }
+
             #left-panel {
-                position: absolute;
-                top: 0;
-                left: 0;
-                bottom: auto;
-                width: 100%;
-                max-height: 250px; 
-                border-radius: 0 0 24px 24px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
+                position: relative;
+                top: 0; left: 0; width: 100%;
+                max-height: none; 
+                height: auto; 
+                border-radius: 0 0 20px 20px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+                background: #ffffff;
                 border: none;
-                border-bottom: 1px solid #f2f2f7;
+                border-bottom: 1px solid #e5e5ea;
+                z-index: 10;
+                transition: max-height 0.3s ease-out; /* 顺滑地收回或展开 */
             }
 
+            /* 当列表被激活时，控制最大高度（防止占满屏幕），允许内部列表滚动 */
             #left-panel.active {
-                max-height: 60%; 
+                max-height: 52%; 
             }
 
-            .panel-header {
-                padding: 14px 20px 4px 20px;
-                text-align: center;
-                border-bottom: none;
+            #map-container {
+                position: relative;
+                flex: 1; /* 吞噬剩下区域，永不遮挡 */
+                height: auto;
+                width: 100%;
+                z-index: 1;
             }
 
-            .office-badge { margin-bottom: 2px; font-size: 10px; }
+            .panel-header { padding: 14px 16px 2px 16px; text-align: center; border-bottom: none; }
+            .office-badge { margin-bottom: 2px; font-size: 10px; padding: 3px 8px; }
             .office-title { font-size: 16px; }
 
-            /* 移动端三列等高自适应排列 */
-            .radar-grid {
-                padding: 10px 20px 14px 20px;
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                white-space: normal;
-                gap: 8px;
-            }
-
-            .radar-card {
-                width: auto;
-                padding: 10px 4px;
-                align-items: center;
-                gap: 4px;
-                border-radius: 12px;
-            }
-
-            .radar-icon-box { width: 28px; height: 28px; }
-            .radar-icon-box svg { width: 16px; height: 16px; }
-            .radar-meta { text-align: center; }
-            .radar-meta .num { font-size: 12px; }
+            .radar-grid { padding: 8px 16px 12px 16px; gap: 8px; }
+            .radar-card { padding: 8px 4px; border-radius: 10px; gap: 4px; }
+            .radar-icon-box { width: 26px; height: 26px; }
+            .radar-icon-box svg { width: 14px; height: 14px; }
+            .radar-meta .num { font-size: 11px; }
             .radar-meta .label { font-size: 10px; margin-top: 0; }
 
-            .poi-inject-list {
-                padding: 4px 20px 12px 20px;
-                gap: 8px;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            .poi-list-item { padding: 12px; border-radius: 10px; }
+            .poi-inject-list { padding: 0 16px 12px 16px; gap: 8px; -webkit-overflow-scrolling: touch; }
+            .poi-list-item { padding: 10px 12px; border-radius: 8px; }
             .poi-name { font-size: 13px; }
             .poi-addr { font-size: 11px; }
+            .poi-dist { font-size: 11px; padding: 2px 6px; }
 
-            .reset-bar { padding: 10px 20px; }
+            .reset-bar { padding: 8px 16px; }
         }
     </style>
 </head>
@@ -289,13 +270,9 @@
 </div>
 
 <script>
-    // =========================================================================
-    // ✍️ 数据配置中心：完美保留大楼原始经纬度与网点信息
-    // =========================================================================
     const officeLocation = [114.319443, 30.573807]; 
     const officeName = "恒大世纪广场";
 
-    // 【优化】移除了美食，并将原先空洞的 ' ' 优化成了大厂规范的精准标签
     const radarCategories = [
         {
             id: 'subway',
@@ -332,9 +309,6 @@
         }
     ];
 
-    // =========================================================================
-    // ⚙️ 逻辑控制引擎
-    // =========================================================================
     document.getElementById('dom-office-name').innerText = officeName;
 
     const map = new AMap.Map('map-container', {
@@ -390,6 +364,7 @@
     }
     buildRadarDashboard();
 
+    // 点击大卡片：单纯显示所有子站点
     function selectRadarTab(categoryId) {
         document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
         const activeCard = document.getElementById(`card-${categoryId}`);
@@ -398,6 +373,7 @@
         const activeCat = radarCategories.find(c => c.id === categoryId);
         if (!activeCat) return;
 
+        // 展开面板，显现列表
         document.getElementById('left-panel').classList.add('active');
 
         clearPoiMarkers();
@@ -407,15 +383,18 @@
         injector.innerHTML = '';
 
         activeCat.pois.forEach(poi => {
+            // 地图上的标点气泡
             const labelDom = document.createElement('div');
             labelDom.className = 'poi-marker-label';
             labelDom.innerText = poi.name;
             labelDom.style.borderBottom = `3px solid ${activeCat.color}`;
             
             const marker = new AMap.Marker({ position: poi.coords, content: labelDom, anchor: 'bottom-center', map: map });
+            // 点击地图标点，也触发相同的路线规划流程
             marker.on('click', () => initiateRoutePlanning(poi, activeCat.color));
             markerPool.push(marker);
 
+            // 列表中的卡片
             const listItem = document.createElement('div');
             listItem.className = 'poi-list-item';
             listItem.innerHTML = `
@@ -425,14 +404,18 @@
                 </div>
                 <div class="poi-dist" style="color: ${activeCat.color}; background: ${activeCat.color}12;">${poi.distance}米</div>
             `;
+            // ★ 修改核心：用户点击了其中一个具体网点卡片后，触发寻路，并触发收回机制
             listItem.onclick = () => initiateRoutePlanning(poi, activeCat.color);
             injector.appendChild(listItem);
         });
 
-        adjustMapView(officeLocation);
+        // 切换大类时，让大楼在可见地图区域完美居中
+        map.setZoomAndCenter(15.5, officeLocation);
     }
 
+    // ★ 关键业务改动：点击子网点卡片后的核心处理函数
     function initiateRoutePlanning(poi, themeColor) {
+        // 1. 在地图上绘制步行路径规划
         if(walkingRouteEngine) {
             walkingRouteEngine.clear();
             walkingRouteEngine.search(officeLocation, poi.coords, function(status, result) {
@@ -442,16 +425,13 @@
                 }
             });
         }
-        adjustMapView(poi.coords);
-    }
+        
+        // 2. 将地图视口平滑移动，对准用户点击的目标网点
+        map.setZoomAndCenter(15.5, poi.coords);
 
-    function adjustMapView(targetCoords) {
-        if (window.innerWidth <= 768) {
-            const adjustedCoords = [targetCoords[0], targetCoords[1] + 0.0035];
-            map.setZoomAndCenter(15, adjustedCoords);
-        } else {
-            map.setZoomAndCenter(15.5, targetCoords);
-        }
+        // 3. ✨【关键收纳逻辑】点击完毕后，立刻将上方的活动状态剥除，恢复到初始收缩状态
+        document.getElementById('left-panel').classList.remove('active');
+        document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
     }
 
     function clearPoiMarkers() {
@@ -464,12 +444,7 @@
         document.querySelectorAll('.radar-card').forEach(c => c.classList.remove('selected'));
         clearPoiMarkers();
         if (walkingRouteEngine) walkingRouteEngine.clear();
-        
-        if (window.innerWidth <= 768) {
-            map.setZoomAndCenter(15.5, [officeLocation[0], officeLocation[1] + 0.0015]);
-        } else {
-            map.setZoomAndCenter(15.5, officeLocation);
-        }
+        map.setZoomAndCenter(15.5, officeLocation);
     }
 
     document.getElementById('poi-list-injector').addEventListener('touchmove', function(e) {
