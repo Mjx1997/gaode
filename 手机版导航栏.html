@@ -7,44 +7,51 @@
 
     <style>
         /* ==========================================================================
-           【 核心配置区 】- 响应你的需求，直接在这里调整主按钮的左边距
+           【 核心配置区 】- 后期无论是调间距还是改【超链接】，只改这里即可 🔴
            ========================================================================== */
         :root {
-            /* 1. 悬浮主按钮的位置控制（重点修改这里 🔴） */
-            --btn-left: 5px;                /* 👈 主按钮距离屏幕最左侧的距离（原为16px，已大幅缩小，你可以改成 0px 彻底贴边） */
+            /* 1. 后期自行设置超链接功能（直接在这里修改双引号里面的网址或锚点） */
+            --url-home: "https://www.hdcentury.com/";             /* 🏠 楼盘首页 的跳转链接 */
+            --url-space: "https://www.hdcentury.com/details.html";           /* 🏢 房源租赁 的跳转链接 */
+            --url-service: "https://www.hdcentury.com/Location.html";       /* 🛠️ 企业服务 的跳转链接 */
+            --url-about: "https://www.hdcentury.com/Contact.html";           /* ℹ️ 关于我们 的跳转链接 */
+            --url-phone: "tel:18163315451"; /* 📞 底部预约看房的电话（tel:后面跟你的真实电话） */
+
+            /* 2. 悬浮主按钮的位置控制 */
+            --btn-left: 5px;                /* 👈 主按钮距离屏幕最左侧的距离 */
             --btn-top: 5px;                /* 👆 主按钮距离屏幕顶部的距离 */
             --btn-zindex: 999999;           /* 突破限制的层级 */
 
-            /* 2. 抽屉宽度配置 */
+            /* 3. 抽屉宽度配置 */
             --drawer-width: 55vw;           /* 导航栏展开时占屏幕的宽度 */
 
-            /* 3. 侧滑抽屉内部留白微调 */
+            /* 4. 侧滑抽屉内部留白微调 */
             --drawer-padding-left: 12px;    /* 👈 滑出页面内的文字图标距离左边的边距 */
             --drawer-padding-right: 12px;   /* 👉 滑出页面内的右边距 */
             --drawer-padding-top: 70px;    /* 👆 滑出页面内的顶边距 */
 
-            /* 4. 颜色配置 (大厂现代商业地产风格) */
+            /* 5. 颜色配置 (大厂现代商业地产风格) */
             --theme-color: #2563eb;         /* 主题高亮色/大厂蓝 */
             --text-main: #334155;           /* 菜单文字颜色 */
             --text-active: #2563eb;         /* 菜单选中时的文字颜色 */
             --bg-drawer: #ffffff;           /* 弹出菜单的背景颜色 */
             --bg-item-active: #f1f5f9;      /* 菜单选中/点击时的背景色 */
             
-            /* 5. 字体配置 */
+            /* 6. 字体配置 */
             --font-size-menu: 15px;         
             --font-weight-menu: 500;        
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         /* ==========================================================================
-           【 核心样式区 】
+           【 核心样式区 】- 严格保持原有稳定结构，未加任何强制宝盒代码
            ========================================================================== */
         
-        /* 悬浮主按钮 - 完美支持极小或负数左边距 */
+        /* 悬浮主按钮 */
         .office-nav-trigger {
             position: fixed;
             top: var(--btn-top);
-            left: var(--btn-left) !important; /* 强制覆盖建站宝盒可能存在的嵌套样式 */
+            left: var(--btn-left);
             z-index: var(--btn-zindex);
             width: 44px;
             height: 44px;
@@ -231,34 +238,34 @@
 
         <ul class="office-menu-list">
             <li>
-                <a href="#home" class="office-menu-item current">
+                <a id="linkHome" href="#" class="office-menu-item current">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="16"></line><line x1="15" y1="22" x2="15" y2="16"></line><line x1="9" y1="16" x2="15" y2="16"></line><path d="M8 6h2v2H8V6zm4 0h2v2h-2V6zm4 0h2v2h-2V6zm-8 4h2v2H8v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-8 4h2v2H8v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"></path></svg>
                     <span>楼盘首页</span>
                 </a>
             </li>
             <li>
-                <a href="#space" class="office-menu-item">
+                <a id="linkSpace" href="#" class="office-menu-item">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
                     <span>房源租赁</span>
                 </a>
             </li>
             <li>
-                <a href="#service" class="office-menu-item">
+                <a id="linkService" href="#" class="office-menu-item">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                    <span>企业服务</span>
+                    <span>地理位置</span>
                 </a>
             </li>
             <li>
-                <a href="#about" class="office-menu-item">
+                <a id="linkAbout" href="#" class="office-menu-item">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    <span>关于我们</span>
+                    <span>联系我们</span>
                 </a>
             </li>
         </ul>
 
         <div class="office-nav-footer">
-            <a href="tel:400-123-4567" class="btn-call">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2v3a2 2 0 0 1 1.51 1.96 12.06 12.06 0 0 0 .5 2.28 2 2 0 0 1-.51 2.15l-1.24 1.24a16 16 0 0 0 6 6l1.24-1.24a2 2 0 0 1 2.15-.51 12.07 12.07 0 0 0 2.28.5A2 2 0 0 1 22 16.92z"></path></svg>
+            <a id="linkPhone" href="#" class="btn-call">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2v3a2 2 0 0 1 1.51 1.96 12.06 12.06 0 0 0 .5 2.28 2 2 0 0 1-.51 2.15l-1.24 1.24a16 16 0 0 0 6 6l1.24-1.24a2 2 0 0 1 2.15-.51 12.07 12.07 0 0 0 2.28.5A2 2 0 0 1 22 16.92z"></path></svg>
                 <span>预约看房</span>
             </a>
         </div>
@@ -266,6 +273,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 获取在顶层配置的 CSS 变量超链接
+            const rootStyles = getComputedStyle(document.documentElement);
+            
+            // 智能绑定超链接
+            document.getElementById('linkHome').href = rootStyles.getPropertyValue('--url-home').trim().replace(/['"]/g, '');
+            document.getElementById('linkSpace').href = rootStyles.getPropertyValue('--url-space').trim().replace(/['"]/g, '');
+            document.getElementById('linkService').href = rootStyles.getPropertyValue('--url-service').trim().replace(/['"]/g, '');
+            document.getElementById('linkAbout').href = rootStyles.getPropertyValue('--url-about').trim().replace(/['"]/g, '');
+            document.getElementById('linkPhone').href = rootStyles.getPropertyValue('--url-phone').trim().replace(/['"]/g, '');
+
+            // 基础控制核心结构
             const trigger = document.getElementById('navTrigger');
             const overlay = document.getElementById('navOverlay');
             const drawer = document.getElementById('navDrawer');
