@@ -3,225 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>跨越容器限制的自适应导航</title>
+    <title>Office Leasing Nav - Pure Offline</title>
+
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* ==========================================================================
+           【 核心配置区 】- 后期所有的视觉、尺寸、颜色修改，直接在这里改数值即可
+           ========================================================================== */
+        :root {
+            /* 1. 抽屉宽度配置 */
+            --drawer-width: 55vw;           /* 导航栏展开时占屏幕的宽度（50vw-60vw最佳） */
+
+            /* 2. 颜色配置 (大厂现代商业地产风格) */
+            --theme-color: #2563eb;         /* 主题高亮色/大厂蓝（用于激活状态和按钮） */
+            --text-main: #334155;           /* 菜单文字颜色 */
+            --text-active: #2563eb;         /* 菜单选中时的文字颜色 */
+            --bg-drawer: #ffffff;           /* 弹出菜单的背景颜色 */
+            --bg-item-active: #f1f5f9;      /* 菜单选中/点击时的背景色 */
+            
+            /* 3. 字体配置 */
+            --font-size-menu: 15px;         /* 栏目文字大小 */
+            --font-weight-menu: 500;        /* 栏文字粗细 */
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            
+            /* 4. 悬浮按钮位置微调 (左上角) */
+            --btn-top: 14px;                /* 按钮距离屏幕顶部距离 */
+            --btn-left: 16px;               /* 按钮距离屏幕左侧距离 */
+            --btn-zindex: 999999;           /* 突破限制的层级 */
         }
 
-        /* 💡 核心：让正方形根容器全透明，100%填满建站宝盒给你的正方形格子 */
-        .portal-nav-container {
-            width: 100%;
-            height: 100%;
+        /* ==========================================================================
+           【 核心样式区 】
+           ========================================================================== */
+        
+        /* 悬浮主按钮 */
+        .office-nav-trigger {
+            position: fixed;
+            top: var(--btn-top);
+            left: var(--btn-left);
+            z-index: var(--btn-zindex);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(241, 245, 249, 0.8);
+            box-shadow: -2px 4px 12px rgba(15, 23, 42, 0.08); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ==========================================
-           1. 留在正方形内部的触发按钮（大小完全自适应正方形）
-           ========================================== */
-        .square-trigger-btn {
-            width: 100%;
-            height: 100%;
-            padding: 15%; /* 使用百分比内边距，不管正方形多大，图标都完美居中且等比 */
-            background: rgba(243, 245, 255, 0.85); 
-            backdrop-filter: blur(10px);           
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 82, 204, 0.25); 
-            border-radius: 25%; 
-            display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0, 82, 204, 0.08);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            padding: 0;
         }
 
-        .square-trigger-btn:hover {
-            background: rgba(243, 245, 255, 0.95);
-            border-color: #0052cc;
-            transform: scale(1.05);
+        .office-nav-trigger:active {
+            transform: scale(0.95) translateY(1px);
+            background: rgba(241, 245, 249, 0.95);
         }
 
-        .tech-icon-svg {
-            width: 100%;
-            height: 100%;
-            fill: none;
-            stroke: #0052cc; 
-            stroke-width: 3; 
-            stroke-linecap: round;
+        /* 当菜单打开时，主按钮的变虚样式（防止遮挡滑出层） */
+        .office-nav-trigger.is-open-state {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: none;
+            border-color: transparent;
         }
 
-        /* ==========================================
-           2. 准备被强行发配到外层的全屏抽屉式菜单（重点样式）
-           ========================================== */
-        .out-side-drawer {
-            position: fixed;
-            top: 0;
-            left: -100%; /* 默认完全藏在屏幕左边外面 */
-            width: 80%; 
-            max-width: 280px; 
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.98); /* 极高对比度白，防止隐形 */
-            backdrop-filter: blur(30px) saturate(140%); 
-            -webkit-backdrop-filter: blur(30px) saturate(140%);
-            border-right: 1px solid rgba(0, 82, 204, 0.15);
-            box-shadow: 15px 0 35px rgba(0, 82, 204, 0.12); 
+        /* 页面内单独的关闭按钮 - 优雅的轻量视觉 */
+        .drawer-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: none;
             display: flex;
-            flex-direction: column;
-            padding: 6rem 1.5rem 2rem 1.5rem; 
-            z-index: 2147483647; /* 💡 浏览器能识别的最高绝对层级，绝对骑在所有人头上 */
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s ease;
+            padding: 0;
         }
 
-        /* 激活时强制弹出 */
-        .out-side-drawer.open {
-            left: 0 !important;
+        .drawer-close-btn:active {
+            transform: scale(0.9);
+            background: #e2e8f0;
+            color: #334155;
         }
 
-        .drawer-brand {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #1a1a1a; 
-            letter-spacing: 1px;
-            margin-bottom: 2.5rem;
-            padding-left: 8px;
-            border-left: 3px solid #0052cc; 
-        }
-
-        .drawer-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .drawer-item {
-            font-size: 0.95rem;
-            color: #333333; 
-            text-decoration: none;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
-            display: block;
-        }
-
-        .drawer-item:hover, .drawer-item:active {
-            color: #0052cc; 
-            background: rgba(0, 82, 204, 0.06); 
-            padding-left: 1.4rem; 
-        }
-
-        /* 底部招商热线 */
-        .drawer-footer-phone {
-            margin-top: auto; 
-            font-size: 0.85rem;
-            color: #555555;
-            text-decoration: none;
-            border-top: 1px solid rgba(0, 82, 204, 0.1);
-            padding-top: 1rem;
-            display: block;
-        }
-        
-        .drawer-footer-phone span {
-            color: #0052cc;
-            font-weight: bold;
-            display: block;
-            margin-top: 0.3rem;
-            font-size: 0.95rem;
-        }
-
-        /* ==========================================
-           3. 准备被发配到外层的全局轻量背景遮罩
-           ========================================== */
-        .out-side-overlay {
+        /* 背景遮罩 */
+        .office-nav-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(15, 23, 42, 0.15); 
-            backdrop-filter: blur(3px); 
-            -webkit-backdrop-filter: blur(3px);
-            z-index: 2147483646; /* 刚好在抽屉大面板下面一层 */
-            display: none;
+            z-index: calc(var(--btn-zindex) - 1);
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
         }
 
-        .out-side-overlay.show {
-            display: block !important;
-            opacity: 1 !important;
+        .office-nav-overlay.is-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 侧滑抽屉 - 从左侧滑出 */
+        .office-nav-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--drawer-width);
+            height: 100vh;
+            z-index: var(--btn-zindex);
+            background: var(--bg-drawer);
+            box-shadow: 8px 0 32px rgba(15, 23, 42, 0.06);
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 70px 14px 24px 14px;
+            box-sizing: border-box;
+        }
+
+        .office-nav-drawer.is-active {
+            transform: translateX(0);
+        }
+
+        /* 导航列表 */
+        .office-menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .office-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 10px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-family: var(--font-family);
+            font-size: var(--font-size-menu);
+            font-weight: var(--font-weight-menu);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .office-menu-item:active, 
+        .office-menu-item.current {
+            background: var(--bg-item-active);
+            color: var(--text-active);
+        }
+
+        /* SVG 图标颜色控制 */
+        .office-menu-item svg {
+            stroke: #94a3b8;
+            transition: stroke 0.2s ease;
+        }
+
+        .office-menu-item:active svg,
+        .office-menu-item.current svg {
+            stroke: var(--text-active);
+        }
+
+        /* 底部转换动作条 */
+        .office-nav-footer {
+            margin-top: auto;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 16px;
+        }
+
+        .btn-call {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 12px 0;
+            background: var(--theme-color);
+            color: #ffffff;
+            text-decoration: none;
+            font-family: var(--font-family);
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-call svg {
+            stroke: #ffffff;
         }
     </style>
 </head>
 <body>
 
-    <div class="portal-nav-container">
-        <div class="square-trigger-btn" id="trigger-action-btn" onclick="openTechMenu()">
-            <svg class="tech-icon-svg" viewBox="0 0 24 24">
-                <line x1="4" y1="7" x2="20" y2="7" />
-                <line x1="4" y1="12" x2="16" y2="12" />
-                <line x1="4" y1="17" x2="20" y2="17" />
-            </svg>
+    <button class="office-nav-trigger" id="navTrigger" aria-label="切换菜单">
+        <svg id="menuIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+    </button>
+
+    <div class="office-nav-overlay" id="navOverlay"></div>
+
+    <nav class="office-nav-drawer" id="navDrawer">
+        
+        <button class="drawer-close-btn" id="drawerCloseBtn" aria-label="关闭菜单">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
+        <ul class="office-menu-list">
+            <li>
+                <a href="#home" class="office-menu-item current">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="16"></line><line x1="15" y1="22" x2="15" y2="16"></line><line x1="9" y1="16" x2="15" y2="16"></line><path d="M8 6h2v2H8V6zm4 0h2v2h-2V6zm4 0h2v2h-2V6zm-8 4h2v2H8v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-8 4h2v2H8v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"></path></svg>
+                    <span>楼盘首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="#space" class="office-menu-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                    <span>房源租赁</span>
+                </a>
+            </li>
+            <li>
+                <a href="#service" class="office-menu-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    <span>企业服务</span>
+                </a>
+            </li>
+            <li>
+                <a href="#about" class="office-menu-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span>关于我们</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="office-nav-footer">
+            <a href="tel:400-123-4567" class="btn-call">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2v3a2 2 0 0 1 1.51 1.96 12.06 12.06 0 0 0 .5 2.28 2 2 0 0 1-.51 2.15l-1.24 1.24a16 16 0 0 0 6 6l1.24-1.24a2 2 0 0 1 2.15-.51 12.07 12.07 0 0 0 2.28.5A2 2 0 0 1 22 16.92z"></path></svg>
+                <span>预约看房</span>
+            </a>
         </div>
-    </div>
-
-    <div class="out-side-overlay" id="portal-shadow-mask" onclick="closeTechMenu()"></div>
-
-    <nav class="out-side-drawer" id="portal-drawer-box">
-        <div class="drawer-brand">科技商务中心</div>
-
-        <div class="drawer-menu">
-            <a href="#" class="drawer-item">大楼首页</a>
-            <a href="#" class="drawer-item">楼盘简介</a>
-            <a href="#" class="drawer-item">招商户型</a>
-            <a href="#" class="drawer-item">配套设施</a>
-            <a href="#" class="drawer-item">联系我们</a>
-        </div>
-
-        <a href="tel:13812345678" class="drawer-footer-phone">
-            招商热线咨询：
-            <span>📞 13812345678</span>
-        </a>
     </nav>
 
-
     <script>
-        // 当页面一旦加载完毕，立刻执行“越狱”和“寄生”
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const mask = document.getElementById('portal-shadow-mask');
-            const drawer = document.getElementById('portal-drawer-box');
-            
-            // 💡 绝招：把这两个本来塞在正方形狭小盒子里的元素，直接强行塞到整张网页的最外层 <body> 里
-            if (mask && drawer) {
-                document.body.appendChild(mask);
-                document.body.appendChild(drawer);
+        document.addEventListener('DOMContentLoaded', () => {
+            const trigger = document.getElementById('navTrigger');
+            const overlay = document.getElementById('navOverlay');
+            const drawer = document.getElementById('navDrawer');
+            const closeBtn = document.getElementById('drawerCloseBtn');
+
+            let isOpen = false;
+
+            // 明确的打开逻辑
+            function openMenu() {
+                isOpen = true;
+                trigger.classList.add('is-open-state'); // 让主按钮半透明变虚
+                overlay.classList.add('is-active');
+                drawer.classList.add('is-active');
             }
-        });
 
-        // 按钮点击打开逻辑
-        function openTechMenu() {
-            document.getElementById('portal-drawer-box').classList.add('open');
-            document.getElementById('portal-shadow-mask').classList.add('show');
-        }
+            // 完美的强力关闭逻辑 —— 彻底切断任何异常分支
+            function closeMenu() {
+                if (!isOpen) return; 
+                isOpen = false;
+                trigger.classList.remove('is-open-state'); // 恢复主按钮视觉
+                overlay.classList.remove('is-active');
+                drawer.classList.remove('is-active');
+            }
 
-        // 关闭菜单逻辑
-        function closeTechMenu() {
-            document.getElementById('portal-drawer-box').classList.remove('open');
-            document.getElementById('portal-shadow-mask').classList.remove('show');
-        }
+            // 事件绑定：多重路径全部指向安全关闭
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isOpen) { closeMenu(); } else { openMenu(); }
+            });
 
-        // 优化体验：点击菜单内的超链接，菜单自动收回
-        const allLinks = document.querySelectorAll('.drawer-item, .drawer-footer-phone');
-        allLinks.forEach(link => {
-            link.addEventListener('click', closeTechMenu);
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeMenu();
+            });
+
+            overlay.addEventListener('click', closeMenu);
+
+            const menuItems = document.querySelectorAll('.office-menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    menuItems.forEach(i => i.classList.remove('current'));
+                    item.classList.add('current');
+                    closeMenu();
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isOpen) closeMenu();
+            });
         });
     </script>
-
 </body>
 </html>
