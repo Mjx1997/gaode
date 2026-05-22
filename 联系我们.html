@@ -15,12 +15,11 @@
             
             --text-phone-title: "招商经理 何女士";                     /* 电话卡片的小标题 */
             --text-phone-value: "181-6331-5451";                    /* 页面显示的电话号码 */
-            --link-phone-number: "18163315451";                     /* 点击后实际拨打的电话(纯数字，无横杠) */
 
             --text-wechat-title: "添加微信";                    /* 微信卡片的小标题 */
             --text-wechat-value: "wuhan5370";                     /* 页面显示的微信号 / 复制的内容 */
 
-            --text-location-title: "项目入驻地址";                   /* 地址卡片的小标题 */
+            --text-location-title: "项目入驻地址(点击可复制)";                   /* 地址卡片的小标题 */
             --text-location-value: "武汉市武昌区和平大道恒大世纪广场"; /* 页面显示的详细地址 */
             
             /* 📍 地图导航专用坐标配置（已更新为你提供的精准高德经纬度） */
@@ -31,6 +30,7 @@
             --text-time-value: "周一至周日 09:00 - 18:00";          /* 页面显示的时间范围 */
 
             --text-copy-success: "微信号复制成功，可直接添加";       /* 微信复制成功后的气泡提示语 */
+            --text-copy-address-success: "地址复制成功";             /* 地址复制成功后的气泡提示语 */
 
 
             /* ↕️↔️ 2. 边距与间距控制台 (随时微调留白) */
@@ -43,6 +43,7 @@
             /* 🎨 3. 品牌视觉与线条控制台 (纯白无阴影) */
             --brand-blue: #2563eb;         /* 电话图标与触控激活时的蓝色 */
             --brand-green: #22c55e;        /* 微信生态绿色 / 复制成功图标色 */
+            --brand-red: #f43f5e;          /* 地址卡片颜色 */
             --text-color-main: #1d1d1f;    /* 核心文字颜色（苹果科技黑） */
             --text-color-muted: #86868b;   /* 辅助说明标签颜色（高级优雅灰） */
             --container-bg: #ffffff;       /* 整个大盒子的背景色：纯白 */
@@ -120,8 +121,8 @@
             transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 手机端触控轻微回弹反馈 */
-        .hub-card:not(.card-location):not(.card-time):active {
+        /* 手机端触控轻微回弹反馈 (去除了 .card-location 的排除，使其点击也有反馈) */
+        .hub-card:not(.card-time):active {
             transform: scale(0.97);
             background: #f1f3f5;
             border-color: var(--card-border-hover) !important; 
@@ -158,20 +159,18 @@
         .title-time::before { content: var(--text-time-title); }
         .value-time::before { content: var(--text-time-value); }
 
-        .toast-text::before { content: var(--text-copy-success); }
-
-        /* 右侧小箭头引导 */
-        .arrow-action { color: #c7c7cc; display: flex; align-items: center; margin-left: auto; }
+        /* 右侧小箭头/操作引导 */
+        .arrow-action { color: #c7c7cc; display: flex; align-items: center; margin-left: auto; flex-shrink: 0; }
         .arrow-action svg { width: 16px; height: 16px; fill: currentColor; }
 
         /* 区别配色外壳 */
         .card-phone .icon-box { background: rgba(37, 99, 235, 0.08); color: var(--brand-blue); }
         .card-wechat .icon-box { background: rgba(34, 197, 94, 0.08); color: var(--brand-green); }
-        
-        /* 地址和时间卡片：去除点击状态手势 */
-        .card-location, .card-time { cursor: default; }
-        .card-location .icon-box { background: rgba(244, 63, 94, 0.08); color: #f43f5e; }
+        .card-location .icon-box { background: rgba(244, 63, 94, 0.08); color: var(--brand-red); }
         .card-time .icon-box { background: rgba(234, 179, 8, 0.08); color: #eab308; }
+        
+        /* 时间卡片：保持去除点击状态手势 */
+        .card-time { cursor: default; }
         
         /* 吐司气泡提示 */
         .toast-notification {
@@ -194,6 +193,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
         .toast-notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
@@ -207,7 +207,7 @@
             <p></p>
         </div>
 
-        <a href="javascript:void(0);" id="phone-trigger" class="hub-card card-phone">
+        <a href="tel:18163315451" id="phone-trigger" class="hub-card card-phone">
             <div class="icon-box">
                 <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
             </div>
@@ -233,7 +233,7 @@
             </div>
         </a>
 
-        <div class="hub-card card-location">
+        <a href="javascript:void(0);" id="location-trigger" class="hub-card card-location">
             <div class="icon-box">
                 <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             </div>
@@ -241,7 +241,10 @@
                 <span class="card-title title-location"></span>
                 <span class="card-value value-location"></span>
             </div>
-        </div>
+            <div class="arrow-action" style="color: var(--brand-red); font-size: 12px; font-weight: bold;">
+                复制
+            </div>
+        </a>
 
         <div class="hub-card card-time">
             <div class="icon-box">
@@ -257,40 +260,89 @@
 
     <div class="toast-notification" id="copy-toast">
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--brand-green);"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        <span class="toast-text"></span>
+        <span class="toast-text" id="toast-msg"></span>
     </div>
 
     <script>
         // 获取配置变量的辅助小引擎
         const getStyleConfig = (varName) => getComputedStyle(document.documentElement).getPropertyValue(varName).trim().replace(/^"|"$/g, '');
 
-        // 1. 动态注入拨号功能
-        document.getElementById('phone-trigger').addEventListener('click', function() {
-            const phone = getStyleConfig('--link-phone-number');
-            window.location.href = `tel:${phone}`;
-        });
+        // 统一的 Toast 提示气泡控制器
+        function showToast(message) {
+            const toast = document.getElementById('copy-toast');
+            const toastMsg = document.getElementById('toast-msg');
+            
+            // 动态修改提示语
+            toastMsg.innerText = message;
+            
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 1800);
+        }
 
-        // 2. 动态注入微信复制逻辑
+        // 修复2：深度兼容移动端及 iframe 框架的复制引擎
+        function copyToClipboard(text, successMessage) {
+            // 方法A：尝试原生现代 API (适合 iOS / 微信 / 高级主流浏览器)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(successMessage);
+                }).catch(() => {
+                    fallbackCopy(text, successMessage); // 失败则流转到兜底方案
+                });
+            } else {
+                // 方法B：创建绝对可见的不可视文本域 (专门破解安卓 WebView/建站宝盒 iframe 剪贴板死锁)
+                fallbackCopy(text, successMessage);
+            }
+        }
+
+        function fallbackCopy(text, successMessage) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // 绝不在 DOM 外隐藏，防止被安卓内核拒绝读取
+            textArea.style.position = "fixed";
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.width = "2px";
+            textArea.style.height = "2px";
+            textArea.style.padding = "0";
+            textArea.style.border = "none";
+            textArea.style.outline = "none";
+            textArea.style.boxShadow = "none";
+            textArea.style.background = "transparent";
+            
+            document.body.appendChild(textArea);
+            
+            // 兼容各种内核的文本聚焦选中
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); 
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast(successMessage);
+                } else {
+                    alert("复制失败，请长按手动复制");
+                }
+            } catch (err) {
+                alert("当前环境不支持自动复制，请手动复制");
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 绑定微信卡片复制事件
         document.getElementById('wechat-trigger').addEventListener('click', function() {
             const wechatId = getStyleConfig('--text-wechat-value');
-            
-            const doNotification = () => {
-                const toast = document.getElementById('copy-toast');
-                toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 1800);
-            };
+            const successTip = getStyleConfig('--text-copy-success') || "微信号复制成功";
+            copyToClipboard(wechatId, successTip);
+        });
 
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(wechatId).then(doNotification);
-            } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = wechatId;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                doNotification();
-            }
+        // 绑定地址卡片复制事件
+        document.getElementById('location-trigger').addEventListener('click', function() {
+            const address = getStyleConfig('--text-location-value');
+            const successTip = getStyleConfig('--text-copy-address-success') || "地址复制成功";
+            copyToClipboard(address, successTip);
         });
     </script>
 </body>
