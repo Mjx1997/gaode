@@ -7,44 +7,44 @@
 
     <style>
         /* ==========================================================================
-           【 核心配置区 】- 后期所有的视觉、尺寸、颜色修改，直接在这里改数值即可
+           【 核心配置区 】- 响应你的需求，直接在这里调整主按钮的左边距
            ========================================================================== */
         :root {
-            /* 1. 抽屉宽度配置 */
-            --drawer-width: 55vw;           /* 导航栏展开时占屏幕的宽度（50vw-60vw最佳） */
+            /* 1. 悬浮主按钮的位置控制（重点修改这里 🔴） */
+            --btn-left: 5px;                /* 👈 主按钮距离屏幕最左侧的距离（原为16px，已大幅缩小，你可以改成 0px 彻底贴边） */
+            --btn-top: 5px;                /* 👆 主按钮距离屏幕顶部的距离 */
+            --btn-zindex: 999999;           /* 突破限制的层级 */
 
-            /* 2. 核心间距微调（响应你的需求：增加左间距和整体精细化缩减） */
-            --drawer-padding-left: 5px;    /* 👈 滑出页面内的左边距（原为14px，已缩小，可根据喜好继续调整） */
-            --drawer-padding-right: 10px;   /* 👉 滑出页面内的右边距 */
-            --drawer-padding-top: 70px;    /* 👆 滑出页面内的顶边距（留给关闭按钮的空间） */
+            /* 2. 抽屉宽度配置 */
+            --drawer-width: 55vw;           /* 导航栏展开时占屏幕的宽度 */
 
-            /* 3. 颜色配置 (大厂现代商业地产风格) */
-            --theme-color: #2563eb;         /* 主题高亮色/大厂蓝（用于激活状态和按钮） */
+            /* 3. 侧滑抽屉内部留白微调 */
+            --drawer-padding-left: 12px;    /* 👈 滑出页面内的文字图标距离左边的边距 */
+            --drawer-padding-right: 12px;   /* 👉 滑出页面内的右边距 */
+            --drawer-padding-top: 70px;    /* 👆 滑出页面内的顶边距 */
+
+            /* 4. 颜色配置 (大厂现代商业地产风格) */
+            --theme-color: #2563eb;         /* 主题高亮色/大厂蓝 */
             --text-main: #334155;           /* 菜单文字颜色 */
             --text-active: #2563eb;         /* 菜单选中时的文字颜色 */
             --bg-drawer: #ffffff;           /* 弹出菜单的背景颜色 */
             --bg-item-active: #f1f5f9;      /* 菜单选中/点击时的背景色 */
             
-            /* 4. 字体配置 */
-            --font-size-menu: 15px;         /* 栏目文字大小 */
-            --font-weight-menu: 500;        /* 栏文字粗细 */
+            /* 5. 字体配置 */
+            --font-size-menu: 15px;         
+            --font-weight-menu: 500;        
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            
-            /* 5. 悬浮主按钮位置微调 (左上角) */
-            --btn-top: 14px;                /* 按钮距离屏幕顶部距离 */
-            --btn-left: 16px;               /* 按钮距离屏幕左侧距离 */
-            --btn-zindex: 999999;           /* 突破限制的层级 */
         }
 
         /* ==========================================================================
            【 核心样式区 】
            ========================================================================== */
         
-        /* 悬浮主按钮 */
+        /* 悬浮主按钮 - 完美支持极小或负数左边距 */
         .office-nav-trigger {
             position: fixed;
             top: var(--btn-top);
-            left: var(--btn-left);
+            left: var(--btn-left) !important; /* 强制覆盖建站宝盒可能存在的嵌套样式 */
             z-index: var(--btn-zindex);
             width: 44px;
             height: 44px;
@@ -58,7 +58,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
             user-select: none;
             padding: 0;
         }
@@ -68,7 +68,7 @@
             background: rgba(241, 245, 249, 0.95);
         }
 
-        /* 当菜单打开时，主按钮的变虚样式（防止遮挡滑出层） */
+        /* 当菜单打开时，主按钮的变虚样式 */
         .office-nav-trigger.is-open-state {
             background: rgba(255, 255, 255, 0.4);
             box-shadow: none;
@@ -121,7 +121,7 @@
             pointer-events: auto;
         }
 
-        /* 侧滑抽屉 - 完美应用新微调的内边距 */
+        /* 侧滑抽屉 */
         .office-nav-drawer {
             position: fixed;
             top: 0;
@@ -174,11 +174,10 @@
             color: var(--text-active);
         }
 
-        /* SVG 图标颜色控制 */
         .office-menu-item svg {
             stroke: #94a3b8;
             transition: stroke 0.2s ease;
-            flex-shrink: 0; /* 防止宽度被极窄间距压缩 */
+            flex-shrink: 0;
         }
 
         .office-menu-item:active svg,
@@ -308,10 +307,6 @@
                     item.classList.add('current');
                     closeMenu();
                 });
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && isOpen) closeMenu();
             });
         });
     </script>
