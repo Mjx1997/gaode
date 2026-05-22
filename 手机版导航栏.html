@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Office Leasing Nav - Pure Offline</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Office Leasing Navigation</title>
 
     <style>
         /* ==========================================================================
@@ -13,19 +13,24 @@
             /* 1. 抽屉宽度配置 */
             --drawer-width: 55vw;           /* 导航栏展开时占屏幕的宽度（50vw-60vw最佳） */
 
-            /* 2. 颜色配置 (大厂现代商业地产风格) */
+            /* 2. 核心间距微调（响应你的需求：增加左间距和整体精细化缩减） */
+            --drawer-padding-left: 8px;    /* 👈 滑出页面内的左边距（原为14px，已缩小，可根据喜好继续调整） */
+            --drawer-padding-right: 10px;   /* 👉 滑出页面内的右边距 */
+            --drawer-padding-top: 70px;    /* 👆 滑出页面内的顶边距（留给关闭按钮的空间） */
+
+            /* 3. 颜色配置 (大厂现代商业地产风格) */
             --theme-color: #2563eb;         /* 主题高亮色/大厂蓝（用于激活状态和按钮） */
             --text-main: #334155;           /* 菜单文字颜色 */
             --text-active: #2563eb;         /* 菜单选中时的文字颜色 */
             --bg-drawer: #ffffff;           /* 弹出菜单的背景颜色 */
             --bg-item-active: #f1f5f9;      /* 菜单选中/点击时的背景色 */
             
-            /* 3. 字体配置 */
+            /* 4. 字体配置 */
             --font-size-menu: 15px;         /* 栏目文字大小 */
             --font-weight-menu: 500;        /* 栏文字粗细 */
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             
-            /* 4. 悬浮按钮位置微调 (左上角) */
+            /* 5. 悬浮主按钮位置微调 (左上角) */
             --btn-top: 14px;                /* 按钮距离屏幕顶部距离 */
             --btn-left: 16px;               /* 按钮距离屏幕左侧距离 */
             --btn-zindex: 999999;           /* 突破限制的层级 */
@@ -70,7 +75,7 @@
             border-color: transparent;
         }
 
-        /* 页面内单独的关闭按钮 - 优雅的轻量视觉 */
+        /* 页面内独立的关闭按钮 */
         .drawer-close-btn {
             position: absolute;
             top: 14px;
@@ -116,7 +121,7 @@
             pointer-events: auto;
         }
 
-        /* 侧滑抽屉 - 从左侧滑出 */
+        /* 侧滑抽屉 - 完美应用新微调的内边距 */
         .office-nav-drawer {
             position: fixed;
             top: 0;
@@ -130,7 +135,7 @@
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            padding: 70px 14px 24px 14px;
+            padding: var(--drawer-padding-top) var(--drawer-padding-right) 24px var(--drawer-padding-left);
             box-sizing: border-box;
         }
 
@@ -173,6 +178,7 @@
         .office-menu-item svg {
             stroke: #94a3b8;
             transition: stroke 0.2s ease;
+            flex-shrink: 0; /* 防止宽度被极窄间距压缩 */
         }
 
         .office-menu-item:active svg,
@@ -206,6 +212,7 @@
         }
         .btn-call svg {
             stroke: #ffffff;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -267,24 +274,21 @@
 
             let isOpen = false;
 
-            // 明确的打开逻辑
             function openMenu() {
                 isOpen = true;
-                trigger.classList.add('is-open-state'); // 让主按钮半透明变虚
+                trigger.classList.add('is-open-state'); 
                 overlay.classList.add('is-active');
                 drawer.classList.add('is-active');
             }
 
-            // 完美的强力关闭逻辑 —— 彻底切断任何异常分支
             function closeMenu() {
                 if (!isOpen) return; 
                 isOpen = false;
-                trigger.classList.remove('is-open-state'); // 恢复主按钮视觉
+                trigger.classList.remove('is-open-state'); 
                 overlay.classList.remove('is-active');
                 drawer.classList.remove('is-active');
             }
 
-            // 事件绑定：多重路径全部指向安全关闭
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (isOpen) { closeMenu(); } else { openMenu(); }
